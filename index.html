@@ -6,6 +6,15 @@
 <title>PostHire — Where Startups Meet Creators</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<!-- ════════════════════════════════════════
+     FIREBASE SDK (v10 modular via CDN compat)
+════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- Firebase SDK loaded; init happens at bottom of body after all functions -->
 <style>
 /* ════════════════════════════════════════
    DESIGN TOKENS
@@ -111,12 +120,13 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 .l-hamburger.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
 .l-hamburger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
 .l-mobile-menu {
-  display:none; position:fixed; inset:0; background:rgba(255,255,255,0.98);
+  display:flex; position:fixed; inset:0; background:rgba(255,255,255,0.98);
   backdrop-filter:blur(24px); z-index:190;
   flex-direction:column; justify-content:center; align-items:center; gap:8px;
   transform:translateY(-100%); transition:transform 0.45s cubic-bezier(0.16,1,0.3,1);
+  pointer-events:none;
 }
-.l-mobile-menu.open { transform:translateY(0); }
+.l-mobile-menu.open { transform:translateY(0); pointer-events:all; }
 .l-mob-link { font-family:'Cinzel',serif; font-size:20px; letter-spacing:3px; color:var(--t-secondary); cursor:pointer; padding:14px 32px; width:100%; text-align:center; transition:color 0.2s; }
 .l-mob-link:hover { color:var(--blue); }
 .l-mob-btns { display:flex; flex-direction:column; gap:10px; padding:20px 32px; width:100%; }
@@ -202,7 +212,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 .l-problem-grid { display:grid;grid-template-columns:1fr 1fr;gap:24px; }
 .l-pcard {
   background:#fff;border:1px solid var(--l-border);border-radius:var(--r-lg);padding:44px 40px;
-  opacity:0;transform:translateY(20px);transition:opacity 0.6s,transform 0.6s;
+  opacity:1;transform:translateY(0);transition:opacity 0.6s,transform 0.6s;
 }
 .l-pcard.visible { opacity:1;transform:translateY(0); }
 .l-pcard:hover { box-shadow:var(--shadow-card);transform:translateY(-3px); }
@@ -219,7 +229,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 .l-tab { padding:10px 28px;border-radius:var(--r-full);background:transparent;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--t-secondary);transition:all 0.25s; }
 .l-tab.active { background:#fff;color:var(--blue);box-shadow:var(--shadow-card); }
 .l-flow.hidden { display:none; }
-.l-step { display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--l-border2);opacity:0;transform:translateX(-8px);transition:all 0.5s; }
+.l-step { display:flex;gap:20px;padding:28px 0;border-bottom:1px solid var(--l-border2);opacity:1;transform:translateX(0);transition:all 0.5s; }
 .l-step.visible { opacity:1;transform:translateX(0); }
 .l-step-num { font-family:'Cinzel',serif;font-size:11px;font-weight:700;color:var(--blue);letter-spacing:2px;min-width:32px;padding-top:3px; }
 .l-step-body h4 { font-size:14px;font-weight:700;color:var(--t-primary);margin-bottom:7px; }
@@ -232,7 +242,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 .l-feat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:20px; }
 .l-feat-card {
   background:#fff;border:1px solid var(--l-border);border-radius:var(--r-lg);padding:36px 30px;
-  opacity:0;transform:translateY(14px);transition:opacity 0.5s,transform 0.5s,box-shadow 0.3s;
+  opacity:1;transform:translateY(0);transition:opacity 0.5s,transform 0.5s,box-shadow 0.3s;
 }
 .l-feat-card.visible { opacity:1;transform:translateY(0); }
 .l-feat-card:hover { box-shadow:var(--shadow-card);transform:translateY(-4px); }
@@ -276,7 +286,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 .l-for-grid { display:grid;grid-template-columns:1fr 1fr;gap:24px; }
 .l-for-card {
   background:#fff;border:1px solid var(--l-border);border-radius:var(--r-lg);padding:52px 44px;
-  opacity:0;transform:translateY(18px);transition:all 0.6s;
+  opacity:1;transform:translateY(0);transition:all 0.6s;
 }
 .l-for-card.visible { opacity:1;transform:translateY(0); }
 .l-for-card:hover { box-shadow:var(--shadow-card); }
@@ -1423,6 +1433,43 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 @media (max-width:880px) { .pm-messages-section { transform:translateX(100%); position:absolute; opacity:0; top:0; z-index:2; height:100%; width:100%; } .pm-messages-close,.pm-messages-btn { display:flex !important; } }
 @media (max-width:520px) { .pm-sidebar,.pm-icon { display:none; } .pm-content { padding:12px; } .pm-project-boxes.jsGridView .pm-box-wrap { width:100%; } .pm-projects-section { padding:20px 14px 0; } }
 
+
+/* ════════════════════════════════════════
+   RESPONSIVE — LANDING PAGE
+════════════════════════════════════════ */
+@media (max-width:900px) {
+  .l-links { display:none; }
+  .l-hamburger { display:flex; }
+  .l-problem-grid { grid-template-columns:1fr; }
+  .l-feat-grid { grid-template-columns:1fr 1fr; }
+  .l-for-grid { grid-template-columns:1fr; }
+  .l-price-grid { grid-template-columns:1fr; max-width:420px; margin:0 auto; }
+  .l-demo-inner { flex-direction:column; gap:40px; }
+  .l-demo-phone { display:flex; justify-content:center; }
+  .l-nav { padding:0 20px; }
+}
+@media (max-width:600px) {
+  .l-feat-grid { grid-template-columns:1fr; }
+  .l-hero-h1 { font-size:clamp(38px,12vw,72px); }
+  .l-hero-stats { flex-direction:column; max-width:220px; }
+  .l-hero-stat { border-right:none; border-bottom:1px solid var(--l-border); }
+  .l-hero-stat:last-child { border-bottom:none; }
+  .l-section { padding:60px 20px; }
+  .l-for-card { padding:36px 24px; }
+  .l-h2 { font-size:clamp(22px,7vw,38px); }
+}
+
+/* ════════════════════════════════════════
+   PLAN PICKER PAGE
+════════════════════════════════════════ */
+.pp-card:hover {
+  transform: translateY(-6px) !important;
+  box-shadow: 0 16px 48px rgba(59,110,240,0.14) !important;
+  border-color: var(--blue) !important;
+}
+@media (max-width: 860px) {
+  #pp-grid { grid-template-columns: 1fr !important; max-width: 400px !important; }
+}
 </style>
 </head>
 <body>
@@ -1781,6 +1828,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
         <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="su-name" placeholder="Your full name" type="text"></div>
         <div class="f-group"><label class="f-label">Email</label><input class="f-input" id="su-email" placeholder="you@example.com" type="email"></div>
         <div class="f-group"><label class="f-label">Password</label><input class="f-input" id="su-pass" placeholder="Create a strong password" type="password"></div>
+        <div class="f-group"><label class="f-label">WhatsApp Number <span style="color:var(--blue);font-size:11px;">(required for collaboration)</span></label><input class="f-input" id="su-whatsapp" placeholder="10-digit WhatsApp number" type="tel" maxlength="10"></div>
         <!-- Founder extra -->
         <div id="su-founder-extra">
           <div class="f-group"><label class="f-label">Startup Name</label><input class="f-input" id="su-startup" placeholder="Your startup name" type="text"></div>
@@ -1842,13 +1890,139 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
         </div>
         <div class="f-group"><label class="f-label">Email</label><input class="f-input" id="li-email" placeholder="you@example.com" type="email"></div>
         <div class="f-group"><label class="f-label">Password</label><input class="f-input" id="li-pass" placeholder="Your password" type="password"></div>
+        <div class="f-group"><label class="f-label">WhatsApp Number <span style="color:var(--blue);font-size:11px;">(for collaboration requests)</span></label><input class="f-input" id="li-whatsapp" placeholder="10-digit WhatsApp number" type="tel" maxlength="10"></div>
         <button class="auth-submit-btn" onclick="doLogin()">Sign In →</button>
-        <div class="auth-or">or try a demo</div>
-        <div class="auth-demo-row">
-          <button class="auth-demo-btn" onclick="demoLogin('founder')">🚀 Demo Founder</button>
-          <button class="auth-demo-btn" onclick="demoLogin('creator')">🎥 Demo Creator</button>
+        <div class="auth-or">— or —</div>
+        <div style="text-align:center;">
+          <a onclick="goTo('signup')" style="font-size:13px;color:var(--blue);cursor:pointer;font-weight:500;">Don't have an account? Sign up free →</a>
         </div>
         <div class="auth-footer-text" style="margin-top:16px;">No account? <a onclick="goTo('signup')">Sign up free</a></div>
+        <div style="text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06);">
+          <a onclick="goTo('admin-login')" style="font-size:11px;color:var(--t-dim);cursor:pointer;letter-spacing:0.5px;text-decoration:none;opacity:0.5;" title="Admin access">🛡️ Admin Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PAGE: PLAN SELECTION (shown after signup)
+════════════════════════════════════ -->
+<div id="pg-planpick" class="page">
+  <div style="min-height:100vh;background:linear-gradient(135deg,#f7f8fc 0%,#eef0f9 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;">
+
+    <!-- Header -->
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;letter-spacing:3px;color:var(--t-primary);margin-bottom:16px;cursor:pointer;" onclick="goTo('landing')">Post<em style="font-style:normal;background:linear-gradient(135deg,var(--blue),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Hire</em></div>
+      <h1 style="font-family:'Cinzel',serif;font-size:clamp(24px,4vw,40px);font-weight:700;color:var(--t-primary);letter-spacing:2px;margin-bottom:12px;">Choose Your Plan</h1>
+      <p style="font-size:15px;color:var(--t-secondary);max-width:480px;line-height:1.7;">Start free, upgrade anytime. Pick the plan that matches your collaboration goals.</p>
+      <div id="pp-role-badge" style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:var(--blue-faint);border:1px solid rgba(59,110,240,0.18);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:var(--r-full);"></div>
+    </div>
+
+    <!-- Plan Cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;width:100%;" id="pp-grid">
+
+      <!-- FREE -->
+      <div class="pp-card" onclick="selectPlanAndContinue('free')" style="background:#fff;border:2px solid var(--l-border);border-radius:var(--r-xl);padding:36px 28px;cursor:pointer;transition:all 0.25s;position:relative;">
+        <span style="display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:var(--r-full);background:rgba(16,185,129,0.1);color:var(--green);margin-bottom:18px;">FREE</span>
+        <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--t-primary);margin-bottom:12px;">FREE PLAN</div>
+        <div style="font-family:'Cinzel',serif;font-size:44px;font-weight:700;color:var(--t-primary);line-height:1;margin-bottom:4px;"><sup style="font-size:18px;">₹</sup>0</div>
+        <div style="font-size:12px;color:var(--t-dim);margin-bottom:20px;">/month — no card needed</div>
+        <div style="height:1px;background:var(--l-border);margin:16px 0;"></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>Create profile</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>Browse 10 profiles/day</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--green);font-weight:700;flex-shrink:0;">✓</span>3 collaboration requests/month</li>
+          <li style="font-size:13px;color:rgba(0,0,0,0.3);display:flex;align-items:flex-start;gap:8px;"><span style="flex-shrink:0;">—</span>In-platform messaging</li>
+          <li style="font-size:13px;color:rgba(0,0,0,0.3);display:flex;align-items:flex-start;gap:8px;"><span style="flex-shrink:0;">—</span>AI match suggestions</li>
+        </ul>
+        <button style="width:100%;padding:13px;border-radius:var(--r-full);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--l-border);color:var(--blue);background:transparent;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-faint)'" onmouseout="this.style.borderColor='var(--l-border)';this.style.background='transparent'">Start Free →</button>
+      </div>
+
+      <!-- STARTER (featured) -->
+      <div class="pp-card" onclick="selectPlanAndContinue('starter')" style="background:#fff;border:2px solid var(--blue);border-radius:var(--r-xl);padding:36px 28px;cursor:pointer;transition:all 0.25s;position:relative;box-shadow:0 8px 32px rgba(59,110,240,0.15);">
+        <div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 16px;border-radius:var(--r-full);white-space:nowrap;">Most Popular</div>
+        <span style="display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:var(--r-full);background:rgba(59,110,240,0.1);color:var(--blue);margin-bottom:18px;">STARTER</span>
+        <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--t-primary);margin-bottom:12px;">STARTER PLAN</div>
+        <div style="font-family:'Cinzel',serif;font-size:44px;font-weight:700;color:var(--t-primary);line-height:1;margin-bottom:4px;"><sup style="font-size:18px;">₹</sup>299</div>
+        <div style="font-size:12px;color:var(--t-dim);margin-bottom:20px;">/month — billed monthly</div>
+        <div style="height:1px;background:var(--l-border);margin:16px 0;"></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--blue);font-weight:700;flex-shrink:0;">✓</span>Unlimited profile browsing</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--blue);font-weight:700;flex-shrink:0;">✓</span>20 collaboration requests/month</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--blue);font-weight:700;flex-shrink:0;">✓</span>Advanced search & filters</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--blue);font-weight:700;flex-shrink:0;">✓</span>In-platform messaging</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--blue);font-weight:700;flex-shrink:0;">✓</span>Priority listing</li>
+        </ul>
+        <button style="width:100%;padding:13px;border-radius:var(--r-full);font-size:13px;font-weight:600;cursor:pointer;border:none;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-mid));box-shadow:0 4px 20px rgba(59,110,240,0.3);transition:all 0.2s;">Choose Starter →</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="pp-card" onclick="selectPlanAndContinue('pro')" style="background:#fff;border:2px solid var(--l-border);border-radius:var(--r-xl);padding:36px 28px;cursor:pointer;transition:all 0.25s;position:relative;">
+        <span style="display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:var(--r-full);background:rgba(139,92,246,0.1);color:var(--purple);margin-bottom:18px;">PRO</span>
+        <div style="font-family:'Cinzel',serif;font-size:15px;font-weight:700;color:var(--t-primary);margin-bottom:12px;">PRO PLAN</div>
+        <div style="font-family:'Cinzel',serif;font-size:44px;font-weight:700;color:var(--t-primary);line-height:1;margin-bottom:4px;"><sup style="font-size:18px;">₹</sup>599</div>
+        <div style="font-size:12px;color:var(--t-dim);margin-bottom:20px;">/month — billed monthly</div>
+        <div style="height:1px;background:var(--l-border);margin:16px 0;"></div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;">
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--purple);font-weight:700;flex-shrink:0;">✓</span>Everything in Starter</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--purple);font-weight:700;flex-shrink:0;">✓</span>Unlimited collaboration requests</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--purple);font-weight:700;flex-shrink:0;">✓</span>Daily AI-powered match suggestions</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--purple);font-weight:700;flex-shrink:0;">✓</span>Featured profile badge</li>
+          <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--purple);font-weight:700;flex-shrink:0;">✓</span>Portfolio highlight + analytics</li>
+        </ul>
+        <button style="width:100%;padding:13px;border-radius:var(--r-full);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--purple);color:var(--purple);background:transparent;transition:all 0.2s;" onmouseover="this.style.background='rgba(139,92,246,0.08)'" onmouseout="this.style.background='transparent'">Go Pro →</button>
+      </div>
+
+    </div>
+
+    <!-- Skip link -->
+    <div style="margin-top:28px;text-align:center;">
+      <a onclick="selectPlanAndContinue('free')" style="font-size:12px;color:var(--t-dim);cursor:pointer;text-decoration:underline;">Skip for now — start with Free plan</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     PAGE: ADMIN LOGIN (hidden, separate)
+════════════════════════════════════ -->
+<div id="pg-admin-login" class="page">
+  <div class="auth-wrap" style="background:linear-gradient(135deg,#0d0f1a 0%,#1c1f32 100%);">
+    <div class="auth-left" style="background:linear-gradient(135deg,#0f1122,#1a1d35);">
+      <div class="auth-left-bg" style="background:radial-gradient(ellipse at 30% 50%,rgba(139,92,246,0.18),transparent 70%),radial-gradient(ellipse at 70% 30%,rgba(59,110,240,0.15),transparent 60%);"></div>
+      <div class="auth-left-content">
+        <div class="auth-brand" onclick="goTo('landing')" style="color:#fff;">Post<em>Hire</em></div>
+        <h2 class="auth-left-h" style="color:#e8eaf6;">Admin<br>Control Panel.</h2>
+        <p class="auth-left-sub" style="color:rgba(255,255,255,0.5);">Restricted access. Authorised personnel only.</p>
+        <div class="auth-feature-list">
+          <div class="auth-feature" style="color:rgba(255,255,255,0.55);"><div class="auth-feature-dot" style="background:#8b5cf6;"></div>User management</div>
+          <div class="auth-feature" style="color:rgba(255,255,255,0.55);"><div class="auth-feature-dot" style="background:#8b5cf6;"></div>Collaboration approvals</div>
+          <div class="auth-feature" style="color:rgba(255,255,255,0.55);"><div class="auth-feature-dot" style="background:#8b5cf6;"></div>Platform-wide analytics</div>
+          <div class="auth-feature" style="color:rgba(255,255,255,0.55);"><div class="auth-feature-dot" style="background:#8b5cf6;"></div>Full data control</div>
+        </div>
+      </div>
+    </div>
+    <div class="auth-right" style="background:#0d0f1a;">
+      <div class="auth-box" style="background:#141624;border:1px solid rgba(139,92,246,0.2);box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,#4f6ef7,#8b5cf6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">🛡️</div>
+          <h1 class="auth-box-title" style="color:#e8eaf6;margin:0;">Admin Sign In</h1>
+        </div>
+        <p class="auth-box-sub" style="color:rgba(255,255,255,0.4);">This login is for administrators only</p>
+        <div class="f-group" style="margin-top:20px;">
+          <label class="f-label" style="color:rgba(255,255,255,0.55);">Admin Email</label>
+          <input class="f-input" id="adm-email" placeholder="admin@posthire.in" type="email" style="background:rgba(255,255,255,0.06);border-color:rgba(139,92,246,0.25);color:#e8eaf6;">
+        </div>
+        <div class="f-group">
+          <label class="f-label" style="color:rgba(255,255,255,0.55);">Admin Password</label>
+          <input class="f-input" id="adm-pass" placeholder="••••••••••" type="password" style="background:rgba(255,255,255,0.06);border-color:rgba(139,92,246,0.25);color:#e8eaf6;">
+        </div>
+        <div id="adm-error" style="display:none;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:#f87171;margin-bottom:14px;"></div>
+        <button class="auth-submit-btn" onclick="doAdminLogin()" style="background:linear-gradient(135deg,#4f6ef7,#8b5cf6);box-shadow:0 4px 20px rgba(79,110,247,0.4);">Enter Admin Panel →</button>
+        <div style="text-align:center;margin-top:20px;">
+          <a onclick="goTo('login')" style="font-size:12px;color:rgba(255,255,255,0.3);cursor:pointer;text-decoration:none;">← Back to user login</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1868,9 +2042,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
         <span class="d-sidebar-logo-badge">Beta</span>
       </div>
       <div class="d-user-card">
-        <div class="d-user-av" id="d-av">R</div>
+        <div class="d-user-av" id="d-av"></div>
         <div class="d-user-info">
-          <div class="d-user-name" id="d-name">Rahul Sharma</div>
+          <div class="d-user-name" id="d-name"></div>
           <div class="d-user-role" id="d-role">Startup Founder</div>
           <div class="d-user-plan badge-free" id="d-plan-badge">Free Plan</div>
         </div>
@@ -1885,6 +2059,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
           <div class="d-nav-section-label">Account</div>
           <div class="d-nav-item" onclick="showView('pricing',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>Upgrade Plan</div>
           <div class="d-nav-item" onclick="showView('settings',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>Settings</div>
+          <div class="d-nav-item" id="admin-nav-item" style="display:none;" onclick="showView('admin',this)"><div class="d-nav-icon">🛡️</div>Admin Panel</div>
         </div>
         <!-- Creator Nav -->
         <div id="cr-nav" style="display:none;">
@@ -1905,7 +2080,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
       </div>
 
       <div class="d-sidebar-footer">
-        <button class="d-logout-btn" onclick="doLogout()">
+        <button class="d-logout-btn" onclick="S.user && S.user.isAdmin ? doAdminLogout() : doLogout()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
           Sign Out
         </button>
@@ -1998,14 +2173,37 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
         <div class="d-view" id="vw-collabs">
           <div class="d-section-hd">
             <h2>Collaborations</h2>
-            <p>Track all collaboration requests received.</p>
+            <p>Track all collaboration requests you have received.</p>
           </div>
           <div class="d-collab-list">
-            <div class="d-collab-hd"><h4>All Requests</h4></div>
-            <div class="d-collab-item"><div class="d-collab-av">G</div><div class="d-collab-info"><div class="d-collab-name">GrowthLabs</div><div class="d-collab-desc">D2C brand — product review campaign</div></div><span class="d-collab-badge badge-new">New</span><div class="d-collab-time">3h ago</div></div>
-            <div class="d-collab-item"><div class="d-collab-av">R</div><div class="d-collab-info"><div class="d-collab-name">RocketSaaS</div><div class="d-collab-desc">SaaS startup — long-term partnership</div></div><span class="d-collab-badge badge-read">Read</span><div class="d-collab-time">1d ago</div></div>
-            <div class="d-collab-item"><div class="d-collab-av">T</div><div class="d-collab-info"><div class="d-collab-name">TechVentures</div><div class="d-collab-desc">Looking for brand awareness campaign</div></div><span class="d-collab-badge badge-read">Read</span><div class="d-collab-time">3d ago</div></div>
-            <div class="d-collab-item"><div class="d-collab-av">F</div><div class="d-collab-info"><div class="d-collab-name">FinanceFlow</div><div class="d-collab-desc">Fintech startup — budget ₹20K–₹50K</div></div><span class="d-collab-badge badge-read">Read</span><div class="d-collab-time">5d ago</div></div>
+            <div class="d-collab-hd"><h4>All Requests</h4><span id="collab-refresh-btn" onclick="loadMyCollabs()" style="cursor:pointer;font-size:12px;color:var(--blue);">↻ Refresh</span></div>
+            <div id="my-collabs-list"><div style="text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">Loading collaboration requests...</div></div>
+          </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div class="d-view" id="vw-admin">
+          <div class="d-section-hd">
+            <h2>🛡️ Admin Panel</h2>
+            <p>Full platform control — users, collaborations, approvals.</p>
+          </div>
+          <!-- Admin Stats -->
+          <div class="d-stats-row" id="admin-stats-row" style="margin-bottom:24px;"></div>
+          <!-- Pending Collabs Approvals -->
+          <div class="d-profile-card" style="margin-bottom:20px;">
+            <div class="d-profile-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+              Pending Collaboration Approvals
+              <span onclick="loadAdminCollabs()" style="cursor:pointer;font-size:12px;color:var(--blue);font-weight:500;">↻ Refresh</span>
+            </div>
+            <div id="admin-collabs-list"><div style="text-align:center;padding:30px;color:var(--t-dim);font-size:14px;">Loading...</div></div>
+          </div>
+          <!-- All Users -->
+          <div class="d-profile-card">
+            <div class="d-profile-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+              All Users
+              <input id="admin-user-search" placeholder="Search users..." oninput="filterAdminUsers()" style="padding:6px 12px;border:1px solid var(--l-border);border-radius:var(--r-full);font-size:12px;outline:none;width:200px;">
+            </div>
+            <div id="admin-users-list"><div style="text-align:center;padding:30px;color:var(--t-dim);font-size:14px;">Loading...</div></div>
           </div>
         </div>
 
@@ -2035,7 +2233,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
             <div class="d-profile-card-title">Account Actions</div>
             <div style="display:flex;gap:12px;flex-wrap:wrap;">
               <button class="l-btn-ghost" onclick="showToast('Password reset link sent to your email','success')" style="padding:11px 24px;border-radius:var(--r-full);font-size:13px;flex:1;min-width:140px;">Change Password</button>
-              <button style="padding:11px 24px;border-radius:var(--r-full);font-size:13px;font-weight:600;background:transparent;border:1.5px solid #fecaca;color:#ef4444;cursor:pointer;flex:1;min-width:120px;" onclick="doLogout()">Sign Out</button>
+              <button style="padding:11px 24px;border-radius:var(--r-full);font-size:13px;font-weight:600;background:transparent;border:1.5px solid #fecaca;color:#ef4444;cursor:pointer;flex:1;min-width:120px;" onclick="S.user && S.user.isAdmin ? doAdminLogout() : doLogout()">Sign Out</button>
             </div>
           </div>
         </div>
@@ -2084,6 +2282,17 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 <script>
+// ── Global error handler — prevents silent JS crashes ──
+window.onerror = function(msg, src, line, col, err) {
+  console.error('JS Error:', msg, 'at line', line, err);
+  return false; // don't suppress
+};
+
+// ══════════════════════════════════════════════════════════
+//  ADMIN EMAIL — change this to your email address
+// ══════════════════════════════════════════════════════════
+const ADMIN_EMAIL = 'admin@posthire.in'; // ← SET YOUR ADMIN EMAIL HERE
+
 // ══════════════════════════════
 //  STATE
 // ══════════════════════════════
@@ -2091,6 +2300,7 @@ let S = {
   user: null,
   selectedRole: 'founder',
   collabsUsed: 0,
+  allUsersCache: [],
 };
 
 const PLANS = {
@@ -2099,27 +2309,92 @@ const PLANS = {
   pro:     { name:'Pro Plan',     badge:'badge-pro',     collabs:-1, browseLimit:-1,  price:'₹599', period:'/month' },
 };
 
-const CREATORS = [
-  { id:1, initials:'AM', grad:'#3b6ef0,#8b5cf6', name:'Arjun Mehra',    niche:'AI & Tech',  platform:'YouTube',   audience:'200K+',   eng:'4.2%', collabs:12, bio:'Building tech & AI audiences for 3+ years. Partnered with 20+ startups on product launches.', tags:['AI','Startups','SaaS'], wa:'9876543210', pricing:'₹15,000+' },
-  { id:2, initials:'PK', grad:'#06b6d4,#3b6ef0', name:'Priya Kapoor',   niche:'Finance',    platform:'Instagram', audience:'50K–200K', eng:'6.8%', collabs:8,  bio:'Finance creator simplifying investing for millennials. High trust, strong engagement.', tags:['Finance','Investing'], wa:'9876543211', pricing:'₹10,000+' },
-  { id:3, initials:'RD', grad:'#8b5cf6,#ec4899', name:'Rohan Das',      niche:'Startups',   platform:'LinkedIn',  audience:'50K–200K', eng:'5.1%', collabs:15, bio:'LinkedIn thought leader covering funding stories, founder journeys and startup culture.', tags:['Startups','B2B','SaaS'], wa:'9876543212', pricing:'₹20,000+' },
-  { id:4, initials:'SG', grad:'#10b981,#06b6d4', name:'Sneha Gupta',    niche:'Lifestyle',  platform:'Instagram', audience:'10K–50K',  eng:'8.3%', collabs:5,  bio:'Micro-influencer with hyper-engaged D2C audience. Perfect for product reviews.', tags:['Lifestyle','D2C'], wa:'9876543213', pricing:'₹5,000+' },
-  { id:5, initials:'VS', grad:'#f59e0b,#f97316', name:'Vikram Singh',   niche:'AI & Tech',  platform:'Twitter/X', audience:'10K–50K',  eng:'7.2%', collabs:9,  bio:'Tech journalist turned creator. Deep dives into AI tools and startup ecosystems.', tags:['AI','Tech'], wa:'9876543214', pricing:'₹8,000+' },
-  { id:6, initials:'AR', grad:'#f43f5e,#f97316', name:'Ananya Reddy',   niche:'Fitness',    platform:'Instagram', audience:'1K–10K',   eng:'11.2%',collabs:3,  bio:'Fitness creator with a passionate community. Great for health and wellness startups.', tags:['Fitness','Wellness'], wa:'9876543215', pricing:'₹3,000+' },
-  { id:7, initials:'KM', grad:'#3b6ef0,#06b6d4', name:'Karan Malhotra', niche:'Finance',    platform:'YouTube',   audience:'200K+',   eng:'3.9%', collabs:22, bio:'Personal finance YouTuber with 200K+ subscribers. Known for high-performing sponsorships.', tags:['Finance','Money'], wa:'9876543216', pricing:'₹30,000+' },
-  { id:8, initials:'DN', grad:'#8b5cf6,#3b6ef0', name:'Divya Nair',     niche:'Startups',   platform:'LinkedIn',  audience:'50K–200K', eng:'5.7%', collabs:11, bio:'Ex-founder turned creator. Growth hacking, product building, and startup culture.', tags:['Startups','Growth'], wa:'9876543217', pricing:'₹18,000+' },
-  { id:9, initials:'AJ', grad:'#10b981,#f59e0b', name:'Amit Joshi',     niche:'Food',       platform:'Instagram', audience:'10K–50K',  eng:'9.1%', collabs:7,  bio:'Food creator with insane engagement for restaurant, F&B, and food-tech brands.', tags:['Food','D2C'], wa:'9876543218', pricing:'₹7,000+' },
-];
-
 // ══════════════════════════════
 //  PAGE ROUTING
 // ══════════════════════════════
 function goTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('pg-' + page).classList.add('active');
+  const pg = document.getElementById('pg-' + page);
+  if (pg) pg.classList.add('active');
   window.scrollTo(0,0);
-  if (page === 'dashboard') { renderDash(); updatePMHeader(); }
+  if (page === 'dashboard') { renderDash(); }
+  if (page === 'landing') {
+    // Re-observe scroll-reveal elements whenever landing is shown
+    setTimeout(() => {
+      document.querySelectorAll('.l-pcard,.l-step,.l-feat-card,.l-for-card').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 50);
+  }
 }
+
+// ── ADMIN LOGIN ──────────────────────────────────────────────────
+async function doAdminLogin() {
+  const email = document.getElementById('adm-email').value.trim();
+  const pass  = document.getElementById('adm-pass').value;
+  const errEl = document.getElementById('adm-error');
+  errEl.style.display = 'none';
+
+  if (!email || !pass) {
+    errEl.textContent = 'Please enter admin email and password.';
+    errEl.style.display = 'block'; return;
+  }
+
+  // Check email matches configured admin email first
+  if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    errEl.textContent = 'Access denied. This is not an admin account.';
+    errEl.style.display = 'block'; return;
+  }
+
+  try {
+    const cred    = await auth.signInWithEmailAndPassword(email, pass);
+    const profile = await fbLoadUser(cred.user.uid);
+
+    if (!profile) {
+      // First-time admin setup — create profile automatically
+      const adminProfile = {
+        name: 'Admin', email, whatsapp: '', role: 'admin',
+        plan: 'pro', avatar: 'A', isAdmin: true, uid: cred.user.uid,
+        collabsUsed: 0,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      };
+      await fbSaveUser(cred.user.uid, adminProfile);
+      S.user = adminProfile; S.collabsUsed = 0;
+    } else {
+      // Ensure admin flag is always set for admin email
+      if (!profile.isAdmin) {
+        await fbSaveUser(cred.user.uid, { isAdmin: true, plan: 'pro' });
+        profile.isAdmin = true; profile.plan = 'pro';
+      }
+      S.user = profile; S.collabsUsed = profile.collabsUsed || 0;
+    }
+
+    showToast('Welcome, Admin ✦', 'success');
+    setTimeout(() => { goTo('dashboard'); }, 500);
+  } catch (err) {
+    const msgs = {
+      'auth/invalid-credential':    'Incorrect email or password.',
+      'auth/user-not-found':        'No admin account found. Create it in Firebase Auth first.',
+      'auth/wrong-password':        'Incorrect password.',
+      'auth/invalid-email':         'Invalid email address.',
+      'auth/too-many-requests':     'Too many attempts. Try again later.',
+      'auth/network-request-failed':'Network error. Check internet connection.',
+    };
+    console.error('Admin login error:', err.code, err.message);
+    errEl.textContent = msgs[err.code] || err.message;
+    errEl.style.display = 'block';
+  }
+}
+
+// ── Handle Enter key on admin login form ──
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const activePage = document.querySelector('.page.active');
+    if (activePage && activePage.id === 'pg-admin-login') doAdminLogin();
+    if (activePage && activePage.id === 'pg-login') doLogin();
+    if (activePage && activePage.id === 'pg-signup') doSignup();
+  }
+});
 function sTo(id) {
   const el = document.getElementById(id);
   if (el) el.scrollIntoView({ behavior:'smooth' });
@@ -2153,12 +2428,10 @@ document.querySelectorAll('.l-tab').forEach(btn => {
 });
 
 // ══════════════════════════════
-//  SCROLL REVEAL
+//  SCROLL REVEAL — instant on load
 // ══════════════════════════════
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.l-pcard,.l-step,.l-feat-card,.l-for-card').forEach(el => revealObs.observe(el));
+// Elements are always visible; add .visible class immediately for any hover states
+document.querySelectorAll('.l-pcard,.l-step,.l-feat-card,.l-for-card').forEach(el => el.classList.add('visible'));
 
 // ══════════════════════════════
 //  AUTH
@@ -2170,125 +2443,270 @@ function pickRole(role) {
   document.getElementById('su-founder-extra').style.display = role === 'founder' ? 'block' : 'none';
   document.getElementById('su-creator-extra').style.display = role === 'creator' ? 'block' : 'none';
 }
-function doSignup() {
-  const name = document.getElementById('su-name').value.trim();
-  const email = document.getElementById('su-email').value.trim();
-  const pass = document.getElementById('su-pass').value;
+
+// ── Set loading state on button ──
+function setAuthBtn(btnId, loading, text) {
+  const btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = loading;
+  btn.textContent = loading ? '...' : text;
+  btn.style.opacity = loading ? '0.7' : '1';
+}
+
+// ── SIGN UP ──────────────────────────────────────────────────────
+// Step 1: Create account → Step 2: Pick plan → Step 3: Dashboard
+async function doSignup() {
+  const name      = document.getElementById('su-name').value.trim();
+  const email     = document.getElementById('su-email').value.trim();
+  const pass      = document.getElementById('su-pass').value;
+  const whatsapp  = document.getElementById('su-whatsapp').value.trim();
+
   if (!name || !email || !pass) { showToast('Please fill all required fields', 'error'); return; }
-  S.user = {
-    name, email, role: S.selectedRole, plan: 'free', avatar: name[0].toUpperCase(),
-    startup: document.getElementById('su-startup')?.value || '',
-    industry: document.getElementById('su-industry')?.value || '',
-    budget: document.getElementById('su-budget')?.value || '',
-    niche: document.getElementById('su-niche')?.value || '',
-    platform: document.getElementById('su-platform')?.value || '',
-    audience: document.getElementById('su-audience')?.value || '',
-    bio: '', website: '', whatsapp: '',
-  };
-  S.collabsUsed = 0;
-  showToast('Account created! Welcome to PostHire ✦', 'success');
-  setTimeout(() => goTo('dashboard'), 700);
+  if (pass.length < 6)          { showToast('Password must be at least 6 characters', 'error'); return; }
+  if (!whatsapp || whatsapp.length < 10) { showToast('Please enter a valid 10-digit WhatsApp number', 'error'); return; }
+
+  const btn = document.querySelector('#pg-signup .auth-submit-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating account...'; btn.style.opacity = '0.7'; }
+
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    const isAdmin = (email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+
+    // Build profile — plan will be set on plan-pick page
+    const profile = {
+      name, email, whatsapp,
+      role:     S.selectedRole,
+      plan:     'free',             // default, user picks next
+      avatar:   name[0].toUpperCase(),
+      startup:  document.getElementById('su-startup')?.value  || '',
+      industry: document.getElementById('su-industry')?.value || '',
+      budget:   document.getElementById('su-budget')?.value   || '',
+      niche:    document.getElementById('su-niche')?.value    || '',
+      platform: document.getElementById('su-platform')?.value || '',
+      audience: document.getElementById('su-audience')?.value || '',
+      bio: '', website: '',
+      collabsUsed: 0,
+      isAdmin,
+      uid: cred.user.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+
+    await fbSaveUser(cred.user.uid, profile);
+    S.user = profile;
+    S.collabsUsed = 0;
+
+    showToast('Account created! Now choose your plan ✦', 'success');
+
+    // ✅ Go to plan selection — NOT dashboard directly
+    setTimeout(() => {
+      showPlanPicker();
+    }, 600);
+
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Create Account →'; btn.style.opacity = '1'; }
+    const msgs = {
+      'auth/email-already-in-use': 'That email is already registered. Try logging in.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/weak-password':        'Password must be at least 6 characters.',
+      'auth/network-request-failed': 'Network error. Check your internet connection.',
+      'auth/too-many-requests':    'Too many attempts. Please try again later.',
+    };
+    showToast(msgs[err.code] || ('Error: ' + err.message), 'error');
+  }
 }
-function doLogin() {
-  const email = document.getElementById('li-email').value.trim();
-  const pass = document.getElementById('li-pass').value;
-  if (!email || !pass) { showToast('Please enter your credentials', 'error'); return; }
-  S.user = { name:'Rahul Sharma', email, role:'founder', plan:'free', avatar:'R', startup:'RocketSaaS', industry:'SaaS', budget:'₹20K–₹50K', niche:'', platform:'', audience:'', bio:'Building the future of SaaS in India.', website:'rocketsaas.io', whatsapp:'' };
-  S.collabsUsed = 1;
-  showToast('Welcome back ✦', 'success');
-  setTimeout(() => goTo('dashboard'), 600);
+
+// ── Show plan picker with user's role context ──────────────────
+function showPlanPicker() {
+  const badge = document.getElementById('pp-role-badge');
+  if (badge && S.user) {
+    badge.textContent = S.user.role === 'founder' ? '🚀 Startup Founder' : '🎥 Content Creator';
+  }
+  goTo('planpick');
 }
+
+// ── Plan selected → save to Firestore → go to dashboard ────────
+async function selectPlanAndContinue(plan) {
+  if (!S.user) { goTo('signup'); return; }
+
+  // Highlight selected card briefly
+  document.querySelectorAll('.pp-card').forEach(c => c.style.transform = '');
+  S.user.plan = plan;
+
+  try {
+    if (S.user.uid) {
+      await fbSaveUser(S.user.uid, { plan });
+    }
+  } catch(e) { console.error('Plan save error:', e); }
+
+  const planNames = { free: 'Free Plan', starter: 'Starter Plan', pro: 'Pro Plan' };
+  showToast('Welcome to PostHire on ' + planNames[plan] + ' ✦', 'success');
+  setTimeout(() => goTo('dashboard'), 500);
+}
+
+// ── LOG IN ───────────────────────────────────────────────────────
+async function doLogin() {
+  const email    = document.getElementById('li-email').value.trim();
+  const pass     = document.getElementById('li-pass').value;
+  const whatsapp = document.getElementById('li-whatsapp')?.value.trim() || '';
+
+  if (!email || !pass) { showToast('Please enter your email and password', 'error'); return; }
+
+  // Find and disable the sign-in button safely
+  let btn = null;
+  try { btn = document.querySelector('#pg-login .auth-submit-btn'); } catch(e) {}
+  if (btn) { btn.disabled = true; btn.textContent = 'Signing in...'; btn.style.opacity = '0.7'; }
+  console.log('doLogin called with email:', email ? email.substring(0,3)+'***' : 'empty');
+
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    const profile = await fbLoadUser(cred.user.uid);
+
+    if (!profile) {
+      showToast('Account not found. Please sign up first.', 'error');
+      await auth.signOut();
+      if (btn) { btn.disabled = false; btn.textContent = 'Sign In →'; btn.style.opacity = '1'; }
+      return;
+    }
+
+    // Update whatsapp if user provides it at login
+    if (whatsapp && whatsapp.length >= 10 && whatsapp !== profile.whatsapp) {
+      profile.whatsapp = whatsapp;
+      await fbSaveUser(cred.user.uid, { whatsapp });
+    }
+
+    // Ensure admin flag is correct
+    const isAdmin = (email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+    if (profile.isAdmin !== isAdmin) {
+      await fbSaveUser(cred.user.uid, { isAdmin });
+      profile.isAdmin = isAdmin;
+    }
+
+    S.user = profile;
+    S.collabsUsed = profile.collabsUsed || 0;
+    showToast('Welcome back, ' + profile.name.split(' ')[0] + ' ✦', 'success');
+    setTimeout(() => goTo('dashboard'), 600);
+
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In →'; btn.style.opacity = '1'; }
+    // Firebase SDK v9+ uses auth/invalid-credential for wrong email/pass
+    const msgs = {
+      'auth/invalid-credential':   'Incorrect email or password. Please try again.',
+      'auth/user-not-found':       'No account found with this email. Please sign up.',
+      'auth/wrong-password':       'Incorrect password. Please try again.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/user-disabled':        'This account has been disabled. Contact support.',
+      'auth/too-many-requests':    'Too many failed attempts. Please wait and try again.',
+      'auth/network-request-failed':'Network error. Check your internet connection.',
+    };
+    showToast(msgs[err.code] || ('Login failed: ' + err.message), 'error');
+    console.error('Login error:', err.code, err.message);
+  }
+}
+
+// ── DEMO LOGIN (stub — uses local state, no Firebase) ────────────
 function demoLogin(role) {
   if (role === 'founder') {
-    S.user = { name:'Priya Mehta', email:'priya@demo.com', role:'founder', plan:'free', avatar:'P', startup:'GrowthLabs', industry:'D2C', budget:'₹5K–₹20K', niche:'', platform:'', audience:'', bio:'D2C founder building a skincare brand from scratch.', website:'growthlabs.in', whatsapp:'' };
+    S.user = { name:'Demo Founder', email:'demo@founder.com', role:'founder', plan:'starter', avatar:'D',
+      startup:'DemoStartup', industry:'SaaS', budget:'₹20K–₹50K', niche:'', platform:'', audience:'',
+      bio:'Demo founder account.', website:'', whatsapp:'9999999999', collabsUsed:1, isAdmin:false };
     S.collabsUsed = 1;
   } else {
-    S.user = { name:'Arjun Mehra', email:'arjun@demo.com', role:'creator', plan:'starter', avatar:'A', startup:'', industry:'', budget:'', niche:'AI & Tech', platform:'YouTube', audience:'200K+', bio:'Building audiences in the AI & tech space for 3 years.', website:'arjunmehra.in', whatsapp:'9876543210' };
-    S.collabsUsed = 5;
+    S.user = { name:'Demo Creator', email:'demo@creator.com', role:'creator', plan:'free', avatar:'D',
+      startup:'', industry:'', budget:'', niche:'AI & Tech', platform:'YouTube', audience:'50K–200K',
+      bio:'Demo creator account.', website:'', whatsapp:'9999999998', collabsUsed:0, isAdmin:false };
+    S.collabsUsed = 0;
   }
-  showToast('Demo login — welcome! ✦', 'success');
-  setTimeout(() => goTo('dashboard'), 600);
+  showToast('Demo login ✦', 'success');
+  setTimeout(() => goTo('dashboard'), 500);
 }
-function doLogout() {
+
+// ── LOGOUT ───────────────────────────────────────────────────────
+async function doLogout() {
+  try { await auth.signOut(); } catch(e) { console.error(e); }
   showToast('Signed out. See you soon!');
-  S.user = null;
+  S.user = null; S.collabsUsed = 0;
   goTo('landing');
 }
 
+// ── Admin logout goes back to admin login page ──
+async function doAdminLogout() {
+  try { await auth.signOut(); } catch(e) { console.error(e); }
+  showToast('Admin signed out.');
+  S.user = null; S.collabsUsed = 0;
+  goTo('admin-login');
+}
+
 // ══════════════════════════════
-//  DASHBOARD
+//  DASHBOARD RENDER
 // ══════════════════════════════
 function renderDash() {
   const u = S.user; if (!u) return;
-  const plan = PLANS[u.plan];
+  const plan = PLANS[u.plan] || PLANS.free;
   // Sidebar user
-  document.getElementById('d-av').textContent = u.avatar;
+  document.getElementById('d-av').textContent = u.avatar || u.name[0];
   document.getElementById('d-name').textContent = u.name;
-  document.getElementById('d-role').textContent = u.role === 'founder' ? 'Startup Founder' : 'Content Creator';
+  document.getElementById('d-role').textContent = u.isAdmin ? '🛡️ Admin' : (u.role === 'founder' ? 'Startup Founder' : 'Content Creator');
   const pb = document.getElementById('d-plan-badge');
-  pb.textContent = plan.name; pb.className = 'd-user-plan ' + plan.badge;
+  pb.textContent = u.isAdmin ? 'Admin' : plan.name; pb.className = 'd-user-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
   // Topbar
   const tbp = document.getElementById('d-tb-plan');
-  tbp.textContent = plan.name; tbp.className = 'd-topbar-plan ' + plan.badge;
-  document.getElementById('d-tb-av').textContent = u.avatar;
+  tbp.textContent = u.isAdmin ? 'Admin' : plan.name; tbp.className = 'd-topbar-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
+  document.getElementById('d-tb-av').textContent = u.avatar || u.name[0];
+  // Show/hide admin nav
+  const adminNav = document.getElementById('admin-nav-item');
+  if (adminNav) adminNav.style.display = u.isAdmin ? 'flex' : 'none';
   // Nav
-  document.getElementById('fn-nav').style.display = u.role === 'founder' ? 'block' : 'none';
-  document.getElementById('cr-nav').style.display = u.role === 'creator' ? 'block' : 'none';
+  document.getElementById('fn-nav').style.display = (u.role === 'founder' || u.isAdmin) ? 'block' : 'none';
+  document.getElementById('cr-nav').style.display = (u.role === 'creator' && !u.isAdmin) ? 'block' : 'none';
   // Upgrade banner
-  document.getElementById('d-ub').style.display = u.plan === 'free' ? 'flex' : 'none';
+  document.getElementById('d-ub').style.display = (u.plan === 'free' && !u.isAdmin) ? 'flex' : 'none';
   const promo = document.getElementById('d-sb-promo');
-  if(promo) promo.style.display = u.plan === 'pro' ? 'none' : 'block';
+  if (promo) promo.style.display = (u.plan === 'pro' || u.isAdmin) ? 'none' : 'block';
   // Welcome
-  const greet = new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('d-welcome').textContent = `${greet}, ${u.name.split(' ')[0]}`;
-  document.getElementById('d-subtitle').textContent = u.role === 'founder'
-    ? 'Find and collaborate with top creators for your startup.'
-    : 'Your profile is live. Founders are discovering you.';
+  const hr = new Date().getHours();
+  const greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('d-welcome').textContent = `${greet}, ${u.name.split(' ')[0]} ${u.isAdmin ? '🛡️' : '✦'}`;
+  document.getElementById('d-subtitle').textContent = u.isAdmin
+    ? 'Full admin access — manage users, collaborations and approvals.'
+    : (u.role === 'founder' ? 'Find and collaborate with top creators for your startup.' : 'Your profile is live. Founders are discovering you.');
   renderStats(); renderQuick(); renderActivity(); renderPlanOverview();
-  renderCreators(); renderProfile(); renderPricing();
+  loadCreatorsFromFirestore(); renderProfile(); renderPricing();
+  if (u.role === 'creator' || u.isAdmin) loadMyCollabs();
+  if (u.isAdmin) { loadAdminData(); }
   showView('home');
 }
 
+// ══════════════════════════════
+//  STATS (real collabs from state)
+// ══════════════════════════════
 function renderStats() {
   const u = S.user;
-  const plan = PLANS[u.plan];
-  const cl = plan.collabs === -1 ? '∞' : plan.collabs;
+  const plan = PLANS[u.plan] || PLANS.free;
+  const cl  = plan.collabs === -1 ? '∞' : plan.collabs;
   const rem = plan.collabs === -1 ? '∞' : Math.max(0, plan.collabs - S.collabsUsed);
   let html = '';
-  if (u.role === 'founder') {
+  if (u.role === 'founder' || u.isAdmin) {
     html = `
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#eff6ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
-          <span class="d-stat-card-trend trend-up">↑ Live</span>
-        </div>
-        <div class="d-stat-card-val">${CREATORS.length}</div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#eff6ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><span class="d-stat-card-trend trend-up">↑ Live</span></div>
+        <div class="d-stat-card-val" id="stat-creators-count">—</div>
         <div class="d-stat-card-lbl">Creators Available</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div>
       </div>
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <span class="d-stat-card-trend trend-neu">${S.collabsUsed}/${cl}</span>
-        </div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="d-stat-card-trend trend-neu">${S.collabsUsed}/${cl}</span></div>
         <div class="d-stat-card-val">${S.collabsUsed}</div>
         <div class="d-stat-card-lbl">Collabs This Month</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div>
       </div>
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fdf4ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>
-          <span class="d-stat-card-trend trend-neu">Active</span>
-        </div>
-        <div class="d-stat-card-val" style="font-size:18px;padding-top:4px;">${plan.name.replace(' Plan','')}</div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fdf4ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg></div><span class="d-stat-card-trend trend-neu">Active</span></div>
+        <div class="d-stat-card-val" style="font-size:18px;padding-top:4px;">${u.isAdmin ? 'Admin' : plan.name.replace(' Plan','')}</div>
         <div class="d-stat-card-lbl">Current Plan</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div>
       </div>
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fff7ed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <span class="d-stat-card-trend trend-up">Remaining</span>
-        </div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fff7ed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><span class="d-stat-card-trend trend-up">Remaining</span></div>
         <div class="d-stat-card-val">${rem}</div>
         <div class="d-stat-card-lbl">Collabs Left</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div>
@@ -2296,306 +2714,556 @@ function renderStats() {
   } else {
     html = `
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#eff6ff;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <span class="d-stat-card-trend trend-up">↑ 12%</span>
-        </div>
-        <div class="d-stat-card-val">124</div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#eff6ff;"></div><span class="d-stat-card-trend trend-up">↑ 12%</span></div>
+        <div class="d-stat-card-val" id="stat-profile-views">0</div>
         <div class="d-stat-card-lbl">Profile Views</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div>
       </div>
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <span class="d-stat-card-trend trend-up">↑ 3 new</span>
-        </div>
-        <div class="d-stat-card-val">7</div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#f0fdf4;"></div><span class="d-stat-card-trend trend-up">Received</span></div>
+        <div class="d-stat-card-val" id="stat-collab-requests">0</div>
         <div class="d-stat-card-lbl">Collab Requests</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div>
       </div>
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fdf4ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>
-          <span class="d-stat-card-trend trend-neu">Active</span>
-        </div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fdf4ff;"></div><span class="d-stat-card-trend trend-neu">Active</span></div>
         <div class="d-stat-card-val" style="font-size:18px;padding-top:4px;">${plan.name.replace(' Plan','')}</div>
         <div class="d-stat-card-lbl">Current Plan</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div>
       </div>
       <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fff7ed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-          <span class="d-stat-card-trend trend-up">Top</span>
-        </div>
-        <div class="d-stat-card-val">4.8</div>
+        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fff7ed;"></div><span class="d-stat-card-trend trend-up">Top</span></div>
+        <div class="d-stat-card-val">—</div>
         <div class="d-stat-card-lbl">Avg. Rating</div>
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div>
       </div>`;
+    // Load real collab count for creators
+    db.collection('collaborations').where('creatorId','==',S.user.uid).get().then(snap => {
+      const el = document.getElementById('stat-collab-requests');
+      if (el) el.textContent = snap.size;
+    }).catch(() => {});
   }
   document.getElementById('d-stats').innerHTML = html;
 }
 
+// ══════════════════════════════
+//  QUICK ACTIONS
+// ══════════════════════════════
 function renderQuick() {
   const u = S.user;
   let html = '';
-  if (u.role === 'founder') {
-    html = `
-      <div class="d-quick-card" onclick="showView('discover')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><div><div class="d-qc-label">Browse Creators</div><div class="d-qc-desc">Find your perfect match</div></div></div>
-      <div class="d-quick-card" onclick="showView('profile')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Update your startup info</div></div></div>
-      <div class="d-quick-card" onclick="showView('pricing')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Unlock more features</div></div></div>`;
+  if (u.role === 'founder' || u.isAdmin) {
+    const thirdCard = u.isAdmin
+      ? '<div class="d-quick-card" onclick="showView(\'admin\')"><div class="d-qc-icon" style="font-size:20px;">🛡️</div><div><div class="d-qc-label">Admin Panel</div><div class="d-qc-desc">Manage users & collabs</div></div></div>'
+      : '<div class="d-quick-card" onclick="showView(\'pricing\')"><div class="d-qc-icon" style="font-size:20px;">⭐</div><div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Unlock more features</div></div></div>';
+    html = ''
+      + '<div class="d-quick-card" onclick="showView(\'discover\')">'
+      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>'
+      +   '<div><div class="d-qc-label">Browse Creators</div><div class="d-qc-desc">Find your perfect match</div></div>'
+      + '</div>'
+      + '<div class="d-quick-card" onclick="showView(\'profile\')">'
+      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>'
+      +   '<div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Update your startup info</div></div>'
+      + '</div>'
+      + thirdCard;
   } else {
-    html = `
-      <div class="d-quick-card" onclick="showView('profile')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Keep your profile fresh</div></div></div>
-      <div class="d-quick-card" onclick="showView('collabs')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="d-qc-label">Collaborations</div><div class="d-qc-desc">Track your requests</div></div></div>
-      <div class="d-quick-card" onclick="showView('pricing')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div><div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Get featured & more</div></div></div>`;
+    html = ''
+      + '<div class="d-quick-card" onclick="showView(\'profile\')">'
+      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>'
+      +   '<div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Keep your profile fresh</div></div>'
+      + '</div>'
+      + '<div class="d-quick-card" onclick="showView(\'collabs\')">'
+      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>'
+      +   '<div><div class="d-qc-label">Collaborations</div><div class="d-qc-desc">Track your requests</div></div>'
+      + '</div>'
+      + '<div class="d-quick-card" onclick="showView(\'pricing\')">'
+      +   '<div class="d-qc-icon" style="font-size:20px;">⭐</div>'
+      +   '<div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Get featured & more</div></div>'
+      + '</div>';
   }
   document.getElementById('d-quick').innerHTML = html;
 }
+function renderActivity() {
+  const u = S.user;
+  db.collection('collaborations')
+    .where(u.role === 'founder' || u.isAdmin ? 'founderId' : 'creatorId', '==', u.uid)
+    .orderBy('createdAt', 'desc').limit(5).get()
+    .then(snap => {
+      let html = '';
+      if (snap.empty) {
+        html = '<div style="padding:24px;text-align:center;color:var(--t-dim);font-size:14px;">No recent activity yet.</div>';
+      } else {
+        snap.forEach(doc => {
+          const d = doc.data();
+          const timeStr = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : 'Recently';
+          html += `<div class="d-activity-item"><div class="d-act-icon" style="background:#eff6ff;">🤝</div><div class="d-act-body"><div class="d-act-text">Collaboration request with <strong>${u.role==='founder'||u.isAdmin ? d.creatorName : d.founderName}</strong></div><span class="d-act-time">${timeStr}</span></div></div>`;
+        });
+      }
+      const el = document.getElementById('d-activity');
+      if (el) el.innerHTML = html;
+    }).catch(() => {
+      const el = document.getElementById('d-activity');
+      if (el) el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--t-dim);font-size:14px;">No recent activity yet.</div>';
+    });
+}
 
+// ══════════════════════════════
+//  PLAN OVERVIEW
+// ══════════════════════════════
 function renderPlanOverview() {
   const u = S.user;
-  const plan = PLANS[u.plan];
+  const plan = PLANS[u.plan] || PLANS.free;
   const used = S.collabsUsed;
   const total = plan.collabs === -1 ? 999 : plan.collabs;
   const pct = plan.collabs === -1 ? 100 : Math.min(100, Math.round((used / total) * 100));
   const el = document.getElementById('d-plan-overview');
   if (!el) return;
-  el.innerHTML = `
-    <div class="d-mini-row">
-      <span class="d-mini-label">Current Plan</span>
-      <span class="d-mini-val">${plan.name}</span>
-    </div>
-    <div class="d-mini-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
-      <div style="display:flex;justify-content:space-between;width:100%;">
-        <span class="d-mini-label">Collabs Used</span>
-        <span class="d-mini-val">${used} / ${plan.collabs === -1 ? '∞' : plan.collabs}</span>
-      </div>
-      <div class="d-mini-bar-wrap" style="width:100%;">
-        <div class="d-mini-bar" style="width:${pct}%"></div>
-      </div>
-    </div>
-    <div class="d-mini-row">
-      <span class="d-mini-label">Profile Views (7d)</span>
-      <span class="d-mini-val">124</span>
-    </div>
-    <div class="d-mini-row">
-      <span class="d-mini-label">Next Billing</span>
-      <span class="d-mini-val">${u.plan === 'free' ? 'Free forever' : 'Apr 14, 2025'}</span>
-    </div>
-    ${u.plan === 'free' ? `<div style="padding:14px 20px;"><button onclick="showView('pricing')" style="width:100%;padding:10px;background:#0f1117;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#3b6ef0'" onmouseout="this.style.background='#0f1117'">Upgrade Plan →</button></div>` : ''}
-  `;
-}
-
-function renderActivity() {
-  const u = S.user;
-  let html = '';
-  if (u.role === 'founder') {
-    html = `
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#eff6ff;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="d-act-body"><div class="d-act-text">You viewed <strong>Arjun Mehra's</strong> profile</div><span class="d-act-time">2 hours ago</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="d-act-body"><div class="d-act-text">Collab request sent to <strong>Priya Kapoor</strong></div><span class="d-act-time">Yesterday</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#fff7ed;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="d-act-body"><div class="d-act-text">Profile created and published on PostHire</div><span class="d-act-time">2 days ago</span></div></div>`;
-  } else {
-    html = `
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="d-act-body"><div class="d-act-text"><strong>GrowthLabs</strong> sent you a collaboration request</div><span class="d-act-time">3 hours ago</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#eff6ff;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="d-act-body"><div class="d-act-text">Your profile was viewed by <strong>5 founders</strong> today</div><span class="d-act-time">6 hours ago</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#fff7ed;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="d-act-body"><div class="d-act-text">Your profile went live on PostHire</div><span class="d-act-time">3 days ago</span></div></div>`;
+  let upgradeBtn = '';
+  if (!u.isAdmin && u.plan === 'free') {
+    upgradeBtn = '<div style="padding:14px 20px;">'
+      + '<button onclick="showView(\'pricing\')" '
+      + 'style="width:100%;padding:10px;background:#3b6ef0;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">'
+      + 'Upgrade Plan →</button></div>';
   }
-  document.getElementById('d-activity').innerHTML = html;
+  el.innerHTML = ''
+    + '<div class="d-mini-row"><span class="d-mini-label">Current Plan</span>'
+    + '<span class="d-mini-val">' + (u.isAdmin ? 'Admin' : plan.name) + '</span></div>'
+    + '<div class="d-mini-row" style="flex-direction:column;align-items:flex-start;gap:6px;">'
+    +   '<div style="display:flex;justify-content:space-between;width:100%;">'
+    +     '<span class="d-mini-label">Collabs Used</span>'
+    +     '<span class="d-mini-val">' + used + ' / ' + (plan.collabs === -1 ? '∞' : plan.collabs) + '</span>'
+    +   '</div>'
+    +   '<div class="d-mini-bar-wrap" style="width:100%;"><div class="d-mini-bar" style="width:' + pct + '%"></div></div>'
+    + '</div>'
+    + '<div class="d-mini-row"><span class="d-mini-label">WhatsApp</span>'
+    + '<span class="d-mini-val">' + (u.whatsapp || 'Not set') + '</span></div>'
+    + upgradeBtn;
 }
-
 function renderCreators(list) {
-  list = list || CREATORS;
+  _allCreators = list || [];
+  _renderCreatorCards(_allCreators);
+}
+function _renderCreatorCards(list) {
+  const grid = document.getElementById('d-creator-grid');
+  if (!grid) return;
   const u = S.user;
-  const plan = PLANS[u.plan];
-  const lim = plan.browseLimit;
-  const show = lim > 0 ? list.slice(0, lim) : list;
-
-  // Banner
-  const banner = document.getElementById('d-discover-banner');
-  if (lim > 0 && list.length > lim) {
-    banner.innerHTML = `<div class="d-upgrade-banner" style="margin-bottom:20px;"><div class="d-ub-text"><h4>Showing ${lim} of ${list.length} Creators</h4><p>Upgrade to Starter or Pro to browse all creators unlimitedly.</p></div><button class="d-ub-btn" onclick="showView('pricing')">Upgrade Now →</button></div>`;
-  } else { banner.innerHTML = ''; }
-
-  const ctr = document.getElementById('d-collab-ctr');
-  const clPlan = PLANS[u.plan];
-  ctr.textContent = `${S.collabsUsed} of ${clPlan.collabs === -1 ? '∞' : clPlan.collabs} collaboration requests used this month.`;
-
-  document.getElementById('d-creator-grid').innerHTML = show.length
-    ? show.map(c => `
+  const plan = PLANS[u.plan] || PLANS.free;
+  if (list.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t-dim);"><div style="font-size:40px;margin-bottom:16px;">👀</div><div style="font-size:16px;font-weight:600;color:var(--t-secondary);margin-bottom:8px;">No creators yet</div><div style="font-size:13px;">Creators who sign up will appear here.</div></div>';
+    return;
+  }
+  grid.innerHTML = list.map(c => {
+    const av = c.avatar || (c.name ? c.name[0].toUpperCase() : '?');
+    const tags = [c.niche, c.platform, c.audience].filter(Boolean);
+    const canCollab = u.isAdmin || plan.collabs === -1 || S.collabsUsed < plan.collabs;
+    return `
       <div class="d-creator-card">
         <div class="d-cc-top">
-          <div class="d-cc-av" style="background:linear-gradient(135deg,${c.grad})">${c.initials}</div>
+          <div class="d-cc-av" style="background:linear-gradient(135deg,#3b6ef0,#8b5cf6);">${av}</div>
           <div class="d-cc-info">
             <div class="d-cc-name">${c.name}</div>
-            <div class="d-cc-niche">${c.niche}</div>
-            <div class="d-cc-platform">${c.platform}</div>
+            <div class="d-cc-niche">${c.niche || 'Creator'} · ${c.platform || 'Social'}</div>
           </div>
         </div>
-        <div class="d-cc-stats">
-          <div class="d-cc-stat"><span class="d-cc-stat-val">${c.audience}</span><span class="d-cc-stat-lbl">Audience</span></div>
-          <div class="d-cc-stat"><span class="d-cc-stat-val">${c.eng}</span><span class="d-cc-stat-lbl">Engagement</span></div>
-          <div class="d-cc-stat"><span class="d-cc-stat-val">${c.collabs}</span><span class="d-cc-stat-lbl">Collabs</span></div>
-        </div>
-        <div class="d-cc-body">
-          <div class="d-cc-bio">${c.bio}</div>
-          <div class="d-cc-tags">${c.tags.map(t=>`<span class="d-cc-tag">${t}</span>`).join('')}</div>
-        </div>
+        <p class="d-cc-bio">${c.bio || 'No bio yet.'}</p>
+        <div class="d-cc-tags">${tags.map(t=>`<span class="d-cc-tag">${t}</span>`).join('')}</div>
         <div class="d-cc-footer">
-          <button class="d-btn-collab" onclick="collaborate(${c.id})">Collaborate →</button>
-          <button class="d-btn-view" onclick="viewCreator(${c.id})">View</button>
+          <div style="font-size:12px;color:var(--t-dim);">Audience: ${c.audience || '—'}</div>
+          ${canCollab
+            ? `<button class="d-cc-btn" onclick="requestCollab('${c.uid}','${c.name.replace(/'/g,'')}','${c.whatsapp||''}')">Collaborate →</button>`
+            : `<button class="d-cc-btn" style="opacity:0.5;cursor:default;" onclick="showView('pricing')">Upgrade to Collab</button>`}
         </div>
-      </div>`).join('')
-    : `<div class="d-empty" style="grid-column:1/-1"><div class="d-empty-icon">🔍</div><div class="d-empty-text">No creators found matching your filters.</div></div>`;
+      </div>`;
+  }).join('');
 }
 
 function filterCreators() {
   const s = document.getElementById('d-search').value.toLowerCase();
   const n = document.getElementById('f-niche').value;
   const a = document.getElementById('f-aud').value;
-  const filtered = CREATORS.filter(c =>
-    (!s || c.name.toLowerCase().includes(s) || c.niche.toLowerCase().includes(s) || c.bio.toLowerCase().includes(s)) &&
+  const filtered = _allCreators.filter(c =>
+    (!s || (c.name||'').toLowerCase().includes(s) || (c.niche||'').toLowerCase().includes(s) || (c.bio||'').toLowerCase().includes(s)) &&
     (!n || c.niche === n) && (!a || c.audience === a)
   );
-  renderCreators(filtered);
+  _renderCreatorCards(filtered);
 }
 
-function collaborate(id) {
-  const u = S.user; const plan = PLANS[u.plan];
-  if (plan.collabs !== -1 && S.collabsUsed >= plan.collabs) {
-    openModal('Collaboration Limit Reached',
-      `You've used all ${plan.collabs} collaboration requests on your ${plan.name}. Upgrade to send more.`,
-      () => { showView('pricing'); closeModal(); }, 'Upgrade Plan');
+// ══════════════════════════════
+//  COLLABORATION REQUEST FLOW
+// ══════════════════════════════
+async function requestCollab(creatorId, creatorName, creatorWa) {
+  if (!S.user.whatsapp) {
+    showToast('Please add your WhatsApp number in your profile first.', 'error');
+    showView('profile');
     return;
   }
-  const c = CREATORS.find(x => x.id === id);
-  openModal(`Collaborate with ${c.name}`,
-    `Opening WhatsApp with <strong>${c.name}</strong>. A pre-filled message will be ready. This counts as 1 collaboration request.`,
-    () => {
-      S.collabsUsed++;
-      renderStats();
-      const msg = encodeURIComponent('Hi, I found you on PostHire. I would like to collaborate.');
-      window.open(`https://wa.me/${c.wa}?text=${msg}`, '_blank');
-      showToast(`Opening WhatsApp with ${c.name} ✦`, 'success');
-      closeModal();
-    }, 'Open WhatsApp →');
+  openModal(
+    `Collaborate with ${creatorName}`,
+    `<p style="margin-bottom:10px;">This will send a collaboration request to <strong>${creatorName}</strong>. The admin will review and approve before WhatsApp details are shared.</p><p style="font-size:12px;color:var(--t-dim);">Your request counts as 1 collaboration slot.</p>`,
+    async () => {
+      try {
+        const u = S.user;
+        const plan = PLANS[u.plan] || PLANS.free;
+        if (!u.isAdmin && plan.collabs !== -1 && S.collabsUsed >= plan.collabs) {
+          showToast('Collaboration limit reached. Please upgrade.', 'error');
+          closeModal();
+          showView('pricing');
+          return;
+        }
+        // Save collab request to Firestore (status: pending — admin must approve)
+        await db.collection('collaborations').add({
+          founderId:    u.uid,
+          founderName:  u.name,
+          founderWa:    u.whatsapp,
+          founderEmail: u.email,
+          creatorId,
+          creatorName,
+          creatorWa,
+          status:      u.isAdmin ? 'approved' : 'pending',
+          createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        S.collabsUsed++;
+        await fbSaveUser(u.uid, { collabsUsed: S.collabsUsed });
+        renderStats();
+        closeModal();
+        if (u.isAdmin) {
+          // Admin bypasses approval — open WhatsApp directly
+          const msg = encodeURIComponent('Hi, I found you on PostHire. I would like to collaborate with you.');
+          window.open('https://wa.me/' + creatorWa + '?text=' + msg, '_blank');
+          showToast('Admin collab — WhatsApp opened directly ✦', 'success');
+        } else {
+          showToast('Request sent! Admin will review and connect you soon ✦', 'success');
+        }
+      } catch(e) {
+        showToast('Error sending request. Please try again.', 'error');
+      }
+    },
+    S.user.isAdmin ? 'Connect via WhatsApp →' : 'Send Request →'
+  );
 }
 
-function viewCreator(id) {
-  const c = CREATORS.find(x => x.id === id);
-  openModal(c.name,
-    `<strong>Niche:</strong> ${c.niche} &nbsp;·&nbsp; <strong>Platform:</strong> ${c.platform}<br><strong>Audience:</strong> ${c.audience} &nbsp;·&nbsp; <strong>Engagement:</strong> ${c.eng}<br><strong>Pricing:</strong> ${c.pricing} &nbsp;·&nbsp; <strong>Past Collabs:</strong> ${c.collabs}<br><br>${c.bio}`,
-    () => { collaborate(id); closeModal(); }, 'Collaborate →');
+// ══════════════════════════════
+//  MY COLLABS (creator view)
+// ══════════════════════════════
+async function loadMyCollabs() {
+  const el = document.getElementById('my-collabs-list');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t-dim);">Loading...</div>';
+  try {
+    const u = S.user;
+    const field = (u.role === 'creator') ? 'creatorId' : 'founderId';
+    const snap = await db.collection('collaborations').where(field,'==',u.uid).orderBy('createdAt','desc').get();
+    if (snap.empty) {
+      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">No collaboration requests yet.</div>';
+      return;
+    }
+    let html = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const timeStr = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'Recently';
+      const statusColor = d.status === 'approved' ? '#10b981' : d.status === 'rejected' ? '#ef4444' : '#f59e0b';
+      const statusLabel = d.status === 'approved' ? 'Approved' : d.status === 'rejected' ? 'Rejected' : 'Pending';
+      const otherName = u.role === 'creator' ? d.founderName : d.creatorName;
+      const otherWa   = u.role === 'creator' ? d.founderWa  : d.creatorWa;
+      html += `
+        <div class="d-collab-item" style="flex-wrap:wrap;gap:10px;">
+          <div class="d-collab-av">${otherName ? otherName[0] : '?'}</div>
+          <div class="d-collab-info" style="flex:1;">
+            <div class="d-collab-name">${otherName || 'Unknown'}</div>
+            <div class="d-collab-desc">${u.role === 'creator' ? 'Founder wants to collaborate' : 'Creator collaboration request'}</div>
+          </div>
+          <span class="d-collab-badge" style="background:${statusColor}20;color:${statusColor};border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;">${statusLabel}</span>
+          <div class="d-collab-time">${timeStr}</div>
+          ${d.status === 'approved' && otherWa ? `<button onclick="window.open('https://wa.me/${otherWa}?text=${encodeURIComponent('Hi, connecting via PostHire!')}','_blank')" style="width:100%;padding:8px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px;">💬 Open WhatsApp</button>` : ''}
+        </div>`;
+    });
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t-dim);">Error loading collabs. Check Firestore index for "collaborations" collection (creatorId+createdAt and founderId+createdAt).</div>';
+  }
 }
 
+// ══════════════════════════════
+//  ADMIN DATA LOADING
+// ══════════════════════════════
+async function loadAdminData() {
+  loadAdminCollabs();
+  loadAdminUsers();
+  loadAdminStats();
+}
+
+async function loadAdminStats() {
+  try {
+    const [usersSnap, collabsSnap] = await Promise.all([
+      db.collection('users').get(),
+      db.collection('collaborations').get(),
+    ]);
+    const founders  = usersSnap.docs.filter(d => d.data().role === 'founder').length;
+    const creators  = usersSnap.docs.filter(d => d.data().role === 'creator').length;
+    const pending   = collabsSnap.docs.filter(d => d.data().status === 'pending').length;
+    const approved  = collabsSnap.docs.filter(d => d.data().status === 'approved').length;
+    const el = document.getElementById('admin-stats-row');
+    if (!el) return;
+    el.innerHTML = `
+      <div class="d-stat-card"><div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#eff6ff;">👥</div><span class="d-stat-card-trend trend-up">Total</span></div><div class="d-stat-card-val">${usersSnap.size}</div><div class="d-stat-card-lbl">Total Users</div><div class="d-stat-card-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div></div>
+      <div class="d-stat-card"><div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#f0fdf4;">🚀</div><span class="d-stat-card-trend trend-up">${founders}</span></div><div class="d-stat-card-val">${founders}</div><div class="d-stat-card-lbl">Founders</div><div class="d-stat-card-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div></div>
+      <div class="d-stat-card"><div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fdf4ff;">🎥</div><span class="d-stat-card-trend trend-up">${creators}</span></div><div class="d-stat-card-val">${creators}</div><div class="d-stat-card-lbl">Creators</div><div class="d-stat-card-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div></div>
+      <div class="d-stat-card"><div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fff7ed;">🤝</div><span class="d-stat-card-trend" style="color:#f59e0b;">${pending} pending</span></div><div class="d-stat-card-val">${collabsSnap.size}</div><div class="d-stat-card-lbl">Total Collabs</div><div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div></div>`;
+  } catch(e) { console.error('Admin stats error:', e); }
+}
+
+async function loadAdminCollabs() {
+  const el = document.getElementById('admin-collabs-list');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--t-dim);">Loading...</div>';
+  try {
+    const snap = await db.collection('collaborations').where('status','==','pending').orderBy('createdAt','desc').get();
+    if (snap.empty) {
+      el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t-dim);font-size:14px;">✅ No pending collaboration requests.</div>';
+      return;
+    }
+    let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const timeStr = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+      html += `
+        <div style="background:var(--surface-2);border:1px solid var(--l-border);border-radius:12px;padding:16px 20px;">
+          <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px;">
+            <div style="flex:1;min-width:200px;">
+              <div style="font-size:13px;font-weight:700;color:var(--t-primary);margin-bottom:4px;">🚀 ${d.founderName} → 🎥 ${d.creatorName}</div>
+              <div style="font-size:12px;color:var(--t-dim);">Requested on ${timeStr}</div>
+            </div>
+            <span style="background:#fef3c7;color:#d97706;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;">PENDING</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;font-size:12px;color:var(--t-secondary);">
+            <div>📱 Founder WA: <strong>${d.founderWa || 'N/A'}</strong></div>
+            <div>📱 Creator WA: <strong>${d.creatorWa || 'N/A'}</strong></div>
+            <div>📧 ${d.founderEmail || ''}</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button onclick="adminApproveCollab('${doc.id}','${d.founderWa||''}','${d.creatorWa||''}','${(d.founderName||'').replace(/'/g,'')}','${(d.creatorName||'').replace(/'/g,'')}',this)" style="flex:1;min-width:120px;padding:9px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Approve & Connect</button>
+            <button onclick="adminRejectCollab('${doc.id}',this)" style="flex:1;min-width:100px;padding:9px;background:transparent;color:#ef4444;border:1.5px solid #fecaca;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">❌ Reject</button>
+            ${d.founderWa ? `<button onclick="window.open('https://wa.me/${d.founderWa}?text=${encodeURIComponent('Hi, this is PostHire admin. We have reviewed your collaboration request.')}','_blank')" style="padding:9px 14px;background:transparent;color:#25d366;border:1.5px solid #25d366;border-radius:8px;font-size:12px;cursor:pointer;">💬 WA Founder</button>` : ''}
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = '<div style="padding:20px;color:#ef4444;font-size:13px;">Error loading collabs. Add Firestore composite index: collaborations → status + createdAt (desc).</div>';
+  }
+}
+
+async function adminApproveCollab(docId, founderWa, creatorWa, founderName, creatorName, btn) {
+  btn.textContent = 'Approving...'; btn.disabled = true;
+  try {
+    await db.collection('collaborations').doc(docId).update({ status: 'approved', approvedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    // Open WhatsApp for both parties
+    if (founderWa) window.open('https://wa.me/' + founderWa + '?text=' + encodeURIComponent('Hi ' + founderName + '! Your collaboration with ' + creatorName + ' has been approved on PostHire. Their WhatsApp: +91' + creatorWa), '_blank');
+    showToast('Collaboration approved! WhatsApp opened ✦', 'success');
+    loadAdminCollabs();
+    loadAdminStats();
+  } catch(e) {
+    showToast('Error approving. Try again.', 'error');
+    btn.textContent = '✅ Approve & Connect'; btn.disabled = false;
+  }
+}
+
+async function adminRejectCollab(docId, btn) {
+  btn.textContent = 'Rejecting...'; btn.disabled = true;
+  try {
+    await db.collection('collaborations').doc(docId).update({ status: 'rejected', rejectedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Collaboration rejected.', '');
+    loadAdminCollabs();
+    loadAdminStats();
+  } catch(e) {
+    showToast('Error rejecting. Try again.', 'error');
+    btn.textContent = '❌ Reject'; btn.disabled = false;
+  }
+}
+
+let _adminUsersCache = [];
+async function loadAdminUsers() {
+  const el = document.getElementById('admin-users-list');
+  if (!el) return;
+  try {
+    const snap = await db.collection('users').orderBy('createdAt','desc').get();
+    _adminUsersCache = snap.docs.map(d => d.data());
+    S.allUsersCache  = _adminUsersCache;
+    renderAdminUsers(_adminUsersCache);
+  } catch(e) {
+    if (el) el.innerHTML = '<div style="padding:20px;color:var(--t-dim);font-size:13px;">Loading users... (Add Firestore index on users → createdAt desc if needed)</div>';
+    // Fallback without ordering
+    db.collection('users').get().then(snap => {
+      _adminUsersCache = snap.docs.map(d => d.data());
+      renderAdminUsers(_adminUsersCache);
+    });
+  }
+}
+
+function filterAdminUsers() {
+  const q = (document.getElementById('admin-user-search')?.value || '').toLowerCase();
+  const filtered = _adminUsersCache.filter(u =>
+    (u.name||'').toLowerCase().includes(q) ||
+    (u.email||'').toLowerCase().includes(q) ||
+    (u.role||'').toLowerCase().includes(q)
+  );
+  renderAdminUsers(filtered);
+}
+
+function renderAdminUsers(list) {
+  const el = document.getElementById('admin-users-list');
+  if (!el) return;
+  if (list.length === 0) { el.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t-dim);">No users found.</div>'; return; }
+  el.innerHTML = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">' +
+    '<thead><tr style="border-bottom:1px solid var(--l-border);text-align:left;">' +
+    '<th style="padding:10px 12px;color:var(--t-dim);font-weight:600;">User</th>' +
+    '<th style="padding:10px 12px;color:var(--t-dim);font-weight:600;">Role</th>' +
+    '<th style="padding:10px 12px;color:var(--t-dim);font-weight:600;">WhatsApp</th>' +
+    '<th style="padding:10px 12px;color:var(--t-dim);font-weight:600;">Plan</th>' +
+    '<th style="padding:10px 12px;color:var(--t-dim);font-weight:600;">Collabs</th>' +
+    '<th style="padding:10px 12px;color:var(--t-dim);font-weight:600;">Actions</th>' +
+    '</tr></thead><tbody>' +
+    list.map(u => `
+      <tr style="border-bottom:1px solid var(--l-border2);">
+        <td style="padding:12px;"><div style="font-weight:600;color:var(--t-primary);">${u.name||'—'}</div><div style="font-size:11px;color:var(--t-dim);">${u.email||''}</div></td>
+        <td style="padding:12px;"><span style="background:${u.role==='founder'?'#eff6ff':'#fdf4ff'};color:${u.role==='founder'?'#3b6ef0':'#8b5cf6'};padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">${u.isAdmin ? '🛡️ Admin' : (u.role||'—')}</span></td>
+        <td style="padding:12px;font-size:12px;color:var(--t-secondary);">${u.whatsapp||'—'}</td>
+        <td style="padding:12px;"><span style="font-size:11px;font-weight:700;color:var(--t-dim);">${u.plan||'free'}</span></td>
+        <td style="padding:12px;font-size:13px;font-weight:700;color:var(--t-primary);">${u.collabsUsed||0}</td>
+        <td style="padding:12px;">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            ${u.whatsapp ? `<button onclick="window.open('https://wa.me/${u.whatsapp}?text=${encodeURIComponent('Hi '+u.name+', this is PostHire admin.')}','_blank')" style="padding:5px 10px;background:#25d36620;color:#25d366;border:1px solid #25d366;border-radius:6px;font-size:11px;cursor:pointer;">💬 WA</button>` : ''}
+            <button onclick="adminChangePlan('${u.uid}','${u.plan||'free'}')" style="padding:5px 10px;background:#eff6ff;color:#3b6ef0;border:1px solid #bfdbfe;border-radius:6px;font-size:11px;cursor:pointer;">✏️ Plan</button>
+            <button onclick="adminDeleteUser('${u.uid}','${(u.name||'').replace(/'/g,'')}',this)" style="padding:5px 10px;background:#fee2e2;color:#ef4444;border:1px solid #fecaca;border-radius:6px;font-size:11px;cursor:pointer;">🗑️</button>
+          </div>
+        </td>
+      </tr>`).join('') +
+    '</tbody></table></div>';
+}
+
+async function adminChangePlan(uid, currentPlan) {
+  const plans = ['free','starter','pro'];
+  const newPlan = prompt('Change plan to (free / starter / pro):', currentPlan);
+  if (!newPlan || !plans.includes(newPlan.trim().toLowerCase())) { showToast('Invalid plan. Use: free, starter, or pro', 'error'); return; }
+  try {
+    await db.collection('users').doc(uid).update({ plan: newPlan.trim().toLowerCase() });
+    showToast('Plan updated ✦', 'success');
+    loadAdminUsers();
+  } catch(e) { showToast('Error updating plan', 'error'); }
+}
+
+async function adminDeleteUser(uid, name, btn) {
+  if (!confirm('Delete user ' + name + '? This cannot be undone.')) return;
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    await db.collection('users').doc(uid).delete();
+    showToast('User deleted ✦', '');
+    loadAdminUsers();
+    loadAdminStats();
+  } catch(e) { showToast('Error deleting user', 'error'); btn.textContent = '🗑️'; btn.disabled = false; }
+}
+
+// ══════════════════════════════
+//  PROFILE RENDER & SAVE
+// ══════════════════════════════
 function renderProfile() {
   const u = S.user;
   let html = '';
-  if (u.role === 'founder') {
-    html = `
-      <div class="d-profile-card">
-        <div class="d-profile-card-title">Public Profile</div>
-        <div class="d-pf-avatar-row">
-          <div class="d-pf-avatar-big">${u.avatar}</div>
-          <div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all creators on PostHire</p></div>
-        </div>
-        <div class="d-pf-grid">
-          <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
-          <div class="f-group"><label class="f-label">Email</label><input class="f-input" id="pf-email" value="${u.email}" type="email"></div>
-          <div class="f-group"><label class="f-label">Startup Name</label><input class="f-input" id="pf-startup" value="${u.startup}" placeholder="Your startup name"></div>
-          <div class="f-group"><label class="f-label">Industry</label>
-            <select class="f-select" id="pf-industry"><option>SaaS</option><option>D2C</option><option>Fintech</option><option>Edtech</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">Website</label><input class="f-input" id="pf-website" value="${u.website||''}" placeholder="yoursite.com"></div>
-          <div class="f-group"><label class="f-label">Budget Range</label>
-            <select class="f-select" id="pf-budget"><option>₹5K–₹20K</option><option>₹20K–₹50K</option><option>₹50K–₹1L</option><option>₹1L+</option></select>
-          </div>
-          <div class="f-group d-pf-full"><label class="f-label">About Your Startup</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
-          <div class="f-group"><label class="f-label">Collaboration Type</label>
-            <select class="f-select"><option>Brand Awareness</option><option>Product Review</option><option>Long-term Partnership</option></select>
-          </div>
-        </div>
-        <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
-      </div>`;
-  } else {
-    html = `
-      <div class="d-profile-card">
-        <div class="d-profile-card-title">Creator Profile</div>
-        <div class="d-pf-avatar-row">
-          <div class="d-pf-avatar-big">${u.avatar}</div>
-          <div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all startup founders on PostHire</p></div>
-        </div>
-        <div class="d-pf-grid">
-          <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
-          <div class="f-group"><label class="f-label">Email</label><input class="f-input" value="${u.email}" type="email"></div>
-          <div class="f-group"><label class="f-label">Primary Niche</label>
-            <select class="f-select" id="pf-niche"><option>AI & Tech</option><option>Finance</option><option>Startups</option><option>Lifestyle</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">Platform</label>
-            <select class="f-select"><option>Instagram</option><option>YouTube</option><option>LinkedIn</option><option>Twitter/X</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">Audience Size</label>
-            <select class="f-select"><option>1K–10K</option><option>10K–50K</option><option>50K–200K</option><option>200K+</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">WhatsApp Number</label><input class="f-input" id="pf-wa" value="${u.whatsapp||''}" placeholder="10-digit number"></div>
-          <div class="f-group d-pf-full"><label class="f-label">Bio</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
-          <div class="f-group"><label class="f-label">Website / Portfolio</label><input class="f-input" value="${u.website||''}" placeholder="yoursite.com"></div>
-          <div class="f-group"><label class="f-label">Pricing (Starting)</label><input class="f-input" placeholder="e.g. ₹10,000+"></div>
-          <div class="f-group d-pf-full"><label class="f-label">Past Collaborations</label><textarea class="f-textarea" placeholder="e.g. Partnered with Razorpay, Zepto..."></textarea></div>
-        </div>
-        <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
+  const founderHtml = `
+    <div class="d-profile-card">
+      <div class="d-profile-card-title">Public Profile</div>
+      <div class="d-pf-avatar-row"><div class="d-pf-avatar-big">${u.avatar||u.name[0]}</div><div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all creators on PostHire</p></div></div>
+      <div class="d-pf-grid">
+        <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
+        <div class="f-group"><label class="f-label">Email</label><input class="f-input" value="${u.email}" type="email" readonly style="opacity:0.6;"></div>
+        <div class="f-group"><label class="f-label">WhatsApp Number</label><input class="f-input" id="pf-whatsapp" value="${u.whatsapp||''}" placeholder="10-digit number" type="tel"></div>
+        <div class="f-group"><label class="f-label">Startup Name</label><input class="f-input" id="pf-startup" value="${u.startup||''}" placeholder="Your startup name"></div>
+        <div class="f-group"><label class="f-label">Industry</label><select class="f-select" id="pf-industry"><option>SaaS</option><option>D2C</option><option>Fintech</option><option>Edtech</option></select></div>
+        <div class="f-group"><label class="f-label">Budget Range</label><select class="f-select" id="pf-budget"><option>₹5K–₹20K</option><option>₹20K–₹50K</option><option>₹50K–₹1L</option><option>₹1L+</option></select></div>
+        <div class="f-group d-pf-full"><label class="f-label">About Your Startup</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
+        <div class="f-group"><label class="f-label">Website</label><input class="f-input" id="pf-website" value="${u.website||''}" placeholder="yoursite.com"></div>
       </div>
-      ${S.user.plan === 'pro' ? `
-      <div class="d-profile-card">
-        <div class="d-profile-card-title">Portfolio Highlight <span style="margin-left:8px;background:rgba(139,92,246,0.1);color:var(--purple);padding:2px 8px;border-radius:var(--r-full);font-size:9px;">PRO</span></div>
-        <div class="d-pf-grid">
-          <div class="f-group"><label class="f-label">Featured Work Link</label><input class="f-input" placeholder="YouTube video, case study URL..."></div>
-          <div class="f-group"><label class="f-label">Campaign Results</label><input class="f-input" placeholder="e.g. 50K views for Brand X in 2 weeks"></div>
-        </div>
-        <div class="d-pf-save"><button class="d-save-btn" onclick="showToast('Portfolio saved ✦','success')">Save Portfolio →</button></div>
-      </div>` : ''}`;
-  }
+      <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
+    </div>`;
+  const creatorHtml = `
+    <div class="d-profile-card">
+      <div class="d-profile-card-title">Creator Profile</div>
+      <div class="d-pf-avatar-row"><div class="d-pf-avatar-big">${u.avatar||u.name[0]}</div><div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all startup founders on PostHire</p></div></div>
+      <div class="d-pf-grid">
+        <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
+        <div class="f-group"><label class="f-label">Email</label><input class="f-input" value="${u.email}" type="email" readonly style="opacity:0.6;"></div>
+        <div class="f-group"><label class="f-label">WhatsApp Number</label><input class="f-input" id="pf-whatsapp" value="${u.whatsapp||''}" placeholder="10-digit number" type="tel"></div>
+        <div class="f-group"><label class="f-label">Primary Niche</label><select class="f-select" id="pf-niche"><option>AI & Tech</option><option>Finance</option><option>Startups</option><option>Lifestyle</option><option>Fitness</option><option>Food</option></select></div>
+        <div class="f-group"><label class="f-label">Platform</label><select class="f-select" id="pf-platform"><option>Instagram</option><option>YouTube</option><option>LinkedIn</option><option>Twitter/X</option></select></div>
+        <div class="f-group"><label class="f-label">Audience Size</label><select class="f-select" id="pf-audience"><option>1K–10K</option><option>10K–50K</option><option>50K–200K</option><option>200K+</option></select></div>
+        <div class="f-group d-pf-full"><label class="f-label">Bio</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
+        <div class="f-group"><label class="f-label">Pricing (Starting)</label><input class="f-input" id="pf-pricing" value="${u.pricing||''}" placeholder="e.g. ₹10,000+"></div>
+        <div class="f-group"><label class="f-label">Website / Portfolio</label><input class="f-input" id="pf-website" value="${u.website||''}" placeholder="yoursite.com"></div>
+        <div class="f-group d-pf-full"><label class="f-label">Past Collaborations</label><textarea class="f-textarea" id="pf-past" placeholder="e.g. Partnered with Razorpay, Zepto...">${u.pastCollabs||''}</textarea></div>
+      </div>
+      <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
+    </div>`;
+  html = (u.role === 'founder' || u.isAdmin) ? founderHtml : creatorHtml;
   document.getElementById('d-profile-content').innerHTML = html;
 }
 
-function saveProfile() {
+async function saveProfile() {
   const u = S.user;
-  const nEl = document.getElementById('pf-name');
-  if (nEl) { u.name = nEl.value; }
-  const bioEl = document.getElementById('pf-bio');
-  if (bioEl) u.bio = bioEl.value;
-  // Refresh avatar
+  const fields = ['pf-name','pf-bio','pf-startup','pf-website','pf-whatsapp','pf-pricing','pf-past','pf-niche','pf-platform','pf-audience'];
+  const updates = {};
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const key = id.replace('pf-','').replace('-','');
+      if (id === 'pf-name')     { u.name    = el.value; updates.name    = el.value; }
+      if (id === 'pf-bio')      { u.bio     = el.value; updates.bio     = el.value; }
+      if (id === 'pf-startup')  { u.startup = el.value; updates.startup = el.value; }
+      if (id === 'pf-website')  { u.website = el.value; updates.website = el.value; }
+      if (id === 'pf-whatsapp') { u.whatsapp= el.value; updates.whatsapp= el.value; }
+      if (id === 'pf-pricing')  { u.pricing = el.value; updates.pricing = el.value; }
+      if (id === 'pf-past')     { u.pastCollabs = el.value; updates.pastCollabs = el.value; }
+      if (id === 'pf-niche')    { u.niche   = el.value; updates.niche   = el.value; }
+      if (id === 'pf-platform') { u.platform= el.value; updates.platform= el.value; }
+      if (id === 'pf-audience') { u.audience= el.value; updates.audience= el.value; }
+    }
+  });
   u.avatar = u.name[0].toUpperCase();
+  updates.avatar = u.avatar;
   document.getElementById('d-av').textContent = u.avatar;
   document.getElementById('d-name').textContent = u.name;
   document.getElementById('d-tb-av').textContent = u.avatar;
   document.getElementById('d-welcome').textContent = `Good day, ${u.name.split(' ')[0]} ✦`;
+  if (u.uid) await fbSaveUser(u.uid, updates);
   showToast('Profile saved ✦', 'success');
 }
 
+// ══════════════════════════════
+//  PRICING
+// ══════════════════════════════
 function renderPricing() {
   const u = S.user;
   const plans = [
-    { key:'free',    name:'FREE',    price:'₹0',   period:'/month', badge:'badge-free',    features:['Create profile (creator or founder)','Browse up to 10 profiles/day','3 collaboration requests/month','Basic search filters'],                     disabled:['In-platform messaging','AI match suggestions','Featured profile badge'], cta:'Current Plan', featured:false },
-    { key:'starter', name:'STARTER', price:'₹299', period:'/month', badge:'badge-starter', features:['Unlimited profile browsing','20 collaboration requests/month','Advanced search & filters','In-platform messaging','Priority listing (basic)'],  disabled:['AI match suggestions'],                                                    cta:'Upgrade to Starter', featured:true },
-    { key:'pro',     name:'PRO',     price:'₹599', period:'/month', badge:'badge-pro',     features:['Everything in Starter','Unlimited collaboration requests','Daily AI-powered matches','Featured profile badge','Top search placement','Portfolio highlight section','Audience analytics','Priority support'], disabled:[],        cta:'Upgrade to Pro',     featured:false },
+    { key:'free',    name:'FREE',    price:'₹0',   period:'/month', badge:'badge-free',    features:['Create profile (creator or founder)','Browse up to 10 profiles/day','3 collaboration requests/month','Basic search filters'], disabled:['In-platform messaging','AI match suggestions','Featured profile badge'], cta:'Current Plan', featured:false },
+    { key:'starter', name:'STARTER', price:'₹299', period:'/month', badge:'badge-starter', features:['Unlimited profile browsing','20 collaboration requests/month','Advanced search & filters','In-platform messaging','Priority listing (basic)'], disabled:['AI match suggestions'], cta:'Upgrade to Starter', featured:true },
+    { key:'pro',     name:'PRO',     price:'₹599', period:'/month', badge:'badge-pro',     features:['Everything in Starter','Unlimited collaboration requests','Daily AI-powered matches','Featured profile badge','Top search placement','Portfolio highlight section','Audience analytics','Priority support'], disabled:[], cta:'Upgrade to Pro', featured:false },
   ];
   document.getElementById('d-price-grid').innerHTML = plans.map(p => {
     const isCur = u.plan === p.key;
-    return `
-      <div class="l-price-card ${p.featured ? 'l-price-card-featured' : ''}">
-        <span class="l-plan-badge ${p.badge}">${p.key.toUpperCase()}</span>
-        <div class="l-price-name">${p.name} PLAN</div>
-        <div class="l-price-amount"><sup>₹</sup>${p.price.replace('₹','')}</div>
-        <div class="l-price-period">${p.period}</div>
-        <div class="l-price-divider"></div>
-        <ul class="l-price-feat-list">
-          ${p.features.map(f=>`<li><span class="tick">✓</span>${f}</li>`).join('')}
-          ${p.disabled.map(f=>`<li class="off"><span class="tick">—</span>${f}</li>`).join('')}
-        </ul>
-        ${isCur
-          ? `<button class="l-price-cta l-price-cta-outline" style="opacity:0.45;cursor:default;">Current Plan ✓</button>`
-          : `<button class="l-price-cta ${p.featured?'l-price-cta-fill':'l-price-cta-outline'}" onclick="selectPlan('${p.key}')">${p.cta} →</button>`}
-      </div>`;
+    return `<div class="l-price-card ${p.featured ? 'l-price-card-featured' : ''}">
+      <span class="l-plan-badge ${p.badge}">${p.key.toUpperCase()}</span>
+      <div class="l-price-name">${p.name} PLAN</div>
+      <div class="l-price-amount"><sup>₹</sup>${p.price.replace('₹','')}</div>
+      <div class="l-price-period">${p.period}</div>
+      <div class="l-price-divider"></div>
+      <ul class="l-price-feat-list">
+        ${p.features.map(f=>`<li><span class="tick">✓</span>${f}</li>`).join('')}
+        ${p.disabled.map(f=>`<li class="off"><span class="tick">—</span>${f}</li>`).join('')}
+      </ul>
+      ${isCur
+        ? `<button class="l-price-cta l-price-cta-outline" style="opacity:0.45;cursor:default;">Current Plan ✓</button>`
+        : `<button class="l-price-cta ${p.featured?'l-price-cta-fill':'l-price-cta-outline'}" onclick="selectPlan('${p.key}')">${p.cta} →</button>`}
+    </div>`;
   }).join('');
 }
 
@@ -2604,9 +3272,10 @@ function selectPlan(planKey) {
   openModal(`Switch to ${pData.name}`,
     planKey === 'free'
       ? 'Downgrade to Free? You will lose access to premium features.'
-      : `Upgrade to <strong>${pData.name}</strong> for ${pData.price}/month. Unlock all the features listed above.`,
-    () => {
+      : `Upgrade to <strong>${pData.name}</strong> for ${pData.price}/month. Contact us on WhatsApp to complete payment.`,
+    async () => {
       S.user.plan = planKey;
+      if (S.user.uid) await fbSaveUser(S.user.uid, { plan: planKey });
       renderDash();
       closeModal();
       showToast(`Switched to ${pData.name} ✦`, 'success');
@@ -2618,7 +3287,7 @@ function selectPlan(planKey) {
 // ══════════════════════════════
 //  VIEW SWITCHING
 // ══════════════════════════════
-const VIEW_TITLES = { home:'Dashboard', discover:'Discover Creators', profile:'My Profile', collabs:'Collaborations', pricing:'Upgrade Plan', settings:'Settings' };
+const VIEW_TITLES = { home:'Dashboard', discover:'Discover Creators', profile:'My Profile', collabs:'Collaborations', pricing:'Upgrade Plan', settings:'Settings', admin:'Admin Panel', planpick:'Choose Your Plan' };
 function showView(id, navEl) {
   document.querySelectorAll('.d-view').forEach(v => v.classList.remove('act'));
   document.querySelectorAll('.d-nav-item').forEach(i => i.classList.remove('act'));
@@ -2632,6 +3301,8 @@ function showView(id, navEl) {
   }
   document.getElementById('d-topbar-title').textContent = VIEW_TITLES[id] || 'Dashboard';
   closeSidebar();
+  if (id === 'collabs') loadMyCollabs();
+  if (id === 'admin' && S.user?.isAdmin) loadAdminData();
 }
 
 // ══════════════════════════════
@@ -2688,972 +3359,87 @@ function updateBnav(el) {
 (function() {
   const bars = Array.from(document.querySelectorAll('.ph-lb'));
   const loader = document.getElementById('ph-loader');
-  if (!window.gsap) { loader.style.display = 'none'; return; }
-  const order = [2,3,1,4,0].map(i => bars[i]);
+  if (!window.gsap) { if (loader) loader.style.display = 'none'; return; }
+  const order = [2,3,1,4,0].map(i => bars[i]).filter(Boolean);
+  if (!order.length) { if (loader) loader.style.display = 'none'; return; }
   gsap.to(order, { opacity:1, duration:0.4, ease:'power2.inOut',
     onComplete: () => gsap.to(order, { y:'-100vh', duration:1.3, stagger:0.08, ease:'power4.inOut',
-      onComplete: () => { loader.style.display = 'none'; }
+      onComplete: () => { if (loader) loader.style.display = 'none'; }
     })
   });
 })();
 
-// ══════════════════════════════
-//  PROJECT DASHBOARD JS
-// ══════════════════════════════
-(function() {
-  // Set date
-  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var now = new Date();
-  var el = document.getElementById('pm-date');
-  if(el) el.textContent = days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate();
 
-  // Mode switch
-  var modeBtn = document.getElementById('pm-mode-btn');
-  if(modeBtn) {
-    modeBtn.addEventListener('click', function() {
-      document.documentElement.classList.toggle('dark');
-      modeBtn.classList.toggle('active');
+// ════════════════════════════════════════════════════════════════
+//  FIREBASE — initialized here so ALL functions above are defined
+// ════════════════════════════════════════════════════════════════
+(function initFirebase() {
+  try {
+    const firebaseConfig = {
+      apiKey:            "AIzaSyASvAj4VLAHASBzGlqm0D0s_2jtGZefMXY",
+      authDomain:        "posthire-1d312.firebaseapp.com",
+      projectId:         "posthire-1d312",
+      storageBucket:     "posthire-1d312.firebasestorage.app",
+      messagingSenderId: "382918384210",
+      appId:             "1:382918384210:web:049a12027ad293134fdd8b",
+    };
+
+    // Prevent duplicate app init
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    window._auth = firebase.auth();
+    window._db   = firebase.firestore();
+
+    // ── Firestore helpers ────────────────────────────────────
+    window.fbSaveUser = async function(uid, data) {
+      try {
+        await window._db.collection('users').doc(uid).set(data, { merge: true });
+      } catch(e) { console.error('fbSaveUser error:', e); }
+    };
+
+    window.fbLoadUser = async function(uid) {
+      try {
+        const snap = await window._db.collection('users').doc(uid).get();
+        return snap.exists ? snap.data() : null;
+      } catch(e) { console.error('fbLoadUser error:', e); return null; }
+    };
+
+    // Alias so existing code using auth / db still works
+    window.auth = window._auth;
+    window.db   = window._db;
+
+    // ── Auth state listener ──────────────────────────────────
+    window._auth.onAuthStateChanged(async function(firebaseUser) {
+      try {
+        if (firebaseUser) {
+          const profile = await window.fbLoadUser(firebaseUser.uid);
+          if (profile) {
+            S.user        = profile;
+            S.collabsUsed = profile.collabsUsed || 0;
+            const cur       = document.querySelector('.page.active');
+            const authPages = ['pg-landing','pg-signup','pg-login','pg-admin-login','pg-planpick'];
+            if (!cur || authPages.includes(cur.id)) {
+              goTo('dashboard');
+            }
+          }
+        } else {
+          const cur       = document.querySelector('.page.active');
+          const stayPages = ['pg-landing','pg-signup','pg-login','pg-admin-login','pg-planpick'];
+          if (!cur || !stayPages.includes(cur.id)) {
+            goTo('landing');
+          }
+        }
+      } catch(e) { console.error('onAuthStateChanged error:', e); }
     });
+
+    console.log('PostHire: Firebase ready ✦');
+  } catch(e) {
+    console.error('Firebase init error:', e);
   }
-
-  // List / Grid view
-  var listBtn = document.querySelector('.pm-list-view');
-  var gridBtn = document.querySelector('.pm-grid-view');
-  var boxes  = document.querySelector('.pm-project-boxes');
-  if(listBtn && gridBtn && boxes) {
-    listBtn.addEventListener('click', function() {
-      gridBtn.classList.remove('active'); listBtn.classList.add('active');
-      boxes.classList.remove('jsGridView'); boxes.classList.add('jsListView');
-    });
-    gridBtn.addEventListener('click', function() {
-      listBtn.classList.remove('active'); gridBtn.classList.add('active');
-      boxes.classList.remove('jsListView'); boxes.classList.add('jsGridView');
-    });
-  }
-
-  // Messages panel
-  var msgOpen = document.getElementById('pm-msg-open-btn');
-  var msgClose = document.getElementById('pm-msg-close-btn');
-  var msgSection = document.getElementById('pm-messages-section');
-  if(msgOpen && msgSection) msgOpen.addEventListener('click', function() { msgSection.classList.add('show'); });
-  if(msgClose && msgSection) msgClose.addEventListener('click', function() { msgSection.classList.remove('show'); });
-})();
-
-// Update PM header when dashboard loads
-function updatePMHeader() {
-  if(!S.user) return;
-  var nameEl = document.getElementById('pm-user-name');
-  var greetEl = document.getElementById('pm-greeting');
-  if(nameEl) nameEl.textContent = S.user.name.split(' ')[0];
-  if(greetEl) {
-    var h = new Date().getHours();
-    var g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
-    greetEl.textContent = g + ', ' + S.user.name.split(' ')[0] + ' ✦';
-  }
-}
-
-</script>
-</body>
-</html><!-- ════════════════════════════════════════
-     PAGE: DASHBOARD
-════════════════════════════════════════ -->
-<div id="pg-dashboard" class="page">
-<div class="pm-wrap" id="pm-root">
-
-  <!-- PM HEADER -->
-  <div class="pm-header">
-    <div class="pm-header-left">
-      <span class="pm-icon"></span>
-      <p class="pm-app-name">Post<em>Hire</em></p>
-      <div class="pm-search-wrap">
-        <input class="pm-search-input" type="text" placeholder="Search collaborations...">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      </div>
-    </div>
-    <div class="pm-header-right">
-      <button class="pm-mode-btn" id="pm-mode-btn" title="Switch Theme">
-        <svg class="pm-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="22" height="22" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-      </button>
-      <button class="pm-add-btn" title="New Collaboration" onclick="showToast('New collaboration request created ✦','success')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      <button class="pm-notif-btn" onclick="showToast('No new notifications','')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      </button>
-      <button class="pm-profile-btn" id="pm-profile-btn">
-        <img src="https://assets.codepen.io/3306515/IMG_2025.jpg" alt="User" id="pm-user-img"/>
-        <span id="pm-user-name">User</span>
-      </button>
-      <button class="pm-add-btn" style="background:transparent;color:var(--pm-main);margin-left:10px;border:1px solid rgba(0,0,0,0.12);border-radius:8px;padding:6px 14px;font-family:'Instrument Sans',sans-serif;font-size:12px;font-weight:600;white-space:nowrap;" onclick="doLogout()">Sign Out</button>
-    </div>
-    <button class="pm-messages-btn" id="pm-msg-open-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-    </button>
-  </div>
-
-  <!-- PM BODY -->
-  <div class="pm-content">
-    <!-- Sidebar -->
-    <div class="pm-sidebar">
-      <a href="#" class="pm-sidebar-link active" title="Dashboard">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      </a>
-      <a href="#" class="pm-sidebar-link" title="Analytics">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 118 2.83M22 12A10 10 0 0012 2v10z"/></svg>
-      </a>
-      <a href="#" class="pm-sidebar-link" title="Discover Creators" onclick="goTo('dashboard'); event.preventDefault();">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      </a>
-      <a href="#" class="pm-sidebar-link" title="Settings">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      </a>
-    </div>
-
-    <!-- Main Projects Section -->
-    <div class="pm-projects-section">
-      <div class="pm-section-hd">
-        <p id="pm-greeting">Collaborations</p>
-        <p class="pm-time" id="pm-date">Loading...</p>
-      </div>
-      <div class="pm-section-line">
-        <div class="pm-status-row">
-          <div class="pm-item-status">
-            <span class="pm-status-num">12</span>
-            <span class="pm-status-type">Active Collabs</span>
-          </div>
-          <div class="pm-item-status">
-            <span class="pm-status-num">7</span>
-            <span class="pm-status-type">In Progress</span>
-          </div>
-          <div class="pm-item-status">
-            <span class="pm-status-num">31</span>
-            <span class="pm-status-type">Total Projects</span>
-          </div>
-        </div>
-        <div class="pm-view-actions">
-          <button class="pm-view-btn pm-list-view" title="List View">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          </button>
-          <button class="pm-view-btn pm-grid-view active" title="Grid View">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- PROJECT CARDS GRID -->
-      <div class="pm-project-boxes jsGridView">
-
-        <div class="pm-box-wrap">
-          <div class="pm-box" style="--pm-card:#fee4cb;">
-            <div class="pm-box-header"><span>Creator Campaign</span>
-              <div class="pm-more-wrap"><button class="pm-btn-more"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
-            </div>
-            <div class="pm-box-content-hd"><p class="pm-box-hd-title">Brand Awareness</p><p class="pm-box-hd-sub">Instagram × D2C</p></div>
-            <div class="pm-progress-wrap">
-              <p class="pm-progress-hd">Progress</p>
-              <div class="pm-progress-bar-outer"><span class="pm-progress-bar-inner" style="width:60%;background:#ff942e;"></span></div>
-              <p class="pm-progress-pct">60%</p>
-            </div>
-            <div class="pm-box-footer">
-              <div class="pm-participants">
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80&auto=format&fit=crop" alt="p">
-                <img src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=100&q=80&auto=format&fit=crop" alt="p">
-                <button class="pm-add-participant" style="color:#ff942e;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-              </div>
-              <div class="pm-days-left" style="color:#ff942e;">3 Days Left</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pm-box-wrap">
-          <div class="pm-box" style="--pm-card:#e9e7fd;">
-            <div class="pm-box-header"><span>Product Launch</span>
-              <div class="pm-more-wrap"><button class="pm-btn-more"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
-            </div>
-            <div class="pm-box-content-hd"><p class="pm-box-hd-title">SaaS Promotion</p><p class="pm-box-hd-sub">YouTube × Tech</p></div>
-            <div class="pm-progress-wrap">
-              <p class="pm-progress-hd">Progress</p>
-              <div class="pm-progress-bar-outer"><span class="pm-progress-bar-inner" style="width:50%;background:#4f3ff0;"></span></div>
-              <p class="pm-progress-pct">50%</p>
-            </div>
-            <div class="pm-box-footer">
-              <div class="pm-participants">
-                <img src="https://images.unsplash.com/photo-1596815064285-45ed8a9c0463?w=100&q=80&auto=format&fit=crop" alt="p">
-                <img src="https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?w=100&q=80&auto=format&fit=crop" alt="p">
-                <button class="pm-add-participant" style="color:#4f3ff0;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-              </div>
-              <div class="pm-days-left" style="color:#4f3ff0;">5 Days Left</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pm-box-wrap">
-          <div class="pm-box" style="--pm-card:#dbf6fd;">
-            <div class="pm-box-header"><span>Influencer Collab</span>
-              <div class="pm-more-wrap"><button class="pm-btn-more"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
-            </div>
-            <div class="pm-box-content-hd"><p class="pm-box-hd-title">Audience Growth</p><p class="pm-box-hd-sub">LinkedIn × B2B</p></div>
-            <div class="pm-progress-wrap">
-              <p class="pm-progress-hd">Progress</p>
-              <div class="pm-progress-bar-outer"><span class="pm-progress-bar-inner" style="width:80%;background:#096c86;"></span></div>
-              <p class="pm-progress-pct">80%</p>
-            </div>
-            <div class="pm-box-footer">
-              <div class="pm-participants">
-                <img src="https://images.unsplash.com/photo-1587628604439-3b9a0aa7a163?w=100&q=80&auto=format&fit=crop" alt="p">
-                <img src="https://images.unsplash.com/photo-1596815064285-45ed8a9c0463?w=100&q=80&auto=format&fit=crop" alt="p">
-                <button class="pm-add-participant" style="color:#096c86;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-              </div>
-              <div class="pm-days-left" style="color:#096c86;">2 Days Left</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pm-box-wrap">
-          <div class="pm-box" style="--pm-card:#ffd3e2;">
-            <div class="pm-box-header"><span>Content Series</span>
-              <div class="pm-more-wrap"><button class="pm-btn-more"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
-            </div>
-            <div class="pm-box-content-hd"><p class="pm-box-hd-title">UI Showcase</p><p class="pm-box-hd-sub">Instagram × Design</p></div>
-            <div class="pm-progress-wrap">
-              <p class="pm-progress-hd">Progress</p>
-              <div class="pm-progress-bar-outer"><span class="pm-progress-bar-inner" style="width:20%;background:#df3670;"></span></div>
-              <p class="pm-progress-pct">20%</p>
-            </div>
-            <div class="pm-box-footer">
-              <div class="pm-participants">
-                <img src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?w=100&q=80&auto=format&fit=crop" alt="p">
-                <img src="https://images.unsplash.com/photo-1587628604439-3b9a0aa7a163?w=100&q=80&auto=format&fit=crop" alt="p">
-                <button class="pm-add-participant" style="color:#df3670;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-              </div>
-              <div class="pm-days-left" style="color:#df3670;">7 Days Left</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pm-box-wrap">
-          <div class="pm-box" style="--pm-card:#c8f7dc;">
-            <div class="pm-box-header"><span>Analytics Report</span>
-              <div class="pm-more-wrap"><button class="pm-btn-more"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
-            </div>
-            <div class="pm-box-content-hd"><p class="pm-box-hd-title">Campaign ROI</p><p class="pm-box-hd-sub">YouTube × Fintech</p></div>
-            <div class="pm-progress-wrap">
-              <p class="pm-progress-hd">Progress</p>
-              <div class="pm-progress-bar-outer"><span class="pm-progress-bar-inner" style="width:60%;background:#34c471;"></span></div>
-              <p class="pm-progress-pct">60%</p>
-            </div>
-            <div class="pm-box-footer">
-              <div class="pm-participants">
-                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80&auto=format&fit=crop" alt="p">
-                <img src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=100&q=80&auto=format&fit=crop" alt="p">
-                <button class="pm-add-participant" style="color:#34c471;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-              </div>
-              <div class="pm-days-left" style="color:#34c471;">1 Week Left</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pm-box-wrap">
-          <div class="pm-box" style="--pm-card:#d5deff;">
-            <div class="pm-box-header"><span>WhatsApp Campaign</span>
-              <div class="pm-more-wrap"><button class="pm-btn-more"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div>
-            </div>
-            <div class="pm-box-content-hd"><p class="pm-box-hd-title">Direct Connect</p><p class="pm-box-hd-sub">Startup × Creator</p></div>
-            <div class="pm-progress-wrap">
-              <p class="pm-progress-hd">Progress</p>
-              <div class="pm-progress-bar-outer"><span class="pm-progress-bar-inner" style="width:40%;background:#4067f9;"></span></div>
-              <p class="pm-progress-pct">40%</p>
-            </div>
-            <div class="pm-box-footer">
-              <div class="pm-participants">
-                <img src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?w=100&q=80&auto=format&fit=crop" alt="p">
-                <img src="https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?w=100&q=80&auto=format&fit=crop" alt="p">
-                <button class="pm-add-participant" style="color:#4067f9;"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-              </div>
-              <div class="pm-days-left" style="color:#4067f9;">2 Days Left</div>
-            </div>
-          </div>
-        </div>
-
-      </div><!-- /pm-project-boxes -->
-    </div><!-- /pm-projects-section -->
-
-    <!-- Messages Section -->
-    <div class="pm-messages-section" id="pm-messages-section">
-      <button class="pm-messages-close" id="pm-msg-close-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      </button>
-      <div class="pm-section-hd" style="margin-bottom:0;">
-        <p>Creator Messages</p>
-      </div>
-      <div class="pm-messages">
-        <div class="pm-msg-box">
-          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80&auto=format&fit=crop" alt="p">
-          <div class="pm-msg-content">
-            <div class="pm-msg-header">
-              <div class="pm-msg-name">Priya Kapoor</div>
-              <div class="pm-star-cb"><input type="checkbox" id="pm-star-1"><label for="pm-star-1"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></label></div>
-            </div>
-            <p class="pm-msg-line">Campaign brief looks great! Ready to start the finance content series. 🎯</p>
-            <p class="pm-msg-line pm-time">Today, 10:30 am</p>
-          </div>
-        </div>
-        <div class="pm-msg-box">
-          <img src="https://images.unsplash.com/photo-1600486913747-55e5470d6f40?w=100&q=80&auto=format&fit=crop" alt="p">
-          <div class="pm-msg-content">
-            <div class="pm-msg-header">
-              <div class="pm-msg-name">Arjun Mehra</div>
-              <div class="pm-star-cb"><input type="checkbox" id="pm-star-2"><label for="pm-star-2"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></label></div>
-            </div>
-            <p class="pm-msg-line">Hey! Can we schedule the product review video for next Tuesday?</p>
-            <p class="pm-msg-line pm-time">Yesterday</p>
-          </div>
-        </div>
-        <div class="pm-msg-box">
-          <img src="https://images.unsplash.com/photo-1543965170-4c01a586684e?w=100&q=60&auto=format&fit=crop" alt="p">
-          <div class="pm-msg-content">
-            <div class="pm-msg-header">
-              <div class="pm-msg-name">Rohan Das</div>
-              <div class="pm-star-cb"><input type="checkbox" id="pm-star-3"><label for="pm-star-3"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></label></div>
-            </div>
-            <p class="pm-msg-line">Awesome! 🤩 LinkedIn post draft ready. Let's review before publishing.</p>
-            <p class="pm-msg-line pm-time">2 days ago</p>
-          </div>
-        </div>
-        <div class="pm-msg-box">
-          <img src="https://images.unsplash.com/photo-1533993192821-2cce3a8267d1?w=100&q=60&auto=format&fit=crop" alt="p">
-          <div class="pm-msg-content">
-            <div class="pm-msg-header">
-              <div class="pm-msg-name">Sneha Gupta</div>
-              <div class="pm-star-cb"><input type="checkbox" id="pm-star-4"><label for="pm-star-4"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></label></div>
-            </div>
-            <p class="pm-msg-line">Just hit 10K on the reel we did together! Clients will love these numbers. 🚀</p>
-            <p class="pm-msg-line pm-time">3 days ago</p>
-          </div>
-        </div>
-      </div>
-    </div><!-- /messages -->
-
-  </div><!-- /pm-content -->
-</div><!-- /pm-wrap -->
-</div>
-
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-<script>
-// ══════════════════════════════
-//  STATE
-// ══════════════════════════════
-let S = {
-  user: null,
-  selectedRole: 'founder',
-  collabsUsed: 0,
-};
-
-const PLANS = {
-  free:    { name:'Free Plan',    badge:'badge-free',    collabs:3,  browseLimit:10,  price:'₹0',   period:'/month' },
-  starter: { name:'Starter Plan', badge:'badge-starter', collabs:20, browseLimit:-1,  price:'₹299', period:'/month' },
-  pro:     { name:'Pro Plan',     badge:'badge-pro',     collabs:-1, browseLimit:-1,  price:'₹599', period:'/month' },
-};
-
-const CREATORS = [
-  { id:1, initials:'AM', grad:'#3b6ef0,#8b5cf6', name:'Arjun Mehra',    niche:'AI & Tech',  platform:'YouTube',   audience:'200K+',   eng:'4.2%', collabs:12, bio:'Building tech & AI audiences for 3+ years. Partnered with 20+ startups on product launches.', tags:['AI','Startups','SaaS'], wa:'9876543210', pricing:'₹15,000+' },
-  { id:2, initials:'PK', grad:'#06b6d4,#3b6ef0', name:'Priya Kapoor',   niche:'Finance',    platform:'Instagram', audience:'50K–200K', eng:'6.8%', collabs:8,  bio:'Finance creator simplifying investing for millennials. High trust, strong engagement.', tags:['Finance','Investing'], wa:'9876543211', pricing:'₹10,000+' },
-  { id:3, initials:'RD', grad:'#8b5cf6,#ec4899', name:'Rohan Das',      niche:'Startups',   platform:'LinkedIn',  audience:'50K–200K', eng:'5.1%', collabs:15, bio:'LinkedIn thought leader covering funding stories, founder journeys and startup culture.', tags:['Startups','B2B','SaaS'], wa:'9876543212', pricing:'₹20,000+' },
-  { id:4, initials:'SG', grad:'#10b981,#06b6d4', name:'Sneha Gupta',    niche:'Lifestyle',  platform:'Instagram', audience:'10K–50K',  eng:'8.3%', collabs:5,  bio:'Micro-influencer with hyper-engaged D2C audience. Perfect for product reviews.', tags:['Lifestyle','D2C'], wa:'9876543213', pricing:'₹5,000+' },
-  { id:5, initials:'VS', grad:'#f59e0b,#f97316', name:'Vikram Singh',   niche:'AI & Tech',  platform:'Twitter/X', audience:'10K–50K',  eng:'7.2%', collabs:9,  bio:'Tech journalist turned creator. Deep dives into AI tools and startup ecosystems.', tags:['AI','Tech'], wa:'9876543214', pricing:'₹8,000+' },
-  { id:6, initials:'AR', grad:'#f43f5e,#f97316', name:'Ananya Reddy',   niche:'Fitness',    platform:'Instagram', audience:'1K–10K',   eng:'11.2%',collabs:3,  bio:'Fitness creator with a passionate community. Great for health and wellness startups.', tags:['Fitness','Wellness'], wa:'9876543215', pricing:'₹3,000+' },
-  { id:7, initials:'KM', grad:'#3b6ef0,#06b6d4', name:'Karan Malhotra', niche:'Finance',    platform:'YouTube',   audience:'200K+',   eng:'3.9%', collabs:22, bio:'Personal finance YouTuber with 200K+ subscribers. Known for high-performing sponsorships.', tags:['Finance','Money'], wa:'9876543216', pricing:'₹30,000+' },
-  { id:8, initials:'DN', grad:'#8b5cf6,#3b6ef0', name:'Divya Nair',     niche:'Startups',   platform:'LinkedIn',  audience:'50K–200K', eng:'5.7%', collabs:11, bio:'Ex-founder turned creator. Growth hacking, product building, and startup culture.', tags:['Startups','Growth'], wa:'9876543217', pricing:'₹18,000+' },
-  { id:9, initials:'AJ', grad:'#10b981,#f59e0b', name:'Amit Joshi',     niche:'Food',       platform:'Instagram', audience:'10K–50K',  eng:'9.1%', collabs:7,  bio:'Food creator with insane engagement for restaurant, F&B, and food-tech brands.', tags:['Food','D2C'], wa:'9876543218', pricing:'₹7,000+' },
-];
-
-// ══════════════════════════════
-//  PAGE ROUTING
-// ══════════════════════════════
-function goTo(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('pg-' + page).classList.add('active');
-  window.scrollTo(0,0);
-  if (page === 'dashboard') { renderDash(); updatePMHeader(); }
-}
-function sTo(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior:'smooth' });
-}
-
-// ══════════════════════════════
-//  MOBILE NAV
-// ══════════════════════════════
-document.getElementById('l-ham').addEventListener('click', function() {
-  this.classList.toggle('open');
-  document.getElementById('l-mobmenu').classList.toggle('open');
-});
-function closeMob() {
-  document.getElementById('l-ham').classList.remove('open');
-  document.getElementById('l-mobmenu').classList.remove('open');
-}
-window.addEventListener('scroll', () => {
-  document.getElementById('l-nav').classList.toggle('scrolled', window.scrollY > 40);
-});
-
-// ══════════════════════════════
-//  HOW IT WORKS TABS
-// ══════════════════════════════
-document.querySelectorAll('.l-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.l-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('flow-founder').classList.toggle('hidden', btn.dataset.flow !== 'founder');
-    document.getElementById('flow-creator').classList.toggle('hidden', btn.dataset.flow !== 'creator');
-  });
-});
-
-// ══════════════════════════════
-//  SCROLL REVEAL
-// ══════════════════════════════
-const revealObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.1 });
-document.querySelectorAll('.l-pcard,.l-step,.l-feat-card,.l-for-card').forEach(el => revealObs.observe(el));
-
-// ══════════════════════════════
-//  AUTH
-// ══════════════════════════════
-function pickRole(role) {
-  S.selectedRole = role;
-  document.getElementById('ro-founder').classList.toggle('sel', role === 'founder');
-  document.getElementById('ro-creator').classList.toggle('sel', role === 'creator');
-  document.getElementById('su-founder-extra').style.display = role === 'founder' ? 'block' : 'none';
-  document.getElementById('su-creator-extra').style.display = role === 'creator' ? 'block' : 'none';
-}
-function doSignup() {
-  const name = document.getElementById('su-name').value.trim();
-  const email = document.getElementById('su-email').value.trim();
-  const pass = document.getElementById('su-pass').value;
-  if (!name || !email || !pass) { showToast('Please fill all required fields', 'error'); return; }
-  S.user = {
-    name, email, role: S.selectedRole, plan: 'free', avatar: name[0].toUpperCase(),
-    startup: document.getElementById('su-startup')?.value || '',
-    industry: document.getElementById('su-industry')?.value || '',
-    budget: document.getElementById('su-budget')?.value || '',
-    niche: document.getElementById('su-niche')?.value || '',
-    platform: document.getElementById('su-platform')?.value || '',
-    audience: document.getElementById('su-audience')?.value || '',
-    bio: '', website: '', whatsapp: '',
-  };
-  S.collabsUsed = 0;
-  showToast('Account created! Welcome to PostHire ✦', 'success');
-  setTimeout(() => goTo('dashboard'), 700);
-}
-function doLogin() {
-  const email = document.getElementById('li-email').value.trim();
-  const pass = document.getElementById('li-pass').value;
-  if (!email || !pass) { showToast('Please enter your credentials', 'error'); return; }
-  S.user = { name:'Rahul Sharma', email, role:'founder', plan:'free', avatar:'R', startup:'RocketSaaS', industry:'SaaS', budget:'₹20K–₹50K', niche:'', platform:'', audience:'', bio:'Building the future of SaaS in India.', website:'rocketsaas.io', whatsapp:'' };
-  S.collabsUsed = 1;
-  showToast('Welcome back ✦', 'success');
-  setTimeout(() => goTo('dashboard'), 600);
-}
-function demoLogin(role) {
-  if (role === 'founder') {
-    S.user = { name:'Priya Mehta', email:'priya@demo.com', role:'founder', plan:'free', avatar:'P', startup:'GrowthLabs', industry:'D2C', budget:'₹5K–₹20K', niche:'', platform:'', audience:'', bio:'D2C founder building a skincare brand from scratch.', website:'growthlabs.in', whatsapp:'' };
-    S.collabsUsed = 1;
-  } else {
-    S.user = { name:'Arjun Mehra', email:'arjun@demo.com', role:'creator', plan:'starter', avatar:'A', startup:'', industry:'', budget:'', niche:'AI & Tech', platform:'YouTube', audience:'200K+', bio:'Building audiences in the AI & tech space for 3 years.', website:'arjunmehra.in', whatsapp:'9876543210' };
-    S.collabsUsed = 5;
-  }
-  showToast('Demo login — welcome! ✦', 'success');
-  setTimeout(() => goTo('dashboard'), 600);
-}
-function doLogout() {
-  showToast('Signed out. See you soon!');
-  S.user = null;
-  goTo('landing');
-}
-
-// ══════════════════════════════
-//  DASHBOARD
-// ══════════════════════════════
-function renderDash() {
-  const u = S.user; if (!u) return;
-  const plan = PLANS[u.plan];
-  // Sidebar user
-  document.getElementById('d-av').textContent = u.avatar;
-  document.getElementById('d-name').textContent = u.name;
-  document.getElementById('d-role').textContent = u.role === 'founder' ? 'Startup Founder' : 'Content Creator';
-  const pb = document.getElementById('d-plan-badge');
-  pb.textContent = plan.name; pb.className = 'd-user-plan ' + plan.badge;
-  // Topbar
-  const tbp = document.getElementById('d-tb-plan');
-  tbp.textContent = plan.name; tbp.className = 'd-topbar-plan ' + plan.badge;
-  document.getElementById('d-tb-av').textContent = u.avatar;
-  // Nav
-  document.getElementById('fn-nav').style.display = u.role === 'founder' ? 'block' : 'none';
-  document.getElementById('cr-nav').style.display = u.role === 'creator' ? 'block' : 'none';
-  // Upgrade banner
-  document.getElementById('d-ub').style.display = u.plan === 'free' ? 'flex' : 'none';
-  const promo = document.getElementById('d-sb-promo');
-  if(promo) promo.style.display = u.plan === 'pro' ? 'none' : 'block';
-  // Welcome
-  const greet = new Date().getHours() < 12 ? 'Good morning' : new Date().getHours() < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('d-welcome').textContent = `${greet}, ${u.name.split(' ')[0]}`;
-  document.getElementById('d-subtitle').textContent = u.role === 'founder'
-    ? 'Find and collaborate with top creators for your startup.'
-    : 'Your profile is live. Founders are discovering you.';
-  renderStats(); renderQuick(); renderActivity(); renderPlanOverview();
-  renderCreators(); renderProfile(); renderPricing();
-  showView('home');
-}
-
-function renderStats() {
-  const u = S.user;
-  const plan = PLANS[u.plan];
-  const cl = plan.collabs === -1 ? '∞' : plan.collabs;
-  const rem = plan.collabs === -1 ? '∞' : Math.max(0, plan.collabs - S.collabsUsed);
-  let html = '';
-  if (u.role === 'founder') {
-    html = `
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#eff6ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
-          <span class="d-stat-card-trend trend-up">↑ Live</span>
-        </div>
-        <div class="d-stat-card-val">${CREATORS.length}</div>
-        <div class="d-stat-card-lbl">Creators Available</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <span class="d-stat-card-trend trend-neu">${S.collabsUsed}/${cl}</span>
-        </div>
-        <div class="d-stat-card-val">${S.collabsUsed}</div>
-        <div class="d-stat-card-lbl">Collabs This Month</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fdf4ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>
-          <span class="d-stat-card-trend trend-neu">Active</span>
-        </div>
-        <div class="d-stat-card-val" style="font-size:18px;padding-top:4px;">${plan.name.replace(' Plan','')}</div>
-        <div class="d-stat-card-lbl">Current Plan</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fff7ed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-          <span class="d-stat-card-trend trend-up">Remaining</span>
-        </div>
-        <div class="d-stat-card-val">${rem}</div>
-        <div class="d-stat-card-lbl">Collabs Left</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div>
-      </div>`;
-  } else {
-    html = `
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#eff6ff;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
-          <span class="d-stat-card-trend trend-up">↑ 12%</span>
-        </div>
-        <div class="d-stat-card-val">124</div>
-        <div class="d-stat-card-lbl">Profile Views</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <span class="d-stat-card-trend trend-up">↑ 3 new</span>
-        </div>
-        <div class="d-stat-card-val">7</div>
-        <div class="d-stat-card-lbl">Collab Requests</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fdf4ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>
-          <span class="d-stat-card-trend trend-neu">Active</span>
-        </div>
-        <div class="d-stat-card-val" style="font-size:18px;padding-top:4px;">${plan.name.replace(' Plan','')}</div>
-        <div class="d-stat-card-lbl">Current Plan</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner">
-          <div class="d-stat-card-icon" style="background:#fff7ed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-          <span class="d-stat-card-trend trend-up">Top</span>
-        </div>
-        <div class="d-stat-card-val">4.8</div>
-        <div class="d-stat-card-lbl">Avg. Rating</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div>
-      </div>`;
-  }
-  document.getElementById('d-stats').innerHTML = html;
-}
-
-function renderQuick() {
-  const u = S.user;
-  let html = '';
-  if (u.role === 'founder') {
-    html = `
-      <div class="d-quick-card" onclick="showView('discover')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><div><div class="d-qc-label">Browse Creators</div><div class="d-qc-desc">Find your perfect match</div></div></div>
-      <div class="d-quick-card" onclick="showView('profile')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Update your startup info</div></div></div>
-      <div class="d-quick-card" onclick="showView('pricing')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div><div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Unlock more features</div></div></div>`;
-  } else {
-    html = `
-      <div class="d-quick-card" onclick="showView('profile')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Keep your profile fresh</div></div></div>
-      <div class="d-quick-card" onclick="showView('collabs')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="d-qc-label">Collaborations</div><div class="d-qc-desc">Track your requests</div></div></div>
-      <div class="d-quick-card" onclick="showView('pricing')"><div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div><div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Get featured & more</div></div></div>`;
-  }
-  document.getElementById('d-quick').innerHTML = html;
-}
-
-function renderPlanOverview() {
-  const u = S.user;
-  const plan = PLANS[u.plan];
-  const used = S.collabsUsed;
-  const total = plan.collabs === -1 ? 999 : plan.collabs;
-  const pct = plan.collabs === -1 ? 100 : Math.min(100, Math.round((used / total) * 100));
-  const el = document.getElementById('d-plan-overview');
-  if (!el) return;
-  el.innerHTML = `
-    <div class="d-mini-row">
-      <span class="d-mini-label">Current Plan</span>
-      <span class="d-mini-val">${plan.name}</span>
-    </div>
-    <div class="d-mini-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
-      <div style="display:flex;justify-content:space-between;width:100%;">
-        <span class="d-mini-label">Collabs Used</span>
-        <span class="d-mini-val">${used} / ${plan.collabs === -1 ? '∞' : plan.collabs}</span>
-      </div>
-      <div class="d-mini-bar-wrap" style="width:100%;">
-        <div class="d-mini-bar" style="width:${pct}%"></div>
-      </div>
-    </div>
-    <div class="d-mini-row">
-      <span class="d-mini-label">Profile Views (7d)</span>
-      <span class="d-mini-val">124</span>
-    </div>
-    <div class="d-mini-row">
-      <span class="d-mini-label">Next Billing</span>
-      <span class="d-mini-val">${u.plan === 'free' ? 'Free forever' : 'Apr 14, 2025'}</span>
-    </div>
-    ${u.plan === 'free' ? `<div style="padding:14px 20px;"><button onclick="showView('pricing')" style="width:100%;padding:10px;background:#0f1117;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#3b6ef0'" onmouseout="this.style.background='#0f1117'">Upgrade Plan →</button></div>` : ''}
-  `;
-}
-
-function renderActivity() {
-  const u = S.user;
-  let html = '';
-  if (u.role === 'founder') {
-    html = `
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#eff6ff;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="d-act-body"><div class="d-act-text">You viewed <strong>Arjun Mehra's</strong> profile</div><span class="d-act-time">2 hours ago</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="d-act-body"><div class="d-act-text">Collab request sent to <strong>Priya Kapoor</strong></div><span class="d-act-time">Yesterday</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#fff7ed;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="d-act-body"><div class="d-act-text">Profile created and published on PostHire</div><span class="d-act-time">2 days ago</span></div></div>`;
-  } else {
-    html = `
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="d-act-body"><div class="d-act-text"><strong>GrowthLabs</strong> sent you a collaboration request</div><span class="d-act-time">3 hours ago</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#eff6ff;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="d-act-body"><div class="d-act-text">Your profile was viewed by <strong>5 founders</strong> today</div><span class="d-act-time">6 hours ago</span></div></div>
-      <div class="d-activity-item"><div class="d-act-icon" style="background:#fff7ed;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="d-act-body"><div class="d-act-text">Your profile went live on PostHire</div><span class="d-act-time">3 days ago</span></div></div>`;
-  }
-  document.getElementById('d-activity').innerHTML = html;
-}
-
-function renderCreators(list) {
-  list = list || CREATORS;
-  const u = S.user;
-  const plan = PLANS[u.plan];
-  const lim = plan.browseLimit;
-  const show = lim > 0 ? list.slice(0, lim) : list;
-
-  // Banner
-  const banner = document.getElementById('d-discover-banner');
-  if (lim > 0 && list.length > lim) {
-    banner.innerHTML = `<div class="d-upgrade-banner" style="margin-bottom:20px;"><div class="d-ub-text"><h4>Showing ${lim} of ${list.length} Creators</h4><p>Upgrade to Starter or Pro to browse all creators unlimitedly.</p></div><button class="d-ub-btn" onclick="showView('pricing')">Upgrade Now →</button></div>`;
-  } else { banner.innerHTML = ''; }
-
-  const ctr = document.getElementById('d-collab-ctr');
-  const clPlan = PLANS[u.plan];
-  ctr.textContent = `${S.collabsUsed} of ${clPlan.collabs === -1 ? '∞' : clPlan.collabs} collaboration requests used this month.`;
-
-  document.getElementById('d-creator-grid').innerHTML = show.length
-    ? show.map(c => `
-      <div class="d-creator-card">
-        <div class="d-cc-top">
-          <div class="d-cc-av" style="background:linear-gradient(135deg,${c.grad})">${c.initials}</div>
-          <div class="d-cc-info">
-            <div class="d-cc-name">${c.name}</div>
-            <div class="d-cc-niche">${c.niche}</div>
-            <div class="d-cc-platform">${c.platform}</div>
-          </div>
-        </div>
-        <div class="d-cc-stats">
-          <div class="d-cc-stat"><span class="d-cc-stat-val">${c.audience}</span><span class="d-cc-stat-lbl">Audience</span></div>
-          <div class="d-cc-stat"><span class="d-cc-stat-val">${c.eng}</span><span class="d-cc-stat-lbl">Engagement</span></div>
-          <div class="d-cc-stat"><span class="d-cc-stat-val">${c.collabs}</span><span class="d-cc-stat-lbl">Collabs</span></div>
-        </div>
-        <div class="d-cc-body">
-          <div class="d-cc-bio">${c.bio}</div>
-          <div class="d-cc-tags">${c.tags.map(t=>`<span class="d-cc-tag">${t}</span>`).join('')}</div>
-        </div>
-        <div class="d-cc-footer">
-          <button class="d-btn-collab" onclick="collaborate(${c.id})">Collaborate →</button>
-          <button class="d-btn-view" onclick="viewCreator(${c.id})">View</button>
-        </div>
-      </div>`).join('')
-    : `<div class="d-empty" style="grid-column:1/-1"><div class="d-empty-icon">🔍</div><div class="d-empty-text">No creators found matching your filters.</div></div>`;
-}
-
-function filterCreators() {
-  const s = document.getElementById('d-search').value.toLowerCase();
-  const n = document.getElementById('f-niche').value;
-  const a = document.getElementById('f-aud').value;
-  const filtered = CREATORS.filter(c =>
-    (!s || c.name.toLowerCase().includes(s) || c.niche.toLowerCase().includes(s) || c.bio.toLowerCase().includes(s)) &&
-    (!n || c.niche === n) && (!a || c.audience === a)
-  );
-  renderCreators(filtered);
-}
-
-function collaborate(id) {
-  const u = S.user; const plan = PLANS[u.plan];
-  if (plan.collabs !== -1 && S.collabsUsed >= plan.collabs) {
-    openModal('Collaboration Limit Reached',
-      `You've used all ${plan.collabs} collaboration requests on your ${plan.name}. Upgrade to send more.`,
-      () => { showView('pricing'); closeModal(); }, 'Upgrade Plan');
-    return;
-  }
-  const c = CREATORS.find(x => x.id === id);
-  openModal(`Collaborate with ${c.name}`,
-    `Opening WhatsApp with <strong>${c.name}</strong>. A pre-filled message will be ready. This counts as 1 collaboration request.`,
-    () => {
-      S.collabsUsed++;
-      renderStats();
-      const msg = encodeURIComponent('Hi, I found you on PostHire. I would like to collaborate.');
-      window.open(`https://wa.me/${c.wa}?text=${msg}`, '_blank');
-      showToast(`Opening WhatsApp with ${c.name} ✦`, 'success');
-      closeModal();
-    }, 'Open WhatsApp →');
-}
-
-function viewCreator(id) {
-  const c = CREATORS.find(x => x.id === id);
-  openModal(c.name,
-    `<strong>Niche:</strong> ${c.niche} &nbsp;·&nbsp; <strong>Platform:</strong> ${c.platform}<br><strong>Audience:</strong> ${c.audience} &nbsp;·&nbsp; <strong>Engagement:</strong> ${c.eng}<br><strong>Pricing:</strong> ${c.pricing} &nbsp;·&nbsp; <strong>Past Collabs:</strong> ${c.collabs}<br><br>${c.bio}`,
-    () => { collaborate(id); closeModal(); }, 'Collaborate →');
-}
-
-function renderProfile() {
-  const u = S.user;
-  let html = '';
-  if (u.role === 'founder') {
-    html = `
-      <div class="d-profile-card">
-        <div class="d-profile-card-title">Public Profile</div>
-        <div class="d-pf-avatar-row">
-          <div class="d-pf-avatar-big">${u.avatar}</div>
-          <div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all creators on PostHire</p></div>
-        </div>
-        <div class="d-pf-grid">
-          <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
-          <div class="f-group"><label class="f-label">Email</label><input class="f-input" id="pf-email" value="${u.email}" type="email"></div>
-          <div class="f-group"><label class="f-label">Startup Name</label><input class="f-input" id="pf-startup" value="${u.startup}" placeholder="Your startup name"></div>
-          <div class="f-group"><label class="f-label">Industry</label>
-            <select class="f-select" id="pf-industry"><option>SaaS</option><option>D2C</option><option>Fintech</option><option>Edtech</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">Website</label><input class="f-input" id="pf-website" value="${u.website||''}" placeholder="yoursite.com"></div>
-          <div class="f-group"><label class="f-label">Budget Range</label>
-            <select class="f-select" id="pf-budget"><option>₹5K–₹20K</option><option>₹20K–₹50K</option><option>₹50K–₹1L</option><option>₹1L+</option></select>
-          </div>
-          <div class="f-group d-pf-full"><label class="f-label">About Your Startup</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
-          <div class="f-group"><label class="f-label">Collaboration Type</label>
-            <select class="f-select"><option>Brand Awareness</option><option>Product Review</option><option>Long-term Partnership</option></select>
-          </div>
-        </div>
-        <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
-      </div>`;
-  } else {
-    html = `
-      <div class="d-profile-card">
-        <div class="d-profile-card-title">Creator Profile</div>
-        <div class="d-pf-avatar-row">
-          <div class="d-pf-avatar-big">${u.avatar}</div>
-          <div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all startup founders on PostHire</p></div>
-        </div>
-        <div class="d-pf-grid">
-          <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
-          <div class="f-group"><label class="f-label">Email</label><input class="f-input" value="${u.email}" type="email"></div>
-          <div class="f-group"><label class="f-label">Primary Niche</label>
-            <select class="f-select" id="pf-niche"><option>AI & Tech</option><option>Finance</option><option>Startups</option><option>Lifestyle</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">Platform</label>
-            <select class="f-select"><option>Instagram</option><option>YouTube</option><option>LinkedIn</option><option>Twitter/X</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">Audience Size</label>
-            <select class="f-select"><option>1K–10K</option><option>10K–50K</option><option>50K–200K</option><option>200K+</option></select>
-          </div>
-          <div class="f-group"><label class="f-label">WhatsApp Number</label><input class="f-input" id="pf-wa" value="${u.whatsapp||''}" placeholder="10-digit number"></div>
-          <div class="f-group d-pf-full"><label class="f-label">Bio</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
-          <div class="f-group"><label class="f-label">Website / Portfolio</label><input class="f-input" value="${u.website||''}" placeholder="yoursite.com"></div>
-          <div class="f-group"><label class="f-label">Pricing (Starting)</label><input class="f-input" placeholder="e.g. ₹10,000+"></div>
-          <div class="f-group d-pf-full"><label class="f-label">Past Collaborations</label><textarea class="f-textarea" placeholder="e.g. Partnered with Razorpay, Zepto..."></textarea></div>
-        </div>
-        <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
-      </div>
-      ${S.user.plan === 'pro' ? `
-      <div class="d-profile-card">
-        <div class="d-profile-card-title">Portfolio Highlight <span style="margin-left:8px;background:rgba(139,92,246,0.1);color:var(--purple);padding:2px 8px;border-radius:var(--r-full);font-size:9px;">PRO</span></div>
-        <div class="d-pf-grid">
-          <div class="f-group"><label class="f-label">Featured Work Link</label><input class="f-input" placeholder="YouTube video, case study URL..."></div>
-          <div class="f-group"><label class="f-label">Campaign Results</label><input class="f-input" placeholder="e.g. 50K views for Brand X in 2 weeks"></div>
-        </div>
-        <div class="d-pf-save"><button class="d-save-btn" onclick="showToast('Portfolio saved ✦','success')">Save Portfolio →</button></div>
-      </div>` : ''}`;
-  }
-  document.getElementById('d-profile-content').innerHTML = html;
-}
-
-function saveProfile() {
-  const u = S.user;
-  const nEl = document.getElementById('pf-name');
-  if (nEl) { u.name = nEl.value; }
-  const bioEl = document.getElementById('pf-bio');
-  if (bioEl) u.bio = bioEl.value;
-  // Refresh avatar
-  u.avatar = u.name[0].toUpperCase();
-  document.getElementById('d-av').textContent = u.avatar;
-  document.getElementById('d-name').textContent = u.name;
-  document.getElementById('d-tb-av').textContent = u.avatar;
-  document.getElementById('d-welcome').textContent = `Good day, ${u.name.split(' ')[0]} ✦`;
-  showToast('Profile saved ✦', 'success');
-}
-
-function renderPricing() {
-  const u = S.user;
-  const plans = [
-    { key:'free',    name:'FREE',    price:'₹0',   period:'/month', badge:'badge-free',    features:['Create profile (creator or founder)','Browse up to 10 profiles/day','3 collaboration requests/month','Basic search filters'],                     disabled:['In-platform messaging','AI match suggestions','Featured profile badge'], cta:'Current Plan', featured:false },
-    { key:'starter', name:'STARTER', price:'₹299', period:'/month', badge:'badge-starter', features:['Unlimited profile browsing','20 collaboration requests/month','Advanced search & filters','In-platform messaging','Priority listing (basic)'],  disabled:['AI match suggestions'],                                                    cta:'Upgrade to Starter', featured:true },
-    { key:'pro',     name:'PRO',     price:'₹599', period:'/month', badge:'badge-pro',     features:['Everything in Starter','Unlimited collaboration requests','Daily AI-powered matches','Featured profile badge','Top search placement','Portfolio highlight section','Audience analytics','Priority support'], disabled:[],        cta:'Upgrade to Pro',     featured:false },
-  ];
-  document.getElementById('d-price-grid').innerHTML = plans.map(p => {
-    const isCur = u.plan === p.key;
-    return `
-      <div class="l-price-card ${p.featured ? 'l-price-card-featured' : ''}">
-        <span class="l-plan-badge ${p.badge}">${p.key.toUpperCase()}</span>
-        <div class="l-price-name">${p.name} PLAN</div>
-        <div class="l-price-amount"><sup>₹</sup>${p.price.replace('₹','')}</div>
-        <div class="l-price-period">${p.period}</div>
-        <div class="l-price-divider"></div>
-        <ul class="l-price-feat-list">
-          ${p.features.map(f=>`<li><span class="tick">✓</span>${f}</li>`).join('')}
-          ${p.disabled.map(f=>`<li class="off"><span class="tick">—</span>${f}</li>`).join('')}
-        </ul>
-        ${isCur
-          ? `<button class="l-price-cta l-price-cta-outline" style="opacity:0.45;cursor:default;">Current Plan ✓</button>`
-          : `<button class="l-price-cta ${p.featured?'l-price-cta-fill':'l-price-cta-outline'}" onclick="selectPlan('${p.key}')">${p.cta} →</button>`}
-      </div>`;
-  }).join('');
-}
-
-function selectPlan(planKey) {
-  const pData = PLANS[planKey];
-  openModal(`Switch to ${pData.name}`,
-    planKey === 'free'
-      ? 'Downgrade to Free? You will lose access to premium features.'
-      : `Upgrade to <strong>${pData.name}</strong> for ${pData.price}/month. Unlock all the features listed above.`,
-    () => {
-      S.user.plan = planKey;
-      renderDash();
-      closeModal();
-      showToast(`Switched to ${pData.name} ✦`, 'success');
-    },
-    planKey === 'free' ? 'Confirm Downgrade' : `Activate ${pData.name}`
-  );
-}
-
-// ══════════════════════════════
-//  VIEW SWITCHING
-// ══════════════════════════════
-const VIEW_TITLES = { home:'Dashboard', discover:'Discover Creators', profile:'My Profile', collabs:'Collaborations', pricing:'Upgrade Plan', settings:'Settings' };
-function showView(id, navEl) {
-  document.querySelectorAll('.d-view').forEach(v => v.classList.remove('act'));
-  document.querySelectorAll('.d-nav-item').forEach(i => i.classList.remove('act'));
-  const vw = document.getElementById('vw-' + id);
-  if (vw) vw.classList.add('act');
-  if (navEl) navEl.classList.add('act');
-  else {
-    document.querySelectorAll('.d-nav-item').forEach(i => {
-      if ((i.getAttribute('onclick')||'').includes(`'${id}'`)) i.classList.add('act');
-    });
-  }
-  document.getElementById('d-topbar-title').textContent = VIEW_TITLES[id] || 'Dashboard';
-  closeSidebar();
-}
-
-// ══════════════════════════════
-//  SIDEBAR MOBILE
-// ══════════════════════════════
-function openSidebar() {
-  document.getElementById('d-sidebar').classList.add('mob-open');
-  document.getElementById('d-sb-overlay').classList.add('show');
-}
-function closeSidebar() {
-  document.getElementById('d-sidebar').classList.remove('mob-open');
-  document.getElementById('d-sb-overlay').classList.remove('show');
-}
-
-// ══════════════════════════════
-//  MODAL
-// ══════════════════════════════
-let modalCb = null;
-function openModal(title, body, cb, okTxt = 'Confirm') {
-  document.getElementById('modal-t').textContent = title;
-  document.getElementById('modal-b').innerHTML = body;
-  document.getElementById('modal-ok').textContent = okTxt;
-  modalCb = cb;
-  document.getElementById('ph-modal').classList.add('open');
-}
-function closeModal() { document.getElementById('ph-modal').classList.remove('open'); }
-document.getElementById('modal-ok').addEventListener('click', () => { if (modalCb) modalCb(); });
-document.getElementById('ph-modal').addEventListener('click', e => { if (e.target === document.getElementById('ph-modal')) closeModal(); });
-
-// ══════════════════════════════
-//  TOAST
-// ══════════════════════════════
-function showToast(msg, type = '') {
-  const container = document.getElementById('ph-toast');
-  const el = document.createElement('div');
-  el.className = 'toast-item' + (type ? ' t-' + type : '');
-  el.innerHTML = `<div class="toast-dot"></div>${msg}`;
-  container.appendChild(el);
-  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
-  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 400); }, 3200);
-}
-
-// ══════════════════════════════
-//  MOBILE BOTTOM NAV SYNC
-// ══════════════════════════════
-function updateBnav(el) {
-  document.querySelectorAll('.d-bnav-item').forEach(b => b.classList.remove('act'));
-  if(el) el.classList.add('act');
-}
-
-// ══════════════════════════════
-//  LOADER
-// ══════════════════════════════
-(function() {
-  const bars = Array.from(document.querySelectorAll('.ph-lb'));
-  const loader = document.getElementById('ph-loader');
-  if (!window.gsap) { loader.style.display = 'none'; return; }
-  const order = [2,3,1,4,0].map(i => bars[i]);
-  gsap.to(order, { opacity:1, duration:0.4, ease:'power2.inOut',
-    onComplete: () => gsap.to(order, { y:'-100vh', duration:1.3, stagger:0.08, ease:'power4.inOut',
-      onComplete: () => { loader.style.display = 'none'; }
-    })
-  });
 })();
 </script>
 </body>
+</html>
+</html>
 </html>
