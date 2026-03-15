@@ -1470,6 +1470,63 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 @media (max-width: 860px) {
   #pp-grid { grid-template-columns: 1fr !important; max-width: 400px !important; }
 }
+
+/* ── Plan-gated locked views ── */
+.d-locked {
+  background:#fff; border:1px solid #e8ebf4; border-radius:16px;
+  padding:60px 40px; text-align:center; max-width:440px; margin:40px auto;
+}
+.d-locked-icon { font-size:48px; margin-bottom:14px; }
+.d-locked h3 { font-size:18px; font-weight:800; color:#0f1117; margin-bottom:8px; }
+.d-locked p { font-size:14px; color:#6b7280; line-height:1.7; margin-bottom:22px; }
+.d-locked-btn {
+  padding:12px 32px; background:linear-gradient(135deg,var(--blue),var(--violet));
+  color:#fff; border:none; border-radius:var(--r-full);
+  font-size:13px; font-weight:700; cursor:pointer; transition:all 0.2s;
+}
+.d-locked-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(59,110,240,0.3); }
+
+/* ── Plan badges in discover ── */
+.d-featured-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  background:linear-gradient(135deg,#f59e0b,#f97316);
+  color:#fff; font-size:9px; font-weight:800; letter-spacing:1px;
+  padding:2px 8px; border-radius:var(--r-full); text-transform:uppercase;
+}
+.d-ai-match-banner {
+  background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,110,240,0.06));
+  border:1px solid rgba(139,92,246,0.2); border-radius:12px;
+  padding:16px 20px; margin-bottom:20px;
+  display:flex; align-items:center; gap:14px;
+}
+.d-ai-match-banner-icon { font-size:28px; flex-shrink:0; }
+.d-ai-match-banner h4 { font-size:14px; font-weight:700; color:#0f1117; margin-bottom:3px; }
+.d-ai-match-banner p  { font-size:12px; color:#6b7280; }
+.d-browse-limit-bar {
+  background:#fff; border:1px solid #e8ebf4; border-radius:10px;
+  padding:12px 16px; margin-bottom:16px;
+  display:flex; align-items:center; gap:12px; font-size:13px;
+}
+.d-blb-track { flex:1; height:6px; background:#f0f2f8; border-radius:3px; overflow:hidden; }
+.d-blb-fill  { height:100%; background:linear-gradient(90deg,var(--blue),var(--cyan)); border-radius:3px; transition:width 0.4s; }
+.d-msg-panel {
+  background:#fff; border:1px solid #e8ebf4; border-radius:12px;
+  display:flex; flex-direction:column; height:420px; overflow:hidden;
+}
+.d-msg-hd { padding:16px 20px; border-bottom:1px solid #f0f2f8; font-weight:700; font-size:13px; color:#0f1117; }
+.d-msg-body { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; }
+.d-msg-item { background:#f7f8fc; border-radius:10px; padding:12px 14px; cursor:pointer; transition:background 0.15s; }
+.d-msg-item:hover { background:#eef0f9; }
+.d-msg-name { font-size:13px; font-weight:700; color:#0f1117; margin-bottom:2px; }
+.d-msg-preview { font-size:12px; color:#9ca3af; }
+.d-analytics-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:20px; }
+.d-analytics-card {
+  background:#fff; border:1px solid #e8ebf4; border-radius:12px; padding:20px;
+}
+.d-analytics-card h5 { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#9ca3af; margin-bottom:8px; }
+.d-analytics-val { font-size:28px; font-weight:800; color:#0f1117; letter-spacing:-1px; }
+.d-analytics-sub { font-size:12px; color:#6b7280; margin-top:4px; }
+
 </style>
 </head>
 <body>
@@ -2055,6 +2112,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
         <div id="fn-nav">
           <div class="d-nav-item act" onclick="showView('home',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>Dashboard</div>
           <div class="d-nav-item" onclick="showView('discover',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>Discover Creators</div>
+          <div class="d-nav-item" id="fn-nav-messages" onclick="showView('messages',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>Messages <span id="fn-msg-badge" style="display:none;background:var(--blue);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;">Starter+</span></div>
           <div class="d-nav-item" onclick="showView('profile',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>My Profile</div>
           <div class="d-nav-section-label">Account</div>
           <div class="d-nav-item" onclick="showView('pricing',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>Upgrade Plan</div>
@@ -2066,6 +2124,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
           <div class="d-nav-item act" onclick="showView('home',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>Dashboard</div>
           <div class="d-nav-item" onclick="showView('profile',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>My Profile</div>
           <div class="d-nav-item" onclick="showView('collabs',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>Collaborations</div>
+          <div class="d-nav-item" id="cr-nav-messages" onclick="showView('messages',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>Messages <span style="background:var(--blue);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;">Starter+</span></div>
+          <div class="d-nav-item" id="cr-nav-analytics" onclick="showView('analytics',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>Analytics <span style="background:var(--violet);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;">Pro</span></div>
           <div class="d-nav-section-label">Account</div>
           <div class="d-nav-item" onclick="showView('pricing',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>Upgrade Plan</div>
           <div class="d-nav-item" onclick="showView('settings',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>Settings</div>
@@ -2156,6 +2216,10 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
               <option value="">All Audiences</option>
               <option>1K–10K</option><option>10K–50K</option><option>50K–200K</option><option>200K+</option>
             </select>
+            <select class="d-filter-sel" id="f-platform" onchange="filterCreators()" title="Advanced filter — Starter+">
+              <option value="">All Platforms</option>
+              <option>Instagram</option><option>YouTube</option><option>LinkedIn</option><option>Twitter/X</option>
+            </select>
           </div>
           <div class="d-creator-grid" id="d-creator-grid"></div>
         </div>
@@ -2179,6 +2243,24 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
             <div class="d-collab-hd"><h4>All Requests</h4><span id="collab-refresh-btn" onclick="loadMyCollabs()" style="cursor:pointer;font-size:12px;color:var(--blue);">↻ Refresh</span></div>
             <div id="my-collabs-list"><div style="text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">Loading collaboration requests...</div></div>
           </div>
+        </div>
+
+        <!-- MESSAGING VIEW (Starter+) -->
+        <div class="d-view" id="vw-messages">
+          <div class="d-section-hd">
+            <h2>Messages</h2>
+            <p>In-platform messaging with your collaborators.</p>
+          </div>
+          <div id="vw-messages-content"></div>
+        </div>
+
+        <!-- ANALYTICS VIEW (Pro) -->
+        <div class="d-view" id="vw-analytics">
+          <div class="d-section-hd">
+            <h2>Audience Analytics</h2>
+            <p>Track your profile performance and collaboration data.</p>
+          </div>
+          <div id="vw-analytics-content"></div>
         </div>
 
         <!-- ADMIN VIEW -->
@@ -2304,10 +2386,58 @@ let S = {
 };
 
 const PLANS = {
-  free:    { name:'Free Plan',    badge:'badge-free',    collabs:3,  browseLimit:10,  price:'₹0',   period:'/month' },
-  starter: { name:'Starter Plan', badge:'badge-starter', collabs:20, browseLimit:-1,  price:'₹299', period:'/month' },
-  pro:     { name:'Pro Plan',     badge:'badge-pro',     collabs:-1, browseLimit:-1,  price:'₹599', period:'/month' },
+  free: {
+    name:'Free Plan', badge:'badge-free', price:'₹0', period:'/month',
+    collabs: 3,          // max collab requests/month
+    browseLimit: 10,     // max creator profiles viewable/day
+    messaging: false,    // in-platform messaging
+    aiMatch: false,      // AI match suggestions
+    featuredBadge: false,// featured profile badge
+    advSearch: false,    // advanced search filters
+    analytics: false,    // audience analytics
+    portfolio: false,    // portfolio highlight section
+    prioritySupport: false,
+    priorityListing: false,
+  },
+  starter: {
+    name:'Starter Plan', badge:'badge-starter', price:'₹299', period:'/month',
+    collabs: 20,
+    browseLimit: -1,     // unlimited
+    messaging: true,
+    aiMatch: false,
+    featuredBadge: false,
+    advSearch: true,
+    analytics: false,
+    portfolio: false,
+    prioritySupport: false,
+    priorityListing: true,
+  },
+  pro: {
+    name:'Pro Plan', badge:'badge-pro', price:'₹599', period:'/month',
+    collabs: -1,         // unlimited
+    browseLimit: -1,
+    messaging: true,
+    aiMatch: true,
+    featuredBadge: true,
+    advSearch: true,
+    analytics: true,
+    portfolio: true,
+    prioritySupport: true,
+    priorityListing: true,
+  },
 };
+
+// ── Plan gate helper — show locked state if feature not in plan ──
+function planGate(feature, content, planKey) {
+  const plan = PLANS[planKey || (S.user && S.user.plan) || 'free'];
+  if (plan[feature]) return content;
+  return '<div class="d-locked">'
+    + '<div class="d-locked-icon">🔒</div>'
+    + '<h3>Upgrade Required</h3>'
+    + '<p>This feature is available on <strong>Starter</strong> or <strong>Pro</strong> plan.</p>'
+    + '<button class="d-locked-btn" onclick="sv(\"pricing\")">View Plans →</button>'
+    + '</div>';
+}
 
 // ══════════════════════════════
 //  PAGE ROUTING
@@ -2657,39 +2787,65 @@ async function doAdminLogout() {
 function renderDash() {
   const u = S.user; if (!u) return;
   const plan = PLANS[u.plan] || PLANS.free;
-  // Sidebar user
-  const safeName = u.name || u.email || 'User';
+  const safeName   = u.name   || u.email || 'User';
   const safeAvatar = u.avatar || safeName[0].toUpperCase();
-  document.getElementById('d-av').textContent = safeAvatar;
-  document.getElementById('d-name').textContent = safeName;
-  document.getElementById('d-role').textContent = u.isAdmin ? '🛡️ Admin' : (u.role === 'founder' ? 'Startup Founder' : 'Content Creator');
+
+  // ── Sidebar ──
+  document.getElementById('d-av').textContent   = safeAvatar;
+  document.getElementById('d-name').textContent  = safeName;
+  document.getElementById('d-role').textContent  = u.isAdmin ? '🛡️ Admin' : (u.role === 'founder' ? 'Startup Founder' : 'Content Creator');
   const pb = document.getElementById('d-plan-badge');
-  pb.textContent = u.isAdmin ? 'Admin' : plan.name; pb.className = 'd-user-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
-  // Topbar
+  pb.textContent = u.isAdmin ? 'Admin' : plan.name;
+  pb.className   = 'd-user-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
+
+  // ── Topbar ──
   const tbp = document.getElementById('d-tb-plan');
-  tbp.textContent = u.isAdmin ? 'Admin' : plan.name; tbp.className = 'd-topbar-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
+  tbp.textContent = u.isAdmin ? 'Admin' : plan.name;
+  tbp.className   = 'd-topbar-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
   document.getElementById('d-tb-av').textContent = safeAvatar;
-  // Show/hide admin nav
+
+  // ── Nav visibility ──
+  const isFounder  = u.role === 'founder' || u.isAdmin;
+  const isCreator  = u.role === 'creator' && !u.isAdmin;
+  document.getElementById('fn-nav').style.display   = isFounder ? 'block' : 'none';
+  document.getElementById('cr-nav').style.display   = isCreator ? 'block' : 'none';
   const adminNav = document.getElementById('admin-nav-item');
   if (adminNav) adminNav.style.display = u.isAdmin ? 'flex' : 'none';
-  // Nav
-  document.getElementById('fn-nav').style.display = (u.role === 'founder' || u.isAdmin) ? 'block' : 'none';
-  document.getElementById('cr-nav').style.display = (u.role === 'creator' && !u.isAdmin) ? 'block' : 'none';
-  // Upgrade banner
+
+  // ── Plan-gated nav items ──
+  // Messages: Starter+ for everyone
+  ['fn-nav-messages','cr-nav-messages'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = (plan.messaging || u.isAdmin) ? 'flex' : 'flex'; // always show, locked inside
+  });
+  // Analytics: Pro only for creators
+  const analyticsNav = document.getElementById('cr-nav-analytics');
+  if (analyticsNav) analyticsNav.style.display = isCreator ? 'flex' : 'none';
+
+  // Featured badge indicator in sidebar
+  const featuredEl = document.getElementById('d-featured-badge');
+  if (featuredEl) featuredEl.style.display = (plan.featuredBadge || u.isAdmin) ? 'inline-flex' : 'none';
+
+  // ── Upgrade banner ──
   document.getElementById('d-ub').style.display = (u.plan === 'free' && !u.isAdmin) ? 'flex' : 'none';
   const promo = document.getElementById('d-sb-promo');
   if (promo) promo.style.display = (u.plan === 'pro' || u.isAdmin) ? 'none' : 'block';
-  // Welcome
+
+  // ── Welcome ──
   const hr = new Date().getHours();
   const greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('d-welcome').textContent = greet + ', ' + safeName.split(' ')[0] + ' ' + (u.isAdmin ? '🛡️' : '✦');
+  document.getElementById('d-welcome').textContent  = greet + ', ' + safeName.split(' ')[0] + ' ' + (u.isAdmin ? '🛡️' : (plan.featuredBadge ? '⭐' : '✦'));
   document.getElementById('d-subtitle').textContent = u.isAdmin
     ? 'Full admin access — manage users, collaborations and approvals.'
-    : (u.role === 'founder' ? 'Find and collaborate with top creators for your startup.' : 'Your profile is live. Founders are discovering you.');
+    : isFounder ? 'Find and collaborate with top creators for your startup.'
+    : 'Your profile is live. Founders are discovering you.';
+
+  // ── Render all sections ──
   renderStats(); renderQuick(); renderActivity(); renderPlanOverview();
-  loadCreatorsFromFirestore(); renderProfile(); renderPricing();
-  if (u.role === 'creator' || u.isAdmin) loadMyCollabs();
-  if (u.isAdmin) { loadAdminData(); }
+  renderProfile(); renderPricing();
+  loadCreatorsFromFirestore();
+  if (isCreator || u.isAdmin) loadMyCollabs();
+  if (u.isAdmin) loadAdminData();
   showView('home');
 }
 
@@ -2755,10 +2911,12 @@ function renderStats() {
         <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div>
       </div>`;
     // Load real collab count for creators
-    db.collection('collaborations').where('creatorId','==',S.user.uid).get().then(snap => {
-      const el = document.getElementById('stat-collab-requests');
-      if (el) el.textContent = snap.size;
-    }).catch(() => {});
+    if (db) {
+      db.collection('collaborations').where('creatorId','==',S.user.uid).get().then(function(snap) {
+        const el = document.getElementById('stat-collab-requests');
+        if (el) el.textContent = snap.size;
+      }).catch(function(){});
+    }
   }
   document.getElementById('d-stats').innerHTML = html;
 }
@@ -2766,59 +2924,71 @@ function renderStats() {
 // ══════════════════════════════
 //  QUICK ACTIONS
 // ══════════════════════════════
+function sv(view) { showView(view); } // safe alias for inline use
+
+function qCard(view, iconHtml, label, desc) {
+  return "<div class=\"d-quick-card\" onclick=\"sv('" + view + "')\"><div class=\"d-qc-icon\">" + iconHtml + "</div><div><div class=\"d-qc-label\">" + label + "</div><div class=\"d-qc-desc\">" + desc + "</div></div></div>";
+}
+
 function renderQuick() {
   const u = S.user;
-  let html = '';
+  let cards = [];
   if (u.role === 'founder' || u.isAdmin) {
-    const thirdCard = u.isAdmin
-      ? '<div class="d-quick-card" onclick="showView(\'admin\')"><div class="d-qc-icon" style="font-size:20px;">🛡️</div><div><div class="d-qc-label">Admin Panel</div><div class="d-qc-desc">Manage users & collabs</div></div></div>'
-      : '<div class="d-quick-card" onclick="showView(\'pricing\')"><div class="d-qc-icon" style="font-size:20px;">⭐</div><div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Unlock more features</div></div></div>';
-    html = ''
-      + '<div class="d-quick-card" onclick="showView(\'discover\')">'
-      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>'
-      +   '<div><div class="d-qc-label">Browse Creators</div><div class="d-qc-desc">Find your perfect match</div></div>'
-      + '</div>'
-      + '<div class="d-quick-card" onclick="showView(\'profile\')">'
-      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>'
-      +   '<div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Update your startup info</div></div>'
-      + '</div>'
-      + thirdCard;
+    cards.push(qCard('discover',
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>',
+      'Browse Creators', 'Find your perfect match'));
+    cards.push(qCard('profile',
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+      'Edit Profile', 'Update your info'));
+    if (u.isAdmin) {
+      cards.push(qCard('admin', '🛡️', 'Admin Panel', 'Manage users & collabs'));
+    } else {
+      cards.push(qCard('pricing', '⭐', 'Upgrade Plan', 'Unlock more features'));
+    }
   } else {
-    html = ''
-      + '<div class="d-quick-card" onclick="showView(\'profile\')">'
-      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>'
-      +   '<div><div class="d-qc-label">Edit Profile</div><div class="d-qc-desc">Keep your profile fresh</div></div>'
-      + '</div>'
-      + '<div class="d-quick-card" onclick="showView(\'collabs\')">'
-      +   '<div class="d-qc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>'
-      +   '<div><div class="d-qc-label">Collaborations</div><div class="d-qc-desc">Track your requests</div></div>'
-      + '</div>'
-      + '<div class="d-quick-card" onclick="showView(\'pricing\')">'
-      +   '<div class="d-qc-icon" style="font-size:20px;">⭐</div>'
-      +   '<div><div class="d-qc-label">Upgrade Plan</div><div class="d-qc-desc">Get featured & more</div></div>'
-      + '</div>';
+    // Creator
+    cards.push(qCard('profile',
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>',
+      'Edit Profile', 'Keep your profile fresh'));
+    cards.push(qCard('collabs',
+      '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+      'Collaborations', 'Track your requests'));
+    cards.push(qCard('pricing', '⭐', 'Upgrade Plan', 'Get featured & more'));
   }
-  document.getElementById('d-quick').innerHTML = html;
+  document.getElementById('d-quick').innerHTML = cards.join('');
 }
+
 function renderActivity() {
   const u = S.user;
+  if (!db) {
+    const el = document.getElementById('d-activity');
+    if (el) el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--t-dim);font-size:14px;">No recent activity yet.</div>';
+    return;
+  }
+  const field = (u.role === 'founder' || u.isAdmin) ? 'founderId' : 'creatorId';
   db.collection('collaborations')
-    .where(u.role === 'founder' || u.isAdmin ? 'founderId' : 'creatorId', '==', u.uid)
+    .where(field, '==', u.uid)
     .orderBy('createdAt', 'desc').limit(5).get()
-    .then(snap => {
+    .then(function(snap) {
       let html = '';
       if (snap.empty) {
         html = '<div style="padding:24px;text-align:center;color:var(--t-dim);font-size:14px;">No recent activity yet.</div>';
       } else {
-        snap.forEach(doc => {
+        snap.forEach(function(doc) {
           const d = doc.data();
           const timeStr = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : 'Recently';
-          html += `<div class="d-activity-item"><div class="d-act-icon" style="background:#eff6ff;">🤝</div><div class="d-act-body"><div class="d-act-text">Collaboration request with <strong>${u.role==='founder'||u.isAdmin ? d.creatorName : d.founderName}</strong></div><span class="d-act-time">${timeStr}</span></div></div>`;
+          const otherName = (u.role === 'founder' || u.isAdmin) ? (d.creatorName || '—') : (d.founderName || '—');
+          html += '<div class="d-activity-item">'
+            + '<div class="d-act-icon" style="background:#eff6ff;">🤝</div>'
+            + '<div class="d-act-body">'
+            + '<div class="d-act-text">Collaboration with <strong>' + otherName + '</strong></div>'
+            + '<span class="d-act-time">' + timeStr + '</span>'
+            + '</div></div>';
         });
       }
       const el = document.getElementById('d-activity');
       if (el) el.innerHTML = html;
-    }).catch(() => {
+    }).catch(function() {
       const el = document.getElementById('d-activity');
       if (el) el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--t-dim);font-size:14px;">No recent activity yet.</div>';
     });
@@ -2863,57 +3033,82 @@ let _allCreators = [];
 
 async function loadCreatorsFromFirestore() {
   const grid = document.getElementById('d-creator-grid');
+  const u = S.user;
+  if (!u) return;
+  const plan = PLANS[u.plan] || PLANS.free;
+
+  // ── Browse limit banner (Free plan: 10/day) ──
+  const banner = document.getElementById('d-discover-banner');
+  if (banner) {
+    if (!u.isAdmin && plan.browseLimit > 0) {
+      const viewed = parseInt(sessionStorage.getItem('ph_viewed') || '0');
+      const remaining = Math.max(0, plan.browseLimit - viewed);
+      banner.innerHTML = '<div class="d-browse-limit-bar">'
+        + '<span style="font-size:13px;color:#6b7280;">Daily Browse Limit:</span>'
+        + '<div class="d-blb-track"><div class="d-blb-fill" style="width:' + Math.round((viewed/plan.browseLimit)*100) + '%;"></div></div>'
+        + '<span style="font-size:13px;font-weight:700;color:#0f1117;">' + remaining + ' / ' + plan.browseLimit + ' left</span>'
+        + (remaining === 0 ? '<button class="d-locked-btn" onclick="sv(\"pricing\")" style="padding:6px 14px;font-size:12px;">Upgrade</button>' : '')
+        + '</div>';
+      if (remaining === 0) {
+        if (grid) grid.innerHTML = '<div class="d-locked"><div class="d-locked-icon">👀</div><h3>Daily Limit Reached</h3><p>You have viewed ' + plan.browseLimit + ' creator profiles today. Upgrade to Starter for unlimited browsing.</p><button class="d-locked-btn" onclick="sv("pricing")">Upgrade Plan →</button></div>';
+        return;
+      }
+    } else if (!u.isAdmin && plan.aiMatch) {
+      // Pro: AI Match banner
+      banner.innerHTML = '<div class="d-ai-match-banner"><div class="d-ai-match-banner-icon">🤖</div><div><h4>AI Match Suggestions Active</h4><p>Showing creators best matched to your startup profile and industry.</p></div></div>';
+    } else {
+      banner.innerHTML = '';
+    }
+  }
+
   if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">Loading creators...</div>';
 
-  // Wait for db to be ready (Firebase init is async)
   let tries = 0;
-  while (!db && tries < 20) { await new Promise(r => setTimeout(r, 200)); tries++; }
+  while (!db && tries < 20) { await new Promise(function(r){ setTimeout(r, 200); }); tries++; }
   if (!db) {
-    console.error('loadCreatorsFromFirestore: db not ready');
-    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ef4444;font-size:13px;">⚠️ Firebase not initialized. Please refresh.</div>';
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ef4444;">Firebase not ready. Please refresh.</div>';
     return;
   }
 
   try {
-    // Try filtered query first
     let snap;
     try {
       snap = await db.collection('users').where('role', '==', 'creator').get();
     } catch(e) {
-      console.warn('Filtered query failed, loading all users:', e.message);
-      // Fallback: load all and filter client-side
       snap = await db.collection('users').get();
     }
-
     const creators = [];
     snap.forEach(function(doc) {
       const d = doc.data();
-      // Include if role is creator (or if no role set but has niche — legacy)
       if (d.name && d.uid && (d.role === 'creator' || (!d.role && d.niche))) {
+        // Add featured badge for Pro creators
         creators.push(d);
       }
     });
 
-    console.log('loadCreatorsFromFirestore: found', creators.length, 'creators from', snap.size, 'total docs');
-
-    // Don't show current user in their own list
-    const filtered = creators.filter(function(c) {
-      return !S.user || c.uid !== S.user.uid;
+    // Sort: Pro creators (featured) first
+    creators.sort(function(a, b) {
+      const ap = PLANS[a.plan] || PLANS.free;
+      const bp = PLANS[b.plan] || PLANS.free;
+      if (bp.priorityListing && !ap.priorityListing) return 1;
+      if (ap.priorityListing && !bp.priorityListing) return -1;
+      return 0;
     });
 
-    renderCreators(filtered);
+    const filtered = creators.filter(function(c) { return !u || c.uid !== u.uid; });
 
+    // Track browse count for free plan
+    if (!u.isAdmin && plan.browseLimit > 0 && filtered.length > 0) {
+      const viewed = parseInt(sessionStorage.getItem('ph_viewed') || '0');
+      sessionStorage.setItem('ph_viewed', Math.min(viewed + filtered.length, plan.browseLimit));
+    }
+
+    renderCreators(filtered);
     const statEl = document.getElementById('stat-creators-count');
     if (statEl) statEl.textContent = filtered.length;
-
   } catch(e) {
     console.error('loadCreatorsFromFirestore error:', e.code, e.message);
-    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">'
-      + '<div style="font-size:36px;margin-bottom:12px;">⚠️</div>'
-      + '<div style="font-size:14px;font-weight:600;color:#ef4444;margin-bottom:8px;">Could not load creators</div>'
-      + '<div style="font-size:12px;color:var(--t-dim);">Error: ' + (e.message || e.code) + '</div>'
-      + '<div style="font-size:12px;color:var(--t-dim);margin-top:8px;">Check: Firebase Console → Firestore → Rules</div>'
-      + '</div>';
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;"><div style="font-size:36px;margin-bottom:12px;">⚠️</div><div style="font-size:14px;font-weight:600;color:#ef4444;">Could not load creators</div><div style="font-size:12px;color:var(--t-dim);margin-top:6px;">' + (e.message||e.code) + '</div></div>';
   }
 }
 
@@ -2960,13 +3155,23 @@ function _renderCreatorCards(list) {
 }
 
 function filterCreators() {
+  const u = S.user;
+  const plan = u ? (PLANS[u.plan] || PLANS.free) : PLANS.free;
   const s = document.getElementById('d-search').value.toLowerCase();
   const n = document.getElementById('f-niche').value;
   const a = document.getElementById('f-aud').value;
-  const filtered = _allCreators.filter(c =>
-    (!s || (c.name||'').toLowerCase().includes(s) || (c.niche||'').toLowerCase().includes(s) || (c.bio||'').toLowerCase().includes(s)) &&
-    (!n || c.niche === n) && (!a || c.audience === a)
-  );
+  const p = plan.advSearch || (u && u.isAdmin) ? (document.getElementById('f-platform') ? document.getElementById('f-platform').value : '') : '';
+  // Show locked message if trying advanced filter without plan
+  if (document.getElementById('f-platform') && !plan.advSearch && !(u && u.isAdmin)) {
+    document.getElementById('f-platform').title = 'Upgrade to Starter for platform filter';
+    document.getElementById('f-platform').style.opacity = '0.5';
+  }
+  const filtered = _allCreators.filter(function(c) {
+    return (!s || (c.name||'').toLowerCase().includes(s) || (c.niche||'').toLowerCase().includes(s) || (c.bio||'').toLowerCase().includes(s))
+      && (!n || c.niche === n)
+      && (!a || c.audience === a)
+      && (!p || c.platform === p);
+  });
   _renderCreatorCards(filtered);
 }
 
@@ -3387,7 +3592,7 @@ function selectPlan(planKey) {
 // ══════════════════════════════
 //  VIEW SWITCHING
 // ══════════════════════════════
-const VIEW_TITLES = { home:'Dashboard', discover:'Discover Creators', profile:'My Profile', collabs:'Collaborations', pricing:'Upgrade Plan', settings:'Settings', admin:'Admin Panel', planpick:'Choose Your Plan' };
+const VIEW_TITLES = { home:'Dashboard', discover:'Discover Creators', profile:'My Profile', collabs:'Collaborations', messages:'Messages', analytics:'Analytics', pricing:'Upgrade Plan', settings:'Settings', admin:'Admin Panel', planpick:'Choose Your Plan' };
 function showView(id, navEl) {
   document.querySelectorAll('.d-view').forEach(v => v.classList.remove('act'));
   document.querySelectorAll('.d-nav-item').forEach(i => i.classList.remove('act'));
@@ -3403,10 +3608,12 @@ function showView(id, navEl) {
   if (titleEl) titleEl.textContent = VIEW_TITLES[id] || 'Dashboard';
   closeSidebar();
   // Re-render views that need fresh data
-  if (id === 'profile')  renderProfile();
-  if (id === 'pricing')  renderPricing();
-  if (id === 'discover') loadCreatorsFromFirestore();
-  if (id === 'collabs')  loadMyCollabs();
+  if (id === 'profile')   renderProfile();
+  if (id === 'pricing')   renderPricing();
+  if (id === 'discover')  loadCreatorsFromFirestore();
+  if (id === 'collabs')   loadMyCollabs();
+  if (id === 'messages')  renderMessagesView();
+  if (id === 'analytics') renderAnalyticsView();
   if (id === 'admin' && S.user && S.user.isAdmin) loadAdminData();
 }
 
@@ -3456,6 +3663,115 @@ function showToast(msg, type = '') {
 function updateBnav(el) {
   document.querySelectorAll('.d-bnav-item').forEach(b => b.classList.remove('act'));
   if(el) el.classList.add('act');
+}
+
+// ══════════════════════════════
+//  MESSAGING VIEW (Starter+)
+// ══════════════════════════════
+function renderMessagesView() {
+  const u = S.user; if (!u) return;
+  const plan = PLANS[u.plan] || PLANS.free;
+  const el = document.getElementById('vw-messages-content');
+  if (!el) return;
+
+  if (!plan.messaging && !u.isAdmin) {
+    el.innerHTML = '<div class="d-locked">'
+      + '<div class="d-locked-icon">💬</div>'
+      + '<h3>In-Platform Messaging</h3>'
+      + '<p>Chat directly with your collaborators without leaving PostHire. Available on <strong>Starter</strong> and <strong>Pro</strong> plans.</p>'
+      + '<button class="d-locked-btn" onclick="sv("pricing")">Upgrade to Starter →</button>'
+      + '</div>';
+    return;
+  }
+
+  // Load approved collabs and show as message threads
+  if (!db) { el.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t-dim);">Loading...</div>'; return; }
+  const field = (u.role === 'founder' || u.isAdmin) ? 'founderId' : 'creatorId';
+  el.innerHTML = '<div style="font-size:13px;color:var(--t-dim);padding:10px 0 16px;">Showing approved collaborations you can message.</div>';
+  db.collection('collaborations').where(field, '==', u.uid).where('status', '==', 'approved').get()
+    .then(function(snap) {
+      if (snap.empty) {
+        el.innerHTML = '<div class="d-locked"><div class="d-locked-icon">💬</div><h3>No Active Conversations</h3><p>Once a collaboration is approved by admin, it will appear here for messaging.</p></div>';
+        return;
+      }
+      let html = '<div class="d-msg-panel"><div class="d-msg-hd">Active Conversations (' + snap.size + ')</div><div class="d-msg-body">';
+      snap.forEach(function(doc) {
+        const d = doc.data();
+        const otherName = (u.role === 'founder' || u.isAdmin) ? d.creatorName : d.founderName;
+        const otherWa   = (u.role === 'founder' || u.isAdmin) ? d.creatorWa   : d.founderWa;
+        const waUrl = "https://wa.me/" + otherWa + "?text=" + encodeURIComponent("Hi, connecting via PostHire!");
+        html += '<div class="d-msg-item" onclick="window.open(\"' + waUrl + '\", \"_blank\")">'
+          + '<div class="d-msg-name">' + (otherName || 'Collaborator') + '</div>'
+          + '<div class="d-msg-preview">Tap to open WhatsApp conversation →</div>'
+          + '</div>';
+      });
+      html += '</div></div>';
+      el.innerHTML = html;
+    }).catch(function() {
+      el.innerHTML = '<div style="padding:20px;color:var(--t-dim);">Could not load messages.</div>';
+    });
+}
+
+// ══════════════════════════════
+//  ANALYTICS VIEW (Pro only)
+// ══════════════════════════════
+async function renderAnalyticsView() {
+  const u = S.user; if (!u) return;
+  const plan = PLANS[u.plan] || PLANS.free;
+  const el = document.getElementById('vw-analytics-content');
+  if (!el) return;
+
+  if (!plan.analytics && !u.isAdmin) {
+    el.innerHTML = '<div class="d-locked">'
+      + '<div class="d-locked-icon">📊</div>'
+      + '<h3>Audience Analytics</h3>'
+      + '<p>Track your profile views, collaboration success rate, and audience engagement. Available on <strong>Pro</strong> plan.</p>'
+      + '<button class="d-locked-btn" onclick="sv("pricing")">Upgrade to Pro →</button>'
+      + '</div>';
+    return;
+  }
+
+  el.innerHTML = '<div style="font-size:13px;color:var(--t-dim);padding:4px 0 20px;">Your performance overview.</div>';
+
+  let totalCollabs = 0, approvedCollabs = 0, pendingCollabs = 0;
+  try {
+    const snap = await db.collection('collaborations').where('creatorId','==',u.uid).get();
+    totalCollabs = snap.size;
+    snap.forEach(function(doc) {
+      if (doc.data().status === 'approved') approvedCollabs++;
+      if (doc.data().status === 'pending')  pendingCollabs++;
+    });
+  } catch(e) {}
+
+  el.innerHTML += '<div class="d-analytics-grid">'
+    + analyticsCard('Total Collab Requests', totalCollabs, 'All time')
+    + analyticsCard('Approved Collabs', approvedCollabs, 'Successfully matched')
+    + analyticsCard('Pending Requests', pendingCollabs, 'Awaiting admin review')
+    + analyticsCard('Success Rate', totalCollabs > 0 ? Math.round((approvedCollabs/totalCollabs)*100) + '%' : '—', 'Approval percentage')
+    + '</div>'
+    + '<div class="d-profile-card" style="margin-top:0;">'
+    + '<div class="d-profile-card-title">Profile Completeness</div>'
+    + profileCompleteness(u)
+    + '</div>';
+}
+
+function analyticsCard(title, val, sub) {
+  return '<div class="d-analytics-card">'
+    + '<h5>' + title + '</h5>'
+    + '<div class="d-analytics-val">' + val + '</div>'
+    + '<div class="d-analytics-sub">' + sub + '</div>'
+    + '</div>';
+}
+
+function profileCompleteness(u) {
+  const fields = ['name','email','whatsapp','bio','niche','platform','audience','pricing','website'];
+  const filled  = fields.filter(function(f){ return u[f] && u[f].toString().trim() !== ''; }).length;
+  const pct     = Math.round((filled / fields.length) * 100);
+  return '<div style="margin-top:8px;">'
+    + '<div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;"><span style="color:#6b7280;">Profile filled</span><span style="font-weight:700;">' + pct + '%</span></div>'
+    + '<div class="d-blb-track"><div class="d-blb-fill" style="width:' + pct + '%;background:' + (pct >= 80 ? 'linear-gradient(90deg,#10b981,#06b6d4)' : 'linear-gradient(90deg,var(--blue),var(--cyan))') + ';"></div></div>'
+    + (pct < 80 ? '<div style="font-size:12px;color:#9ca3af;margin-top:8px;">Complete your profile to get more collaboration requests.</div>' : '<div style="font-size:12px;color:#10b981;margin-top:8px;">✓ Great profile! You are highly discoverable.</div>')
+    + '</div>';
 }
 
 // ══════════════════════════════
