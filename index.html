@@ -2559,13 +2559,28 @@ async function doLogin() {
 
   try {
     const cred = await auth.signInWithEmailAndPassword(email, pass);
-    const profile = await fbLoadUser(cred.user.uid);
+    let profile = await fbLoadUser(cred.user.uid);
 
     if (!profile) {
-      showToast('Account not found. Please sign up first.', 'error');
-      await auth.signOut();
-      if (btn) { btn.disabled = false; btn.textContent = 'Sign In →'; btn.style.opacity = '1'; }
-      return;
+      // Firestore profile missing — rebuild from Firebase Auth data
+      // (happens when signup Auth succeeded but Firestore write failed)
+      const isAdm = (email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+      profile = {
+        name: cred.user.displayName || email.split('@')[0],
+        email: email,
+        whatsapp: whatsapp || '',
+        role: 'founder',
+        plan: 'free',
+        avatar: (cred.user.displayName || email)[0].toUpperCase(),
+        startup: '', industry: '', budget: '', niche: '',
+        platform: '', audience: '', bio: '', website: '',
+        collabsUsed: 0,
+        isAdmin: isAdm,
+        uid: cred.user.uid,
+      };
+      // Try to save to Firestore
+      try { await fbSaveUser(cred.user.uid, profile); } catch(e) {}
+      showToast('Welcome! Please complete your profile.', 'success');
     }
 
     // Update whatsapp if user provides it at login
@@ -2643,15 +2658,17 @@ function renderDash() {
   const u = S.user; if (!u) return;
   const plan = PLANS[u.plan] || PLANS.free;
   // Sidebar user
-  document.getElementById('d-av').textContent = u.avatar || u.name[0];
-  document.getElementById('d-name').textContent = u.name;
+  const safeName = u.name || u.email || 'User';
+  const safeAvatar = u.avatar || safeName[0].toUpperCase();
+  document.getElementById('d-av').textContent = safeAvatar;
+  document.getElementById('d-name').textContent = safeName;
   document.getElementById('d-role').textContent = u.isAdmin ? '🛡️ Admin' : (u.role === 'founder' ? 'Startup Founder' : 'Content Creator');
   const pb = document.getElementById('d-plan-badge');
   pb.textContent = u.isAdmin ? 'Admin' : plan.name; pb.className = 'd-user-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
   // Topbar
   const tbp = document.getElementById('d-tb-plan');
   tbp.textContent = u.isAdmin ? 'Admin' : plan.name; tbp.className = 'd-topbar-plan ' + (u.isAdmin ? 'badge-pro' : plan.badge);
-  document.getElementById('d-tb-av').textContent = u.avatar || u.name[0];
+  document.getElementById('d-tb-av').textContent = safeAvatar;
   // Show/hide admin nav
   const adminNav = document.getElementById('admin-nav-item');
   if (adminNav) adminNav.style.display = u.isAdmin ? 'flex' : 'none';
@@ -2665,7 +2682,7 @@ function renderDash() {
   // Welcome
   const hr = new Date().getHours();
   const greet = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
-  document.getElementById('d-welcome').textContent = `${greet}, ${u.name.split(' ')[0]} ${u.isAdmin ? '🛡️' : '✦'}`;
+  document.getElementById('d-welcome').textContent = greet + ', ' + safeName.split(' ')[0] + ' ' + (u.isAdmin ? '🛡️' : '✦');
   document.getElementById('d-subtitle').textContent = u.isAdmin
     ? 'Full admin access — manage users, collaborations and approvals.'
     : (u.role === 'founder' ? 'Find and collaborate with top creators for your startup.' : 'Your profile is live. Founders are discovering you.');
@@ -3169,11 +3186,14 @@ async function adminDeleteUser(uid, name, btn) {
 // ══════════════════════════════
 function renderProfile() {
   const u = S.user;
+  if (!u) return;
+  const safeN = u.name || u.email || 'User';
+  const safeAv = u.avatar || safeN[0].toUpperCase();
   let html = '';
   const founderHtml = `
     <div class="d-profile-card">
       <div class="d-profile-card-title">Public Profile</div>
-      <div class="d-pf-avatar-row"><div class="d-pf-avatar-big">${u.avatar||u.name[0]}</div><div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all creators on PostHire</p></div></div>
+      <div class="d-pf-avatar-row"><div class="d-pf-avatar-big">${safeAv}</div><div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all creators on PostHire</p></div></div>
       <div class="d-pf-grid">
         <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
         <div class="f-group"><label class="f-label">Email</label><input class="f-input" value="${u.email}" type="email" readonly style="opacity:0.6;"></div>
@@ -3189,7 +3209,7 @@ function renderProfile() {
   const creatorHtml = `
     <div class="d-profile-card">
       <div class="d-profile-card-title">Creator Profile</div>
-      <div class="d-pf-avatar-row"><div class="d-pf-avatar-big">${u.avatar||u.name[0]}</div><div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all startup founders on PostHire</p></div></div>
+      <div class="d-pf-avatar-row"><div class="d-pf-avatar-big">${safeAv}</div><div class="d-pf-avatar-info"><h4>Profile Photo</h4><p>Visible to all startup founders on PostHire</p></div></div>
       <div class="d-pf-grid">
         <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="pf-name" value="${u.name}"></div>
         <div class="f-group"><label class="f-label">Email</label><input class="f-input" value="${u.email}" type="email" readonly style="opacity:0.6;"></div>
@@ -3231,7 +3251,7 @@ async function saveProfile() {
   u.avatar = u.name[0].toUpperCase();
   updates.avatar = u.avatar;
   document.getElementById('d-av').textContent = u.avatar;
-  document.getElementById('d-name').textContent = u.name;
+  document.getElementById('d-name').textContent = safeName;
   document.getElementById('d-tb-av').textContent = u.avatar;
   document.getElementById('d-welcome').textContent = `Good day, ${u.name.split(' ')[0]} ✦`;
   if (u.uid) await fbSaveUser(u.uid, updates);
@@ -3243,27 +3263,42 @@ async function saveProfile() {
 // ══════════════════════════════
 function renderPricing() {
   const u = S.user;
+  if (!u) return;
+  const el = document.getElementById('d-price-grid');
+  if (!el) return;
   const plans = [
-    { key:'free',    name:'FREE',    price:'₹0',   period:'/month', badge:'badge-free',    features:['Create profile (creator or founder)','Browse up to 10 profiles/day','3 collaboration requests/month','Basic search filters'], disabled:['In-platform messaging','AI match suggestions','Featured profile badge'], cta:'Current Plan', featured:false },
-    { key:'starter', name:'STARTER', price:'₹299', period:'/month', badge:'badge-starter', features:['Unlimited profile browsing','20 collaboration requests/month','Advanced search & filters','In-platform messaging','Priority listing (basic)'], disabled:['AI match suggestions'], cta:'Upgrade to Starter', featured:true },
-    { key:'pro',     name:'PRO',     price:'₹599', period:'/month', badge:'badge-pro',     features:['Everything in Starter','Unlimited collaboration requests','Daily AI-powered matches','Featured profile badge','Top search placement','Portfolio highlight section','Audience analytics','Priority support'], disabled:[], cta:'Upgrade to Pro', featured:false },
+    { key:'free',    name:'FREE',    price:'0',   period:'/month', badge:'badge-free',
+      features:['Create profile (creator or founder)','Browse up to 10 profiles/day','3 collaboration requests/month','Basic search filters'],
+      disabled:['In-platform messaging','AI match suggestions','Featured profile badge'], featured:false },
+    { key:'starter', name:'STARTER', price:'299', period:'/month', badge:'badge-starter',
+      features:['Unlimited profile browsing','20 collaboration requests/month','Advanced search & filters','In-platform messaging','Priority listing (basic)'],
+      disabled:['AI match suggestions'], featured:true },
+    { key:'pro',     name:'PRO',     price:'599', period:'/month', badge:'badge-pro',
+      features:['Everything in Starter','Unlimited collaboration requests','Daily AI-powered matches','Featured profile badge','Top search placement','Portfolio highlight section','Audience analytics','Priority support'],
+      disabled:[], featured:false },
   ];
-  document.getElementById('d-price-grid').innerHTML = plans.map(p => {
+  el.innerHTML = plans.map(function(p) {
     const isCur = u.plan === p.key;
-    return `<div class="l-price-card ${p.featured ? 'l-price-card-featured' : ''}">
-      <span class="l-plan-badge ${p.badge}">${p.key.toUpperCase()}</span>
-      <div class="l-price-name">${p.name} PLAN</div>
-      <div class="l-price-amount"><sup>₹</sup>${p.price.replace('₹','')}</div>
-      <div class="l-price-period">${p.period}</div>
-      <div class="l-price-divider"></div>
-      <ul class="l-price-feat-list">
-        ${p.features.map(f=>`<li><span class="tick">✓</span>${f}</li>`).join('')}
-        ${p.disabled.map(f=>`<li class="off"><span class="tick">—</span>${f}</li>`).join('')}
-      </ul>
-      ${isCur
-        ? `<button class="l-price-cta l-price-cta-outline" style="opacity:0.45;cursor:default;">Current Plan ✓</button>`
-        : `<button class="l-price-cta ${p.featured?'l-price-cta-fill':'l-price-cta-outline'}" onclick="selectPlan('${p.key}')">${p.cta} →</button>`}
-    </div>`;
+    const featuredClass = p.featured ? ' l-price-card-featured' : '';
+    const featList = p.features.map(function(f) { return '<li><span class="tick">✓</span>' + f + '</li>'; }).join('');
+    const disList  = p.disabled.map(function(f)  { return '<li class="off"><span class="tick">—</span>' + f + '</li>'; }).join('');
+    let btn = '';
+    if (isCur) {
+      btn = '<button class="l-price-cta l-price-cta-outline" style="opacity:0.45;cursor:default;">Current Plan ✓</button>';
+    } else {
+      const btnClass = p.featured ? 'l-price-cta-fill' : 'l-price-cta-outline';
+      const cta = p.key === 'starter' ? 'Upgrade to Starter' : 'Go Pro';
+      btn = '<button class="l-price-cta ' + btnClass + '" onclick="selectPlan(\'' + p.key + '\')">' + cta + ' →</button>';
+    }
+    return '<div class="l-price-card' + featuredClass + '">'
+      + '<span class="l-plan-badge ' + p.badge + '">' + p.key.toUpperCase() + '</span>'
+      + '<div class="l-price-name">' + p.name + ' PLAN</div>'
+      + '<div class="l-price-amount"><sup>₹</sup>' + p.price + '</div>'
+      + '<div class="l-price-period">' + p.period + '</div>'
+      + '<div class="l-price-divider"></div>'
+      + '<ul class="l-price-feat-list">' + featList + disList + '</ul>'
+      + btn
+      + '</div>';
   }).join('');
 }
 
@@ -3296,13 +3331,17 @@ function showView(id, navEl) {
   if (navEl) navEl.classList.add('act');
   else {
     document.querySelectorAll('.d-nav-item').forEach(i => {
-      if ((i.getAttribute('onclick')||'').includes(`'${id}'`)) i.classList.add('act');
+      if ((i.getAttribute('onclick')||'').includes("'" + id + "'")) i.classList.add('act');
     });
   }
-  document.getElementById('d-topbar-title').textContent = VIEW_TITLES[id] || 'Dashboard';
+  const titleEl = document.getElementById('d-topbar-title');
+  if (titleEl) titleEl.textContent = VIEW_TITLES[id] || 'Dashboard';
   closeSidebar();
-  if (id === 'collabs') loadMyCollabs();
-  if (id === 'admin' && S.user?.isAdmin) loadAdminData();
+  // Re-render views that need fresh data
+  if (id === 'profile')  renderProfile();
+  if (id === 'pricing')  renderPricing();
+  if (id === 'collabs')  loadMyCollabs();
+  if (id === 'admin' && S.user && S.user.isAdmin) loadAdminData();
 }
 
 // ══════════════════════════════
@@ -3373,6 +3412,17 @@ function updateBnav(el) {
 // ════════════════════════════════════════════════════════════════
 //  FIREBASE — initialized here so ALL functions above are defined
 // ════════════════════════════════════════════════════════════════
+// Global aliases — set before Firebase init so doLogin/doSignup can use them
+let auth = null, db = null;
+function fbSaveUser(uid, data) {
+  if (window.fbSaveUser) return window.fbSaveUser(uid, data);
+  return Promise.resolve();
+}
+function fbLoadUser(uid) {
+  if (window.fbLoadUser) return window.fbLoadUser(uid);
+  return Promise.resolve(null);
+}
+
 (function initFirebase() {
   try {
     const firebaseConfig = {
@@ -3390,6 +3440,11 @@ function updateBnav(el) {
     }
     window._auth = firebase.auth();
     window._db   = firebase.firestore();
+    // Also assign to globals so non-IIFE functions can use them
+    auth = window._auth;
+    db   = window._db;
+    window.auth = auth;
+    window.db   = db;
 
     // ── Firestore helpers ────────────────────────────────────
     window.fbSaveUser = async function(uid, data) {
@@ -3434,6 +3489,9 @@ function updateBnav(el) {
     });
 
     console.log('PostHire: Firebase ready ✦');
+    console.log('If login fails with "Account not found", check:');
+    console.log('  1. Firebase Console → Firestore → Rules → allow read, write: if true (for testing)');
+    console.log('  2. Or proper rules: allow read, write: if request.auth != null');
   } catch(e) {
     console.error('Firebase init error:', e);
   }
