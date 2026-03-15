@@ -2864,24 +2864,56 @@ let _allCreators = [];
 async function loadCreatorsFromFirestore() {
   const grid = document.getElementById('d-creator-grid');
   if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">Loading creators...</div>';
+
+  // Wait for db to be ready (Firebase init is async)
+  let tries = 0;
+  while (!db && tries < 20) { await new Promise(r => setTimeout(r, 200)); tries++; }
+  if (!db) {
+    console.error('loadCreatorsFromFirestore: db not ready');
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ef4444;font-size:13px;">⚠️ Firebase not initialized. Please refresh.</div>';
+    return;
+  }
+
   try {
-    // Load ALL users with role = creator
-    const snap = await db.collection('users').where('role', '==', 'creator').get();
+    // Try filtered query first
+    let snap;
+    try {
+      snap = await db.collection('users').where('role', '==', 'creator').get();
+    } catch(e) {
+      console.warn('Filtered query failed, loading all users:', e.message);
+      // Fallback: load all and filter client-side
+      snap = await db.collection('users').get();
+    }
+
     const creators = [];
     snap.forEach(function(doc) {
       const d = doc.data();
-      // Only show creators with a name (valid profiles)
-      if (d.name && d.uid) creators.push(d);
+      // Include if role is creator (or if no role set but has niche — legacy)
+      if (d.name && d.uid && (d.role === 'creator' || (!d.role && d.niche))) {
+        creators.push(d);
+      }
     });
-    console.log('loadCreatorsFromFirestore: found', creators.length, 'creators');
-    renderCreators(creators);
-    // Update stat counter
+
+    console.log('loadCreatorsFromFirestore: found', creators.length, 'creators from', snap.size, 'total docs');
+
+    // Don't show current user in their own list
+    const filtered = creators.filter(function(c) {
+      return !S.user || c.uid !== S.user.uid;
+    });
+
+    renderCreators(filtered);
+
     const statEl = document.getElementById('stat-creators-count');
-    if (statEl) statEl.textContent = creators.length;
+    if (statEl) statEl.textContent = filtered.length;
+
   } catch(e) {
     console.error('loadCreatorsFromFirestore error:', e.code, e.message);
-    const grid = document.getElementById('d-creator-grid');
-    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ef4444;font-size:13px;">⚠️ Could not load creators. Check Firestore Rules — allow read if request.auth != null</div>';
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;">'
+      + '<div style="font-size:36px;margin-bottom:12px;">⚠️</div>'
+      + '<div style="font-size:14px;font-weight:600;color:#ef4444;margin-bottom:8px;">Could not load creators</div>'
+      + '<div style="font-size:12px;color:var(--t-dim);">Error: ' + (e.message || e.code) + '</div>'
+      + '<div style="font-size:12px;color:var(--t-dim);margin-top:8px;">Check: Firebase Console → Firestore → Rules</div>'
+      + '</div>';
   }
 }
 
@@ -3474,11 +3506,12 @@ function fbLoadUser(uid) {
     }
     window._auth = firebase.auth();
     window._db   = firebase.firestore();
-    // Also assign to globals so non-IIFE functions can use them
+    // Assign to globals so ALL functions can use auth/db directly
     auth = window._auth;
     db   = window._db;
     window.auth = auth;
     window.db   = db;
+    console.log('Firebase: auth and db assigned to globals ✦');
 
     // ── Firestore helpers ────────────────────────────────────
     window.fbSaveUser = async function(uid, data) {
