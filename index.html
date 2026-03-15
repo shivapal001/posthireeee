@@ -2856,6 +2856,35 @@ function renderPlanOverview() {
     + '<span class="d-mini-val">' + (u.whatsapp || 'Not set') + '</span></div>'
     + upgradeBtn;
 }
+// ══════════════════════════════
+//  LOAD CREATORS FROM FIRESTORE
+// ══════════════════════════════
+let _allCreators = [];
+
+async function loadCreatorsFromFirestore() {
+  const grid = document.getElementById('d-creator-grid');
+  if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">Loading creators...</div>';
+  try {
+    // Load ALL users with role = creator
+    const snap = await db.collection('users').where('role', '==', 'creator').get();
+    const creators = [];
+    snap.forEach(function(doc) {
+      const d = doc.data();
+      // Only show creators with a name (valid profiles)
+      if (d.name && d.uid) creators.push(d);
+    });
+    console.log('loadCreatorsFromFirestore: found', creators.length, 'creators');
+    renderCreators(creators);
+    // Update stat counter
+    const statEl = document.getElementById('stat-creators-count');
+    if (statEl) statEl.textContent = creators.length;
+  } catch(e) {
+    console.error('loadCreatorsFromFirestore error:', e.code, e.message);
+    const grid = document.getElementById('d-creator-grid');
+    if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#ef4444;font-size:13px;">⚠️ Could not load creators. Check Firestore Rules — allow read if request.auth != null</div>';
+  }
+}
+
 function renderCreators(list) {
   _allCreators = list || [];
   _renderCreatorCards(_allCreators);
@@ -2869,28 +2898,32 @@ function _renderCreatorCards(list) {
     grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t-dim);"><div style="font-size:40px;margin-bottom:16px;">👀</div><div style="font-size:16px;font-weight:600;color:var(--t-secondary);margin-bottom:8px;">No creators yet</div><div style="font-size:13px;">Creators who sign up will appear here.</div></div>';
     return;
   }
-  grid.innerHTML = list.map(c => {
-    const av = c.avatar || (c.name ? c.name[0].toUpperCase() : '?');
+  grid.innerHTML = list.map(function(c) {
+    const av   = c.avatar || (c.name ? c.name[0].toUpperCase() : '?');
     const tags = [c.niche, c.platform, c.audience].filter(Boolean);
     const canCollab = u.isAdmin || plan.collabs === -1 || S.collabsUsed < plan.collabs;
-    return `
-      <div class="d-creator-card">
-        <div class="d-cc-top">
-          <div class="d-cc-av" style="background:linear-gradient(135deg,#3b6ef0,#8b5cf6);">${av}</div>
-          <div class="d-cc-info">
-            <div class="d-cc-name">${c.name}</div>
-            <div class="d-cc-niche">${c.niche || 'Creator'} · ${c.platform || 'Social'}</div>
-          </div>
-        </div>
-        <p class="d-cc-bio">${c.bio || 'No bio yet.'}</p>
-        <div class="d-cc-tags">${tags.map(t=>`<span class="d-cc-tag">${t}</span>`).join('')}</div>
-        <div class="d-cc-footer">
-          <div style="font-size:12px;color:var(--t-dim);">Audience: ${c.audience || '—'}</div>
-          ${canCollab
-            ? `<button class="d-cc-btn" onclick="requestCollab('${c.uid}','${c.name.replace(/'/g,'')}','${c.whatsapp||''}')">Collaborate →</button>`
-            : `<button class="d-cc-btn" style="opacity:0.5;cursor:default;" onclick="showView('pricing')">Upgrade to Collab</button>`}
-        </div>
-      </div>`;
+    const safeName = (c.name || '').replace(/'/g, '').replace(/"/g, '');
+    const safeWa   = (c.whatsapp || '');
+    const safeUid  = (c.uid || '');
+    const collabBtn = canCollab
+      ? '<button class="d-cc-btn" onclick="requestCollab(\'' + safeUid + '\',' + '\''+safeName+'\',' + '\'' + safeWa + '\')">Collaborate →</button>'
+      : '<button class="d-cc-btn" style="opacity:0.5;cursor:default;" onclick="showView(\'pricing\')">Upgrade to Collab</button>';
+    const tagHtml = tags.map(function(t){ return '<span class="d-cc-tag">'+t+'</span>'; }).join('');
+    return '<div class="d-creator-card">'
+      + '<div class="d-cc-top">'
+      +   '<div class="d-cc-av" style="background:linear-gradient(135deg,#3b6ef0,#8b5cf6);">' + av + '</div>'
+      +   '<div class="d-cc-info">'
+      +     '<div class="d-cc-name">' + (c.name || 'Creator') + '</div>'
+      +     '<div class="d-cc-niche">' + (c.niche || 'Creator') + ' · ' + (c.platform || 'Social') + '</div>'
+      +   '</div>'
+      + '</div>'
+      + '<p class="d-cc-bio">' + (c.bio || 'No bio yet.') + '</p>'
+      + '<div class="d-cc-tags">' + tagHtml + '</div>'
+      + '<div class="d-cc-footer">'
+      +   '<div style="font-size:12px;color:var(--t-dim);">Audience: ' + (c.audience || '—') + '</div>'
+      +   collabBtn
+      + '</div>'
+      + '</div>';
   }).join('');
 }
 
@@ -3340,6 +3373,7 @@ function showView(id, navEl) {
   // Re-render views that need fresh data
   if (id === 'profile')  renderProfile();
   if (id === 'pricing')  renderPricing();
+  if (id === 'discover') loadCreatorsFromFirestore();
   if (id === 'collabs')  loadMyCollabs();
   if (id === 'admin' && S.user && S.user.isAdmin) loadAdminData();
 }
