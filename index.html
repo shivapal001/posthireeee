@@ -2117,6 +2117,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
           <div class="d-nav-section-label">Account</div>
           <div class="d-nav-item" onclick="showView('pricing',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></div>Upgrade Plan</div>
           <div class="d-nav-item" onclick="showView('settings',this)"><div class="d-nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>Settings</div>
+          <div class="d-nav-item" id="fn-nav-ai" onclick="showView('ai-matches',this)"><div class="d-nav-icon">🤖</div>AI Matches <span style="background:linear-gradient(135deg,#8b5cf6,#3b6ef0);color:#fff;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:4px;">Pro</span></div>
           <div class="d-nav-item" id="admin-nav-item" style="display:none;" onclick="showView('admin',this)"><div class="d-nav-icon">🛡️</div>Admin Panel</div>
         </div>
         <!-- Creator Nav -->
@@ -2298,6 +2299,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
           </div>
         </div>
 
+        <!-- AI MATCHES -->
+        <div class="d-view" id="vw-ai-matches">
+          <div class="d-section-hd"><h2>🤖 AI Match Suggestions</h2><p>Best-matched creators — powered by Claude AI.</p></div>
+          <div id="ai-matches-container"></div>
+        </div>
         <!-- PRICING VIEW -->
         <div class="d-view" id="vw-pricing">
           <div class="d-section-hd">
@@ -2385,7 +2391,7 @@ window.onerror = function(msg, src, line, col, err) {
 // ══════════════════════════════════════════════════════════
 //  ADMIN EMAIL — change this to your email address
 // ══════════════════════════════════════════════════════════
-const ADMIN_EMAIL = 'admin@posthire.in'; // ← SET YOUR ADMIN EMAIL HERE
+const ADMIN_EMAIL = 'webloom.in00@gmail.com'; // Admin email
 
 // ══════════════════════════════
 //  STATE
@@ -2444,7 +2450,8 @@ const PLANS = {
 //  ✅ Replace with your Razorpay Key ID from:
 //     https://dashboard.razorpay.com → Settings → API Keys
 // ════════════════════════════════════════════════════════
-const RAZORPAY_KEY = 'rzp_test_YOUR_KEY_HERE'; // ← REPLACE with your key
+const RAZORPAY_KEY = 'rzp_test_YOUR_KEY_HERE';
+const RZP_PLANS = { starter:{amount:29900,name:'PostHire Starter',desc:'Starter Plan'}, pro:{amount:59900,name:'PostHire Pro',desc:'Pro Plan'} };
 
 const RAZORPAY_PLANS = {
   starter: {
@@ -3061,7 +3068,7 @@ function renderPlanOverview() {
   let upgradeBtn = '';
   if (!u.isAdmin && u.plan === 'free') {
     upgradeBtn = '<div style="padding:14px 20px;">'
-      + '<button onclick="showView(\'pricing\')" '
+      + '<button onclick="showView(\"pricing\")" '
       + 'style="width:100%;padding:10px;background:#3b6ef0;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">'
       + 'Upgrade Plan →</button></div>';
   }
@@ -3187,7 +3194,7 @@ function _renderCreatorCards(list) {
     const safeUid  = (c.uid || '');
     const collabBtn = canCollab
       ? '<button class="d-cc-btn" onclick="requestCollab(\'' + safeUid + '\',' + '\''+safeName+'\',' + '\'' + safeWa + '\')">Collaborate →</button>'
-      : '<button class="d-cc-btn" style="opacity:0.5;cursor:default;" onclick="showView(\'pricing\')">Upgrade to Collab</button>';
+      : '<button class="d-cc-btn" style="opacity:0.5;cursor:default;" onclick="showView(\"pricing\")">Upgrade to Collab</button>';
     const tagHtml = tags.map(function(t){ return '<span class="d-cc-tag">'+t+'</span>'; }).join('');
     return '<div class="d-creator-card">'
       + '<div class="d-cc-top">'
@@ -3604,7 +3611,7 @@ function renderProfile() {
         <div class="f-group"><label class="f-label">Startup Name</label><input class="f-input" id="pf-startup" value="${u.startup||''}" placeholder="Your startup name"></div>
         <div class="f-group"><label class="f-label">Industry</label><select class="f-select" id="pf-industry"><option>SaaS</option><option>D2C</option><option>Fintech</option><option>Edtech</option></select></div>
         <div class="f-group"><label class="f-label">Budget Range</label><select class="f-select" id="pf-budget"><option>₹5K–₹20K</option><option>₹20K–₹50K</option><option>₹50K–₹1L</option><option>₹1L+</option></select></div>
-        <div class="f-group d-pf-full"><label class="f-label">About Your Startup</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
+        <div class="f-group d-pf-full"><label class="f-label">About Your Startup <button id="ai-bio-btn" onclick="generateAIBio()" style="margin-left:8px;padding:3px 10px;background:linear-gradient(135deg,#8b5cf6,#3b6ef0);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;">✨ AI Bio</button></label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
         <div class="f-group"><label class="f-label">Website</label><input class="f-input" id="pf-website" value="${u.website||''}" placeholder="yoursite.com"></div>
       </div>
       <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
@@ -3620,13 +3627,21 @@ function renderProfile() {
         <div class="f-group"><label class="f-label">Primary Niche</label><select class="f-select" id="pf-niche"><option>AI & Tech</option><option>Finance</option><option>Startups</option><option>Lifestyle</option><option>Fitness</option><option>Food</option></select></div>
         <div class="f-group"><label class="f-label">Platform</label><select class="f-select" id="pf-platform"><option>Instagram</option><option>YouTube</option><option>LinkedIn</option><option>Twitter/X</option></select></div>
         <div class="f-group"><label class="f-label">Audience Size</label><select class="f-select" id="pf-audience"><option>1K–10K</option><option>10K–50K</option><option>50K–200K</option><option>200K+</option></select></div>
-        <div class="f-group d-pf-full"><label class="f-label">Bio</label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
+        <div class="f-group d-pf-full"><label class="f-label">Bio <button id="ai-bio-btn" onclick="generateAIBio()" style="margin-left:8px;padding:3px 10px;background:linear-gradient(135deg,#8b5cf6,#3b6ef0);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;">✨ AI Bio</button></label><textarea class="f-textarea" id="pf-bio">${u.bio||''}</textarea></div>
         <div class="f-group"><label class="f-label">Pricing (Starting)</label><input class="f-input" id="pf-pricing" value="${u.pricing||''}" placeholder="e.g. ₹10,000+"></div>
         <div class="f-group"><label class="f-label">Website / Portfolio</label><input class="f-input" id="pf-website" value="${u.website||''}" placeholder="yoursite.com"></div>
         <div class="f-group d-pf-full"><label class="f-label">Past Collaborations</label><textarea class="f-textarea" id="pf-past" placeholder="e.g. Partnered with Razorpay, Zepto...">${u.pastCollabs||''}</textarea></div>
       </div>
       <div class="d-pf-save"><button class="d-save-btn" onclick="saveProfile()">Save Changes →</button></div>
     </div>`;
+  if (u.plan === 'pro' || u.isAdmin) {
+    creatorHtml += '<div class="d-profile-card"><div class="d-profile-card-title">Portfolio Highlight <span style="margin-left:8px;background:rgba(139,92,246,0.1);color:var(--purple);padding:2px 8px;border-radius:20px;font-size:9px;">PRO</span></div>'
+      + '<div class="d-pf-grid">'
+      + '<div class="f-group"><label class="f-label">Featured Work URL</label><input class="f-input" id="pf-portfolio-url" value="' + (u.portfolioUrl||'') + '" placeholder="YouTube, case study..."></div>'
+      + '<div class="f-group"><label class="f-label">Campaign Results</label><input class="f-input" id="pf-portfolio-results" value="' + (u.portfolioResults||'') + '" placeholder="50K views in 2 weeks"></div>'
+      + '<div class="f-group d-pf-full"><label class="f-label">Brands Worked With</label><input class="f-input" id="pf-brands" value="' + (u.brands||'') + '" placeholder="Razorpay, Zepto..."></div>'
+      + '</div><div class="d-pf-save"><button class="d-save-btn" onclick="savePortfolio()">Save Portfolio →</button></div></div>';
+  }
   html = (u.role === 'founder' || u.isAdmin) ? founderHtml : creatorHtml;
   document.getElementById('d-profile-content').innerHTML = html;
 }
@@ -3671,11 +3686,11 @@ function renderPricing() {
   if (!el) return;
   const plans = [
     { key:'free',    name:'FREE',    price:'0',   period:'/month', badge:'badge-free',
-      features:['Create profile (creator or founder)','Browse up to 10 profiles/day','3 collaboration requests/month','Basic search filters'],
-      disabled:['In-platform messaging','AI match suggestions','Featured profile badge'], featured:false },
+      features:['Create founder or creator profile','Browse 10 creator profiles/day','3 collab requests/month','Basic search & WhatsApp connect'],
+      disabled:['Messaging','AI bio & match','Advanced filters','Featured badge','Analytics'], featured:false },
     { key:'starter', name:'STARTER', price:'299', period:'/month', badge:'badge-starter',
-      features:['Unlimited profile browsing','20 collaboration requests/month','Advanced search & filters','In-platform messaging','Priority listing (basic)'],
-      disabled:['AI match suggestions'], featured:true },
+      features:['Unlimited profile browsing','20 collab requests/month','Advanced search & filters','Messaging','✨ AI bio generator','✨ AI collab message writer','Priority listing'],
+      disabled:['🤖 AI match suggestions','📊 Analytics','⭐ Featured badge'], featured:true },
     { key:'pro',     name:'PRO',     price:'599', period:'/month', badge:'badge-pro',
       features:['Everything in Starter','Unlimited collaboration requests','Daily AI-powered matches','Featured profile badge','Top search placement','Portfolio highlight section','Audience analytics','Priority support'],
       disabled:[], featured:false },
@@ -3747,7 +3762,7 @@ function selectPlan(planKey) {
 // ══════════════════════════════
 //  VIEW SWITCHING
 // ══════════════════════════════
-const VIEW_TITLES = { home:'Dashboard', discover:'Discover Creators', profile:'My Profile', collabs:'Collaborations', messages:'Messages', analytics:'Analytics', pricing:'Upgrade Plan', settings:'Settings', admin:'Admin Panel', planpick:'Choose Your Plan' };
+const VIEW_TITLES = { home:'Dashboard', discover:'Discover Creators', profile:'My Profile', collabs:'Collaborations', 'ai-matches':'AI Matches', messages:'Messages', analytics:'Analytics', pricing:'Upgrade Plan', settings:'Settings', admin:'Admin Panel', planpick:'Choose Your Plan' };
 function showView(id, navEl) {
   document.querySelectorAll('.d-view').forEach(v => v.classList.remove('act'));
   document.querySelectorAll('.d-nav-item').forEach(i => i.classList.remove('act'));
@@ -3769,6 +3784,7 @@ function showView(id, navEl) {
   if (id === 'collabs')   loadMyCollabs();
   if (id === 'messages')  renderMessagesView();
   if (id === 'analytics') renderAnalyticsView();
+  if (id === 'ai-matches') renderAIMatches();
   if (id === 'admin' && S.user && S.user.isAdmin) loadAdminData();
 }
 
@@ -4032,6 +4048,73 @@ function openRazorpay(planKey, onSuccessCallback) {
     showToast('Could not open payment. Check your Razorpay key.', 'error');
   }
 }
+
+// AI + Razorpay functions
+async function callClaude(sys, usr) {
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:usr}]}) });
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    return d.content && d.content[0] ? d.content[0].text : '';
+  } catch(e) { console.warn('Claude:', e.message); return null; }
+}
+
+async function renderAIMatches() {
+  const u = S.user, plan = PLANS[u.plan]||PLANS.free, el = document.getElementById('ai-matches-container');
+  if (!el) return;
+  if (!plan.aiMatch && !u.isAdmin) { el.innerHTML = '<div class="d-locked"><div class="d-locked-icon">🤖</div><h3>AI Match Suggestions</h3><p>Daily AI-powered creator recommendations for your startup. Pro plan feature.</p><button class="d-locked-btn" onclick="sv(&quot;pricing&quot;)">Upgrade to Pro →</button></div>'; return; }
+  el.innerHTML = '<div style="display:flex;align-items:center;gap:12px;padding:24px;color:var(--t-dim);"><div style="width:18px;height:18px;border:2px solid var(--blue);border-top-color:transparent;border-radius:50%;animation:aiSpin 0.7s linear infinite;flex-shrink:0;"></div>Finding best creator matches...</div>';
+  if (!_allCreators.length) await loadCreatorsFromFirestore();
+  if (!_allCreators.length) { el.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t-dim);">No creators yet.</div>'; return; }
+  const summary = _allCreators.slice(0,12).map(function(c){ return (c.name||'?')+'|niche:'+(c.niche||'?')+'|platform:'+(c.platform||'?')+'|audience:'+(c.audience||'?'); }).join('\n');
+  const result = await callClaude('Startup-creator matchmaker. JSON only: {"matches":[{"name":"...","reason":"2 sentences","score":85}]}. No markdown.', 'Startup: '+(u.startup||u.name)+' | Industry:'+(u.industry||'?')+' | Budget:'+(u.budget||'?')+'\nCreators:\n'+summary);
+  if (!result) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--t-dim);">AI unavailable. Browse manually below.</div>'; return; }
+  try {
+    const matches = JSON.parse(result.replace(/```json|```/g,'').trim()).matches||[];
+    let h = '<div class="d-ai-match-banner"><div class="d-ai-match-banner-icon">🤖</div><div><h4>AI found '+matches.length+' matches for your startup</h4><p>Based on your industry, budget and goals</p></div></div>';
+    matches.forEach(function(m) {
+      const c = _allCreators.find(function(x){ return x.name&&x.name.toLowerCase().includes((m.name||'').toLowerCase().split(' ')[0]); })||{};
+      h += '<div style="background:#fff;border:1px solid #e8ebf4;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;gap:14px;align-items:flex-start;">'
+        +'<div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#3b6ef0);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;flex-shrink:0;">'+(((c.avatar||m.name||'?')[0])+'</div>')
+        +'<div style="flex:1;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-weight:700;font-size:14px;">'+m.name+'</span><span style="background:linear-gradient(135deg,#8b5cf6,#3b6ef0);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;">🤖 '+(m.score||'—')+'% Match</span></div>'
+        +'<p style="font-size:13px;color:#6b7280;margin-bottom:10px;">'+m.reason+'</p>'
+        +(c.uid?'<button data-uid="'+c.uid+'" data-name="'+(c.name||'').replace(/"/g,'')+'" data-wa="'+(c.whatsapp||'')+'" onclick="var b=this;requestCollab(b.dataset.uid,b.dataset.name,b.dataset.wa)" style="padding:7px 16px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">Collaborate →</button>':'')
+        +'</div></div>';
+    });
+    el.innerHTML = h;
+  } catch(e) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--t-dim);">Could not parse AI response.</div>'; }
+}
+
+async function generateAIBio() {
+  const u = S.user; if (!u) return;
+  const btn = document.getElementById('ai-bio-btn'), el = document.getElementById('pf-bio');
+  if (!btn||!el) return;
+  btn.textContent = '⏳...'; btn.disabled = true;
+  const isF = u.role==='founder'||u.isAdmin;
+  const prompt = isF ? 'Founder bio for '+u.name+', startup:'+(u.startup||'startup')+', industry:'+(u.industry||'tech')+'. 2-3 sentences.' : 'Creator bio for '+u.name+', niche:'+(u.niche||'content')+', platform:'+(u.platform||'social')+', audience:'+(u.audience||'growing')+'. 2-3 sentences.';
+  const res = await callClaude('Write professional bios for a startup-creator platform. 2-3 sentences max. Return ONLY the bio text.', prompt);
+  btn.textContent = '✨ AI Bio'; btn.disabled = false;
+  if (res) { el.value = res.trim(); showToast('Bio generated! Review and save ♆', 'success'); }
+  else showToast('AI unavailable.', 'error');
+}
+
+async function generateCollabMessage(cn, cniche, cplat) {
+  const u = S.user, plan = PLANS[u.plan]||PLANS.free;
+  if (!plan.messaging && !u.isAdmin) return null;
+  return await callClaude('2-sentence WhatsApp collab request from startup founder to creator. Return ONLY the message.', 'Founder:'+u.name+' from '+(u.startup||'startup')+' ('+( u.industry||'tech')+') To:'+cn+' ('+cniche+' on '+cplat+') Budget:'+(u.budget||'flexible'));
+}
+
+async function savePortfolio() {
+  const u = S.user; if (!u) return;
+  const upd = {};
+  [['pf-portfolio-url','portfolioUrl'],['pf-portfolio-results','portfolioResults'],['pf-brands','brands']].forEach(function(p){
+    const el = document.getElementById(p[0]); if (el) { u[p[1]]=el.value; upd[p[1]]=el.value; }
+  });
+  if (u.uid) await fbSaveUser(u.uid, upd);
+  showToast('Portfolio saved ♆', 'success');
+}
+
+(function(){if(document.getElementById('ai-css'))return;const s=document.createElement('style');s.id='ai-css';s.textContent='@keyframes aiSpin{to{transform:rotate(360deg)}}';document.head.appendChild(s);})();
 
 // ══════════════════════════════
 //  LOADER
