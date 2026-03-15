@@ -1820,7 +1820,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
             <li><span class="tick">✓</span>Portfolio highlight section</li>
             <li><span class="tick">✓</span>Audience analytics + priority support</li>
           </ul>
-          <button class="l-price-cta l-price-cta-outline" onclick="goTo('signup')">Go Pro →</button>
+          <button class="l-price-cta l-price-cta-outline" onclick="goTo('signup')">Pay ₹599 & Activate →</button>
         </div>
       </div>
     </div>
@@ -1833,8 +1833,8 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
       <h2 class="l-cta-h2">Join PostHire Today</h2>
       <p class="l-cta-sub">Whether you're a founder looking for creators, or a creator looking for serious clients — PostHire is where the collaboration starts.</p>
       <div class="l-cta-btns">
-        <button class="l-btn-cta-primary" onclick="goTo('signup')">I'm a Founder →</button>
-        <button class="l-btn-cta-ghost" onclick="goTo('signup')">I'm a Creator →</button>
+        <button class="l-btn-cta-primary" onclick="goTo('signup')">I\'m a Founder →</button>
+        <button class="l-btn-cta-ghost" onclick="goTo('signup')">I\'m a Creator →</button>
       </div>
     </div>
   </div>
@@ -1876,10 +1876,10 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
         </div>
         <div class="role-pick">
           <div class="role-opt sel" id="ro-founder" onclick="pickRole('founder')">
-            <span class="r-icon">🚀</span><span class="r-label">I'm a Founder</span>
+            <span class="r-icon">🚀</span><span class="r-label">I\'m a Founder</span>
           </div>
           <div class="role-opt" id="ro-creator" onclick="pickRole('creator')">
-            <span class="r-icon">🎥</span><span class="r-label">I'm a Creator</span>
+            <span class="r-icon">🎥</span><span class="r-label">I\'m a Creator</span>
           </div>
         </div>
         <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="su-name" placeholder="Your full name" type="text"></div>
@@ -2011,7 +2011,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
           <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--blue);font-weight:700;flex-shrink:0;">✓</span>In-platform messaging</li>
           <li style="font-size:13px;color:var(--t-secondary);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--blue);font-weight:700;flex-shrink:0;">✓</span>Priority listing</li>
         </ul>
-        <button style="width:100%;padding:13px;border-radius:var(--r-full);font-size:13px;font-weight:600;cursor:pointer;border:none;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-mid));box-shadow:0 4px 20px rgba(59,110,240,0.3);transition:all 0.2s;">Choose Starter →</button>
+        <button style="width:100%;padding:13px;border-radius:var(--r-full);font-size:13px;font-weight:600;cursor:pointer;border:none;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue-mid));box-shadow:0 4px 20px rgba(59,110,240,0.3);transition:all 0.2s;">Pay ₹299 & Activate →</button>
       </div>
 
       <!-- PRO -->
@@ -2035,7 +2035,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 
     <!-- Skip link -->
     <div style="margin-top:28px;text-align:center;">
-      <a onclick="selectPlanAndContinue('free')" style="font-size:12px;color:var(--t-dim);cursor:pointer;text-decoration:underline;">Skip for now — start with Free plan</a>
+      <a onclick="selectPlanAndContinue('free')" style="font-size:12px;color:var(--t-dim);cursor:pointer;text-decoration:underline;">Continue with Free plan (no payment)</a>
     </div>
 
   </div>
@@ -2287,6 +2287,15 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
             </div>
             <div id="admin-users-list"><div style="text-align:center;padding:30px;color:var(--t-dim);font-size:14px;">Loading...</div></div>
           </div>
+
+          <!-- Payments -->
+          <div class="d-profile-card" style="margin-top:20px;">
+            <div class="d-profile-card-title" style="display:flex;justify-content:space-between;align-items:center;">
+              Payment Records
+              <span onclick="loadAdminPayments()" style="cursor:pointer;font-size:12px;color:var(--blue);font-weight:500;">↻ Refresh</span>
+            </div>
+            <div id="admin-payments-list"><div style="text-align:center;padding:20px;color:var(--t-dim);font-size:14px;">Loading payments...</div></div>
+          </div>
         </div>
 
         <!-- PRICING VIEW -->
@@ -2362,6 +2371,9 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
   </div>
 </div>
 
+<!-- Razorpay Payment SDK -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 <script>
 // ── Global error handler — prevents silent JS crashes ──
@@ -2424,6 +2436,30 @@ const PLANS = {
     portfolio: true,
     prioritySupport: true,
     priorityListing: true,
+  },
+};
+
+// ════════════════════════════════════════════════════════
+//  RAZORPAY CONFIG
+//  ✅ Replace with your Razorpay Key ID from:
+//     https://dashboard.razorpay.com → Settings → API Keys
+// ════════════════════════════════════════════════════════
+const RAZORPAY_KEY = 'rzp_test_YOUR_KEY_HERE'; // ← REPLACE with your key
+
+const RAZORPAY_PLANS = {
+  starter: {
+    amount:      29900,          // amount in paise (₹299 = 29900 paise)
+    currency:    'INR',
+    name:        'PostHire Starter',
+    description: 'Starter Plan — 20 collabs/month, unlimited browse, messaging',
+    planKey:     'starter',
+  },
+  pro: {
+    amount:      59900,          // ₹599 in paise
+    currency:    'INR',
+    name:        'PostHire Pro',
+    description: 'Pro Plan — unlimited collabs, AI match, analytics, featured badge',
+    planKey:     'pro',
   },
 };
 
@@ -2657,20 +2693,19 @@ function showPlanPicker() {
 // ── Plan selected → save to Firestore → go to dashboard ────────
 async function selectPlanAndContinue(plan) {
   if (!S.user) { goTo('signup'); return; }
-
-  // Highlight selected card briefly
-  document.querySelectorAll('.pp-card').forEach(c => c.style.transform = '');
-  S.user.plan = plan;
-
-  try {
-    if (S.user.uid) {
-      await fbSaveUser(S.user.uid, { plan });
-    }
-  } catch(e) { console.error('Plan save error:', e); }
-
-  const planNames = { free: 'Free Plan', starter: 'Starter Plan', pro: 'Pro Plan' };
-  showToast('Welcome to PostHire on ' + planNames[plan] + ' ✦', 'success');
-  setTimeout(() => goTo('dashboard'), 500);
+  if (plan === 'free') {
+    // Free plan — no payment needed
+    S.user.plan = 'free';
+    try { if (S.user.uid) await fbSaveUser(S.user.uid, { plan: 'free' }); } catch(e) {}
+    showToast('Welcome to PostHire on Free Plan ✦', 'success');
+    setTimeout(function(){ goTo('dashboard'); }, 500);
+    return;
+  }
+  // Paid plan — open Razorpay
+  openRazorpay(plan, function() {
+    // On success — go to dashboard
+    goTo('dashboard');
+  });
 }
 
 // ── LOG IN ───────────────────────────────────────────────────────
@@ -2692,25 +2727,12 @@ async function doLogin() {
     let profile = await fbLoadUser(cred.user.uid);
 
     if (!profile) {
-      // Firestore profile missing — rebuild from Firebase Auth data
-      // (happens when signup Auth succeeded but Firestore write failed)
-      const isAdm = (email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-      profile = {
-        name: cred.user.displayName || email.split('@')[0],
-        email: email,
-        whatsapp: whatsapp || '',
-        role: 'founder',
-        plan: 'free',
-        avatar: (cred.user.displayName || email)[0].toUpperCase(),
-        startup: '', industry: '', budget: '', niche: '',
-        platform: '', audience: '', bio: '', website: '',
-        collabsUsed: 0,
-        isAdmin: isAdm,
-        uid: cred.user.uid,
-      };
-      // Try to save to Firestore
-      try { await fbSaveUser(cred.user.uid, profile); } catch(e) {}
-      showToast('Welcome! Please complete your profile.', 'success');
+      // Profile missing in Firestore
+      // Show a role selector so user can pick their role, then rebuild
+      await auth.signOut();
+      if (btn) { btn.disabled = false; btn.textContent = 'Sign In →'; btn.style.opacity = '1'; }
+      showRoleRecovery(email, pass, whatsapp);
+      return;
     }
 
     // Update whatsapp if user provides it at login
@@ -2765,6 +2787,50 @@ function demoLogin(role) {
   setTimeout(() => goTo('dashboard'), 500);
 }
 
+// ── Role Recovery — shown when Firestore profile missing ────────
+function showRoleRecovery(email, pass, whatsapp) {
+  const box = document.querySelector('#pg-login .auth-box');
+  if (!box) return;
+  box.innerHTML = ''
+    + '<h1 class="auth-box-title">Choose Your Role</h1>'
+    + '<p class="auth-box-sub" style="margin-bottom:24px;">We could not find your profile. Please select your role to continue.</p>'
+    + '<div class="role-pick">'
+    +   '<div class="role-opt sel" id="rec-founder" onclick="recPickRole(this,\"founder\")"><span class="r-icon">🚀</span><span class="r-label">I\'m a Founder</span></div>'
+    +   '<div class="role-opt" id="rec-creator" onclick="recPickRole(this,\"creator\")"><span class="r-icon">🎥</span><span class="r-label">I\'m a Creator</span></div>'
+    + '</div>'
+    + '<button class="auth-submit-btn" style="margin-top:20px;" onclick="doRoleRecoveryLogin(\'' + email + '\',\'' + pass + '\',\'' + (whatsapp||'') + '\')">Continue →</button>'
+    + '<div style="text-align:center;margin-top:14px;"><a onclick="goTo(\'signup\')" style="font-size:12px;color:var(--blue);cursor:pointer;">Or create a new account</a></div>';
+  window._recRole = 'founder';
+}
+function recPickRole(el, role) {
+  document.querySelectorAll('.role-opt').forEach(function(r){ r.classList.remove('sel'); });
+  el.classList.add('sel');
+  window._recRole = role;
+}
+async function doRoleRecoveryLogin(email, pass, whatsapp) {
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    const isAdm = (email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+    const role = window._recRole || 'founder';
+    const name = email.split('@')[0];
+    const profile = {
+      name: name, email: email, whatsapp: whatsapp || '',
+      role: role, plan: 'free',
+      avatar: name[0].toUpperCase(),
+      startup: '', industry: '', budget: '', niche: '',
+      platform: '', audience: '', bio: '', website: '',
+      collabsUsed: 0, isAdmin: isAdm, uid: cred.user.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    await fbSaveUser(cred.user.uid, profile);
+    S.user = profile; S.collabsUsed = 0;
+    showToast('Welcome! Please complete your profile ✦', 'success');
+    setTimeout(function(){ goTo('dashboard'); }, 600);
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
 // ── LOGOUT ───────────────────────────────────────────────────────
 async function doLogout() {
   try { await auth.signOut(); } catch(e) { console.error(e); }
@@ -2805,12 +2871,16 @@ function renderDash() {
   document.getElementById('d-tb-av').textContent = safeAvatar;
 
   // ── Nav visibility ──
-  const isFounder  = u.role === 'founder' || u.isAdmin;
-  const isCreator  = u.role === 'creator' && !u.isAdmin;
-  document.getElementById('fn-nav').style.display   = isFounder ? 'block' : 'none';
-  document.getElementById('cr-nav').style.display   = isCreator ? 'block' : 'none';
+  const isFounder = u.role === 'founder' || u.isAdmin;
+  const isCreator = u.role === 'creator' && !u.isAdmin;
+  const fnNav = document.getElementById('fn-nav');
+  const crNav = document.getElementById('cr-nav');
+  if (fnNav) { fnNav.style.display = isFounder ? 'block' : 'none'; }
+  if (crNav) { crNav.style.display = isCreator ? 'block' : 'none'; }
   const adminNav = document.getElementById('admin-nav-item');
   if (adminNav) adminNav.style.display = u.isAdmin ? 'flex' : 'none';
+  // Remove stale 'act' class from all nav items before re-applying
+  document.querySelectorAll('.d-nav-item').forEach(function(i){ i.classList.remove('act'); });
 
   // ── Plan-gated nav items ──
   // Messages: Starter+ for everyone
@@ -2847,84 +2917,67 @@ function renderDash() {
   if (isCreator || u.isAdmin) loadMyCollabs();
   if (u.isAdmin) loadAdminData();
   showView('home');
+  // Set first nav item as active
+  setTimeout(function() {
+    var nav = document.querySelector((isFounder ? '#fn-nav' : '#cr-nav') + ' .d-nav-item');
+    if (nav) nav.classList.add('act');
+  }, 10);
 }
 
 // ══════════════════════════════
 //  STATS (real collabs from state)
 // ══════════════════════════════
 function renderStats() {
-  const u = S.user;
+  const u = S.user; if (!u) return;
   const plan = PLANS[u.plan] || PLANS.free;
+  const el = document.getElementById('d-stats');
+  if (!el) return;
   const cl  = plan.collabs === -1 ? '∞' : plan.collabs;
   const rem = plan.collabs === -1 ? '∞' : Math.max(0, plan.collabs - S.collabsUsed);
+
+  function statCard(iconBg, iconSvg, trendClass, trendTxt, val, lbl, barColor) {
+    return '<div class="d-stat-card">'
+      + '<div class="d-stat-card-inner">'
+      + '<div class="d-stat-card-icon" style="background:' + iconBg + ';">' + iconSvg + '</div>'
+      + '<span class="d-stat-card-trend ' + trendClass + '">' + trendTxt + '</span>'
+      + '</div>'
+      + '<div class="d-stat-card-val">' + val + '</div>'
+      + '<div class="d-stat-card-lbl">' + lbl + '</div>'
+      + '<div class="d-stat-card-bar" style="background:' + barColor + ';"></div>'
+      + '</div>';
+  }
+
+  const svgSearch = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>';
+  const svgPeople = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
+  const svgHex    = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg>';
+  const svgStar   = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  const svgEye    = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
   let html = '';
   if (u.role === 'founder' || u.isAdmin) {
-    html = `
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#eff6ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b6ef0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div><span class="d-stat-card-trend trend-up">↑ Live</span></div>
-        <div class="d-stat-card-val" id="stat-creators-count">—</div>
-        <div class="d-stat-card-lbl">Creators Available</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#f0fdf4;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="d-stat-card-trend trend-neu">${S.collabsUsed}/${cl}</span></div>
-        <div class="d-stat-card-val">${S.collabsUsed}</div>
-        <div class="d-stat-card-lbl">Collabs This Month</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fdf4ff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/></svg></div><span class="d-stat-card-trend trend-neu">Active</span></div>
-        <div class="d-stat-card-val" style="font-size:18px;padding-top:4px;">${u.isAdmin ? 'Admin' : plan.name.replace(' Plan','')}</div>
-        <div class="d-stat-card-lbl">Current Plan</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fff7ed;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><span class="d-stat-card-trend trend-up">Remaining</span></div>
-        <div class="d-stat-card-val">${rem}</div>
-        <div class="d-stat-card-lbl">Collabs Left</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div>
-      </div>`;
+    html += statCard('#eff6ff', svgSearch, 'trend-up', '↑ Live', '<span id="stat-creators-count">—</span>', 'Creators Available', 'linear-gradient(90deg,#3b6ef0,#06b6d4)');
+    html += statCard('#f0fdf4', svgPeople, 'trend-neu', S.collabsUsed + '/' + cl, S.collabsUsed, 'Collabs This Month', 'linear-gradient(90deg,#10b981,#06b6d4)');
+    html += statCard('#fdf4ff', svgHex, 'trend-neu', 'Active', '<span style="font-size:18px;padding-top:4px;">' + (u.isAdmin ? 'Admin' : plan.name.replace(' Plan','')) + '</span>', 'Current Plan', 'linear-gradient(90deg,#8b5cf6,#ec4899)');
+    html += statCard('#fff7ed', svgStar, 'trend-up', 'Remaining', rem, 'Collabs Left', 'linear-gradient(90deg,#f59e0b,#f97316)');
   } else {
-    html = `
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#eff6ff;"></div><span class="d-stat-card-trend trend-up">↑ 12%</span></div>
-        <div class="d-stat-card-val" id="stat-profile-views">0</div>
-        <div class="d-stat-card-lbl">Profile Views</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#f0fdf4;"></div><span class="d-stat-card-trend trend-up">Received</span></div>
-        <div class="d-stat-card-val" id="stat-collab-requests">0</div>
-        <div class="d-stat-card-lbl">Collab Requests</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fdf4ff;"></div><span class="d-stat-card-trend trend-neu">Active</span></div>
-        <div class="d-stat-card-val" style="font-size:18px;padding-top:4px;">${plan.name.replace(' Plan','')}</div>
-        <div class="d-stat-card-lbl">Current Plan</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div>
-      </div>
-      <div class="d-stat-card">
-        <div class="d-stat-card-inner"><div class="d-stat-card-icon" style="background:#fff7ed;"></div><span class="d-stat-card-trend trend-up">Top</span></div>
-        <div class="d-stat-card-val">—</div>
-        <div class="d-stat-card-lbl">Avg. Rating</div>
-        <div class="d-stat-card-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div>
-      </div>`;
-    // Load real collab count for creators
-    if (db) {
-      db.collection('collaborations').where('creatorId','==',S.user.uid).get().then(function(snap) {
-        const el = document.getElementById('stat-collab-requests');
-        if (el) el.textContent = snap.size;
-      }).catch(function(){});
+    // Creator stats
+    html += statCard('#eff6ff', svgEye, 'trend-up', '↑ 12%', '<span id="stat-profile-views">—</span>', 'Profile Views', 'linear-gradient(90deg,#3b6ef0,#06b6d4)');
+    html += statCard('#f0fdf4', svgPeople, 'trend-up', 'Received', '<span id="stat-collab-requests">—</span>', 'Collab Requests', 'linear-gradient(90deg,#10b981,#06b6d4)');
+    html += statCard('#fdf4ff', svgHex, 'trend-neu', 'Active', '<span style="font-size:18px;padding-top:4px;">' + plan.name.replace(' Plan','') + '</span>', 'Current Plan', 'linear-gradient(90deg,#8b5cf6,#ec4899)');
+    html += statCard('#fff7ed', svgStar, 'trend-neu', rem === '∞' ? 'Unlimited' : rem + ' left', rem, 'Collabs Left', 'linear-gradient(90deg,#f59e0b,#f97316)');
+    // Load real collab count
+    if (db && u.uid) {
+      db.collection('collaborations').where('creatorId', '==', u.uid).get()
+        .then(function(snap) {
+          var el2 = document.getElementById('stat-collab-requests');
+          if (el2) el2.textContent = snap.size;
+        }).catch(function(){});
     }
   }
-  document.getElementById('d-stats').innerHTML = html;
+  el.innerHTML = html;
 }
 
-// ══════════════════════════════
-//  QUICK ACTIONS
-// ══════════════════════════════
-function sv(view) { showView(view); } // safe alias for inline use
+function sv(view) { showView(view); }
 
 function qCard(view, iconHtml, label, desc) {
   return "<div class=\"d-quick-card\" onclick=\"sv('" + view + "')\"><div class=\"d-qc-icon\">" + iconHtml + "</div><div><div class=\"d-qc-label\">" + label + "</div><div class=\"d-qc-desc\">" + desc + "</div></div></div>";
@@ -3277,6 +3330,7 @@ async function loadAdminData() {
   loadAdminCollabs();
   loadAdminUsers();
   loadAdminStats();
+  loadAdminPayments();
 }
 
 async function loadAdminStats() {
@@ -3429,6 +3483,63 @@ function renderAdminUsers(list) {
     '</tbody></table></div>';
 }
 
+async function loadAdminPayments() {
+  const el = document.getElementById('admin-payments-list');
+  if (!el) return;
+  el.innerHTML = '<div style="text-align:center;padding:16px;color:var(--t-dim);">Loading...</div>';
+  try {
+    const snap = await db.collection('payments').orderBy('paymentDate', 'desc').limit(50).get();
+    if (snap.empty) {
+      el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t-dim);">No payments yet.</div>';
+      return;
+    }
+
+    // Calculate total revenue
+    let total = 0;
+    snap.forEach(function(doc) { total += (doc.data().amount || 0); });
+
+    let html = '<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;">'
+      + '<div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 20px;flex:1;min-width:140px;">'
+      + '<div style="font-size:11px;color:#15803d;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Total Revenue</div>'
+      + '<div style="font-size:24px;font-weight:800;color:#15803d;">₹' + total.toLocaleString('en-IN') + '</div>'
+      + '</div>'
+      + '<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px 20px;flex:1;min-width:140px;">'
+      + '<div style="font-size:11px;color:#1d4ed8;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Total Payments</div>'
+      + '<div style="font-size:24px;font-weight:800;color:#1d4ed8;">' + snap.size + '</div>'
+      + '</div>'
+      + '</div>';
+
+    html += '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:13px;">'
+      + '<thead><tr style="border-bottom:1px solid var(--l-border);">'
+      + '<th style="padding:10px 12px;text-align:left;color:var(--t-dim);font-weight:600;">User</th>'
+      + '<th style="padding:10px 12px;text-align:left;color:var(--t-dim);font-weight:600;">Plan</th>'
+      + '<th style="padding:10px 12px;text-align:left;color:var(--t-dim);font-weight:600;">Amount</th>'
+      + '<th style="padding:10px 12px;text-align:left;color:var(--t-dim);font-weight:600;">Payment ID</th>'
+      + '<th style="padding:10px 12px;text-align:left;color:var(--t-dim);font-weight:600;">Date</th>'
+      + '<th style="padding:10px 12px;text-align:left;color:var(--t-dim);font-weight:600;">Status</th>'
+      + '</tr></thead><tbody>';
+
+    snap.forEach(function(doc) {
+      const d = doc.data();
+      const date = d.paymentDate ? new Date(d.paymentDate.seconds * 1000).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'2-digit'}) : '—';
+      const statusColor = d.status === 'paid' ? '#10b981' : '#f59e0b';
+      html += '<tr style="border-bottom:1px solid rgba(0,0,0,0.04);">'
+        + '<td style="padding:12px;"><div style="font-weight:600;color:#0f1117;">' + (d.userName || '—') + '</div><div style="font-size:11px;color:#9ca3af;">' + (d.userEmail || '') + '</div></td>'
+        + '<td style="padding:12px;"><span style="background:rgba(59,110,240,0.1);color:var(--blue);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;">' + (d.planName || d.planKey || '—') + '</span></td>'
+        + '<td style="padding:12px;font-weight:700;color:#0f1117;">₹' + (d.amount || 0) + '</td>'
+        + '<td style="padding:12px;font-size:11px;color:#6b7280;font-family:monospace;">' + (d.razorpayPaymentId || '—') + '</td>'
+        + '<td style="padding:12px;font-size:12px;color:#6b7280;">' + date + '</td>'
+        + '<td style="padding:12px;"><span style="color:' + statusColor + ';font-weight:700;font-size:11px;">' + (d.status || 'paid').toUpperCase() + '</span></td>'
+        + '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = '<div style="padding:16px;color:#ef4444;font-size:13px;">Error loading payments: ' + e.message + '<br>Add Firestore index: payments → paymentDate desc</div>';
+  }
+}
+
 async function adminChangePlan(uid, currentPlan) {
   const plans = ['free','starter','pro'];
   const newPlan = prompt('Change plan to (free / starter / pro):', currentPlan);
@@ -3574,18 +3685,40 @@ function renderPricing() {
 
 function selectPlan(planKey) {
   const pData = PLANS[planKey];
-  openModal(`Switch to ${pData.name}`,
-    planKey === 'free'
-      ? 'Downgrade to Free? You will lose access to premium features.'
-      : `Upgrade to <strong>${pData.name}</strong> for ${pData.price}/month. Contact us on WhatsApp to complete payment.`,
-    async () => {
-      S.user.plan = planKey;
-      if (S.user.uid) await fbSaveUser(S.user.uid, { plan: planKey });
-      renderDash();
+  if (!pData) return;
+
+  if (planKey === 'free') {
+    // Downgrade — no payment
+    openModal(
+      'Downgrade to Free Plan',
+      'You will lose access to premium features. Are you sure?',
+      async function() {
+        S.user.plan = 'free';
+        if (S.user.uid) await fbSaveUser(S.user.uid, { plan: 'free' });
+        renderDash(); closeModal();
+        showToast('Switched to Free Plan', '');
+      },
+      'Confirm Downgrade'
+    );
+    return;
+  }
+
+  // Paid plan — show payment modal then Razorpay
+  openModal(
+    'Upgrade to ' + pData.name,
+    '<div style="text-align:center;padding:8px 0;">'
+    + '<div style="font-size:36px;margin-bottom:8px;">💳</div>'
+    + '<p style="font-size:15px;font-weight:700;margin-bottom:4px;">' + pData.name + '</p>'
+    + '<p style="font-size:28px;font-weight:800;color:var(--blue);margin-bottom:8px;">' + pData.price + '<span style="font-size:13px;color:#9ca3af;">/month</span></p>'
+    + '<p style="font-size:13px;color:#6b7280;">Secure payment via Razorpay</p>'
+    + '</div>',
+    function() {
       closeModal();
-      showToast(`Switched to ${pData.name} ✦`, 'success');
+      openRazorpay(planKey, function() {
+        renderDash();
+      });
     },
-    planKey === 'free' ? 'Confirm Downgrade' : `Activate ${pData.name}`
+    'Pay ' + pData.price + ' →'
   );
 }
 
@@ -3772,6 +3905,110 @@ function profileCompleteness(u) {
     + '<div class="d-blb-track"><div class="d-blb-fill" style="width:' + pct + '%;background:' + (pct >= 80 ? 'linear-gradient(90deg,#10b981,#06b6d4)' : 'linear-gradient(90deg,var(--blue),var(--cyan))') + ';"></div></div>'
     + (pct < 80 ? '<div style="font-size:12px;color:#9ca3af;margin-top:8px;">Complete your profile to get more collaboration requests.</div>' : '<div style="font-size:12px;color:#10b981;margin-top:8px;">✓ Great profile! You are highly discoverable.</div>')
     + '</div>';
+}
+
+// ══════════════════════════════
+//  RAZORPAY PAYMENT
+// ══════════════════════════════
+function openRazorpay(planKey, onSuccessCallback) {
+  const u = S.user;
+  if (!u) { showToast('Please sign in first', 'error'); return; }
+
+  const rpPlan = RAZORPAY_PLANS[planKey];
+  if (!rpPlan) { showToast('Invalid plan selected', 'error'); return; }
+
+  // Check if Razorpay key is configured
+  if (!RAZORPAY_KEY || RAZORPAY_KEY === 'rzp_test_YOUR_KEY_HERE') {
+    showToast('Razorpay not configured. Add your key in the code.', 'error');
+    console.error('Set RAZORPAY_KEY in the code. Get it from: https://dashboard.razorpay.com → Settings → API Keys');
+    return;
+  }
+
+  const options = {
+    key:          RAZORPAY_KEY,
+    amount:       rpPlan.amount,
+    currency:     rpPlan.currency,
+    name:         'PostHire',
+    description:  rpPlan.description,
+    image:        '', // Optional: your logo URL
+    prefill: {
+      name:    u.name  || '',
+      email:   u.email || '',
+      contact: u.whatsapp ? '91' + u.whatsapp : '',
+    },
+    notes: {
+      userId:  u.uid,
+      userEmail: u.email,
+      planKey: planKey,
+    },
+    theme: {
+      color: '#3b6ef0',
+    },
+    modal: {
+      ondismiss: function() {
+        showToast('Payment cancelled.', '');
+      }
+    },
+    handler: async function(response) {
+      // Payment successful — response contains:
+      // response.razorpay_payment_id
+      // response.razorpay_order_id (if using orders API)
+      // response.razorpay_signature (if using orders API)
+
+      try {
+        showToast('Payment successful! Activating your plan...', 'success');
+
+        // Save payment + plan to Firestore
+        const paymentData = {
+          plan:             planKey,
+          razorpayPaymentId: response.razorpay_payment_id,
+          paymentDate:      firebase.firestore.FieldValue.serverTimestamp(),
+          amount:           rpPlan.amount / 100, // in rupees
+          planName:         PLANS[planKey].name,
+          status:           'paid',
+        };
+
+        // Save to users collection
+        await fbSaveUser(u.uid, paymentData);
+
+        // Also save to payments collection for admin records
+        try {
+          await db.collection('payments').add({
+            userId:    u.uid,
+            userName:  u.name,
+            userEmail: u.email,
+            ...paymentData,
+          });
+        } catch(e) { console.warn('Payment log save failed:', e); }
+
+        // Update local state
+        S.user.plan = planKey;
+
+        showToast('🎉 ' + PLANS[planKey].name + ' activated! Welcome ✦', 'success');
+
+        // Call success callback
+        if (typeof onSuccessCallback === 'function') {
+          setTimeout(onSuccessCallback, 800);
+        }
+
+      } catch(err) {
+        console.error('Post-payment save error:', err);
+        showToast('Payment done but plan activation failed. Contact support.', 'error');
+      }
+    }
+  };
+
+  try {
+    const rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(response) {
+      console.error('Razorpay payment failed:', response.error);
+      showToast('Payment failed: ' + (response.error.description || 'Please try again.'), 'error');
+    });
+    rzp.open();
+  } catch(e) {
+    console.error('Razorpay open error:', e);
+    showToast('Could not open payment. Check your Razorpay key.', 'error');
+  }
 }
 
 // ══════════════════════════════
