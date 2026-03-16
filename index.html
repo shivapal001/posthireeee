@@ -1100,11 +1100,11 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 <div id="ph-toast"></div>
 
 <!-- MODAL -->
-<div class="ph-modal-bg" id="ph-modal">
+<div class="ph-modal-bg" id="ph-modal" style="display:none;">
   <div class="ph-modal">
     <div class="ph-modal-title" id="modal-t">Confirm</div>
     <div class="ph-modal-body" id="modal-b">Are you sure?</div>
-    <div class="ph-modal-actions">
+    <div class="ph-modal-actions modal-actions">
       <button class="ph-modal-ghost" onclick="closeModal()">Cancel</button>
       <button class="ph-modal-primary" id="modal-ok">Confirm</button>
     </div>
@@ -1597,6 +1597,24 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
     </div>
 
   </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="d-bottom-nav" id="d-bottom-nav">
+    <div class="d-bnav-items" id="d-bnav-items-founder" style="display:none;">
+      <button class="d-bnav-btn act" onclick="showView('home',this);updateBnav(this,'founder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Home</span></button>
+      <button class="d-bnav-btn" onclick="showView('discover',this);updateBnav(this,'founder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Discover</span></button>
+      <button class="d-bnav-btn" onclick="showView('collabs',this);updateBnav(this,'founder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Collabs</span></button>
+      <button class="d-bnav-btn" onclick="showView('profile',this);updateBnav(this,'founder')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+      <button class="d-bnav-btn" onclick="showView('pricing',this);updateBnav(this,'founder')"><span class="d-bnav-icon">⭐</span><span>Upgrade</span></button>
+    </div>
+    <div class="d-bnav-items" id="d-bnav-items-creator" style="display:none;">
+      <button class="d-bnav-btn act" onclick="showView('home',this);updateBnav(this,'creator')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Home</span></button>
+      <button class="d-bnav-btn" onclick="showView('collabs',this);updateBnav(this,'creator')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Collabs</span></button>
+      <button class="d-bnav-btn" onclick="showView('messages',this);updateBnav(this,'creator')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Messages</span></button>
+      <button class="d-bnav-btn" onclick="showView('profile',this);updateBnav(this,'creator')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+      <button class="d-bnav-btn" onclick="showView('pricing',this);updateBnav(this,'creator')"><span class="d-bnav-icon">⭐</span><span>Upgrade</span></button>
+    </div>
+  </nav>
 </div>
 
 <!-- ════════════════════════════════════
@@ -1807,6 +1825,228 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 }
 .adm-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9; }
 .adm-overlay.show { display:block; }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPLETE MOBILE RESPONSIVE — PostHire
+   Breakpoints: 900px (tablet), 600px (mobile), 400px (small)
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Landing page mobile ── */
+@media (max-width: 900px) {
+  .l-nav-links, .l-nav-cta { display: none; }
+  .l-nav-mob { display: flex; }
+  .l-mob-menu {
+    display: none; position: fixed; inset: 0; top: 60px;
+    background: rgba(255,255,255,0.98); backdrop-filter: blur(20px);
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 24px; z-index: 999; padding: 40px 20px;
+  }
+  .l-mob-menu.open { display: flex; }
+  .l-mob-menu a {
+    font-size: 20px; font-weight: 700; color: #0f1117;
+    text-decoration: none; cursor: pointer;
+  }
+  .l-mob-menu-cta {
+    padding: 14px 40px; background: #3b6ef0; color: #fff;
+    border-radius: 50px; font-size: 16px; font-weight: 700;
+    border: none; cursor: pointer; margin-top: 8px;
+  }
+  .l-hero { padding: 100px 20px 60px; }
+  .l-hero-title { font-size: clamp(36px, 10vw, 72px); }
+  .l-hero-sub { font-size: 15px; padding: 0 10px; }
+  .l-hero-btns { flex-direction: column; align-items: center; gap: 12px; }
+  .l-hero-btns .l-btn-primary, .l-hero-btns .l-btn-ghost { width: 260px; justify-content: center; }
+  .l-stats-row { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 16px; }
+  .l-feat-grid { grid-template-columns: 1fr; gap: 16px; padding: 0 16px; }
+  .l-section { padding: 60px 20px; }
+  .l-section-title { font-size: 28px; }
+  .l-how-steps { flex-direction: column; align-items: center; gap: 24px; }
+  .l-how-arrow { transform: rotate(90deg); }
+  .l-price-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+  .l-footer { flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 32px 20px; }
+  .l-footer-links { flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 600px) {
+  .l-stats-row { grid-template-columns: 1fr; max-width: 280px; margin: 0 auto; }
+  .l-hero-title { font-size: clamp(32px, 12vw, 52px); letter-spacing: -2px; }
+}
+
+/* ── Auth pages mobile ── */
+@media (max-width: 600px) {
+  .auth-box { padding: 32px 20px; margin: 16px; border-radius: 20px; }
+  .auth-box-title { font-size: 22px; }
+  .auth-page { padding: 20px 0; }
+  .role-pick { flex-direction: column; gap: 10px; }
+  .role-opt { padding: 14px 16px; }
+}
+
+/* ── Plan picker mobile ── */
+@media (max-width: 768px) {
+  .pp-grid { grid-template-columns: 1fr; max-width: 380px; margin: 0 auto; gap: 14px; padding: 0 16px; }
+  .pp-section { padding: 60px 16px 40px; }
+  .pp-title { font-size: 24px; }
+}
+
+/* ── Dashboard sidebar + layout mobile ── */
+@media (max-width: 900px) {
+  .d-sidebar {
+    position: fixed; left: 0; top: 0; height: 100vh; z-index: 200;
+    transform: translateX(-100%); transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+  }
+  .d-sidebar.open { transform: translateX(0); }
+  .d-main { margin-left: 0; }
+  .d-topbar { padding: 0 16px; }
+  .d-mob-toggle { display: flex; }
+  .d-content { padding: 20px 16px; }
+  .d-stats-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .d-quick-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .d-bottom-row { grid-template-columns: 1fr; gap: 16px; }
+  .d-creator-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+  .d-toolbar { flex-wrap: wrap; gap: 8px; }
+  .d-search-wrap { width: 100%; }
+  .d-search-input { width: 100%; }
+  .d-filter-sel { flex: 1; min-width: 120px; }
+  .d-section-hd { margin-bottom: 16px; }
+  .d-section-hd h2 { font-size: 20px; }
+}
+
+@media (max-width: 600px) {
+  .d-stats-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .d-stat-card { padding: 14px; }
+  .d-stat-card-val { font-size: 22px; }
+  .d-quick-row { grid-template-columns: 1fr; }
+  .d-quick-card { padding: 14px 16px; }
+  .d-creator-grid { grid-template-columns: 1fr; }
+  .d-cc-banner { height: 60px; }
+  .d-cc-av { width: 44px; height: 44px; font-size: 17px; border-radius: 11px; }
+  .d-cc-body { padding: 26px 14px 0; }
+  .d-cc-footer { padding: 0 14px 14px; gap: 6px; }
+  .d-cc-btn-collab, .d-cc-btn-upgrade { font-size: 12px; padding: 10px 10px; }
+  .d-cc-btn-wa { width: 36px; height: 36px; }
+  .d-cc-name { font-size: 14px; }
+  .d-profile-card { padding: 16px; }
+  .d-pf-grid { grid-template-columns: 1fr; }
+  .d-pf-full { grid-column: 1; }
+  .d-collab-list { padding: 16px; }
+  .d-analytics-grid { grid-template-columns: 1fr; }
+  .d-topbar-title { font-size: 14px; }
+  .d-mob-toggle { display: flex; }
+}
+
+@media (max-width: 400px) {
+  .d-stats-row { grid-template-columns: 1fr 1fr; }
+  .d-toolbar { flex-direction: column; }
+  .d-filter-sel { width: 100%; }
+}
+
+/* ── Sidebar overlay ── */
+.d-sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45); z-index: 199;
+}
+.d-sidebar-overlay.show { display: block; }
+
+/* ── Mobile toggle button in topbar ── */
+.d-mob-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(59,110,240,0.08); border: none; cursor: pointer;
+  color: var(--blue); margin-right: 8px; flex-shrink: 0;
+}
+
+/* ── Bottom nav for mobile ── */
+.d-bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #eaecf5;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+}
+@media (max-width: 900px) {
+  .d-bottom-nav { display: flex; }
+  .d-main { padding-bottom: 64px; }
+}
+.d-bnav-items { display: flex; width: 100%; }
+.d-bnav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 6px 4px; background: none; border: none;
+  cursor: pointer; color: #9ca3af; font-size: 9px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase; transition: color 0.2s;
+}
+.d-bnav-btn.act { color: var(--blue); }
+.d-bnav-btn svg { width: 20px; height: 20px; }
+.d-bnav-icon { font-size: 20px; line-height: 1; }
+
+/* ── Modal mobile ── */
+@media (max-width: 600px) {
+  .ph-modal {
+    margin: 0; border-radius: 20px 20px 0 0;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    max-width: 100%; max-height: 90vh; overflow-y: auto;
+    animation: slideUp 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  .ph-modal-bg { align-items: flex-end; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+}
+
+/* ── Admin dashboard mobile ── */
+@media (max-width: 768px) {
+  .adm-sidebar {
+    transform: translateX(-100%); transition: transform 0.3s;
+  }
+  .adm-sidebar.open { transform: translateX(0); }
+  .adm-main { margin-left: 0; }
+  .adm-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .adm-stat { padding: 14px; }
+  .adm-stat-val { font-size: 22px; }
+  .adm-content { padding: 16px; }
+  .adm-topbar { padding: 0 16px; }
+  .adm-revenue-cards { grid-template-columns: 1fr; }
+  .adm-mob-btn { display: flex; }
+  .adm-collab-actions { flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+  .adm-stats { grid-template-columns: 1fr; }
+  .adm-card { padding: 14px 16px; }
+  .adm-table { font-size: 12px; }
+  .adm-table th, .adm-table td { padding: 8px; }
+}
+
+/* ── Pricing grid mobile ── */
+@media (max-width: 900px) {
+  .d-price-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+}
+
+/* ── Collabs mobile ── */
+@media (max-width: 600px) {
+  .d-collab-card { padding: 14px; }
+  .d-collab-card-title { font-size: 14px; }
+  .d-collab-btns { flex-direction: column; }
+  .d-collab-btns button, .d-collab-btns a { width: 100%; justify-content: center; }
+}
+
+/* ── AI match banner mobile ── */
+@media (max-width: 600px) {
+  .d-ai-match-banner { flex-direction: column; padding: 14px; text-align: center; }
+}
+
+/* ── Touch improvements ── */
+@media (hover: none) {
+  .d-creator-card:hover { transform: none; box-shadow: none; }
+  .d-cc-btn-collab:hover { transform: none; box-shadow: 0 4px 14px rgba(59,110,240,0.3); }
+  .d-cc-btn-wa:hover { transform: none; }
+  .d-quick-card:active { transform: scale(0.97); }
+  .d-stat-card:active { transform: scale(0.98); }
+}
+
+/* ── Safe area for notch devices ── */
+.d-topbar { padding-top: max(0px, env(safe-area-inset-top)); }
+.d-sidebar { padding-top: max(0px, env(safe-area-inset-top)); }
+.l-nav-mob { display: none; }
+@media (max-width: 900px) { .l-nav-mob { display: flex !important; } }
 </style>
 
 <div class="adm-wrap">
@@ -2445,6 +2685,17 @@ function planGate(feature, content, planKey) {
 // ══════════════════════════════
 //  PAGE ROUTING
 // ══════════════════════════════
+function toggleLandingMenu() {
+  var btn = document.getElementById('l-mob-btn');
+  var menu = document.getElementById('l-mob-menu');
+  if (!menu) return;
+  var isOpen = menu.classList.contains('open');
+  menu.classList.toggle('open');
+  if (btn) btn.innerHTML = isOpen
+    ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="16" y2="18"/></svg>'
+    : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+}
+
 function goTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById('pg-' + page);
@@ -3575,14 +3826,14 @@ async function adminChangePlan(uid, currentPlan) {
 }
 
 async function adminDeleteUser(uid, name, btn) {
-  if (!confirm('Delete user ' + name + '? This cannot be undone.')) return;
-  btn.textContent = '...'; btn.disabled = true;
-  try {
-    await db.collection('users').doc(uid).delete();
-    showToast('User deleted ✦', '');
-    loadAdminUsers();
-    loadAdminStats();
-  } catch(e) { showToast('Error deleting user', 'error'); btn.textContent = '🗑️'; btn.disabled = false; }
+  openModal('Delete User', '<div style="text-align:center;padding:8px 0;"><div style="font-size:40px;margin-bottom:12px;">🗑️</div><p style="font-size:14px;color:#374151;line-height:1.7;">Delete <strong>' + name + '</strong>? This cannot be undone.</p></div>',
+    async function() {
+      closeModal(); btn.textContent = '...'; btn.disabled = true;
+      try {
+        await db.collection('users').doc(uid).delete();
+        showToast('User deleted ✦', ''); loadAdminUsers(); loadAdminStats();
+      } catch(e) { showToast('Error deleting user', 'error'); btn.textContent = '🗑️'; btn.disabled = false; }
+    }, 'Yes, Delete');
 }
 
 // ══════════════════════════════
@@ -3785,11 +4036,45 @@ function showView(id, navEl) {
 // ══════════════════════════════
 //  SIDEBAR MOBILE
 // ══════════════════════════════
+// ── Mobile dashboard sidebar ──
+function toggleDashSidebar() {
+  var sb = document.getElementById('d-sidebar');
+  var ov = document.getElementById('d-sidebar-overlay');
+  if (!sb) return;
+  var isOpen = sb.classList.contains('open');
+  if (isOpen) { sb.classList.remove('open'); if(ov) ov.classList.remove('show'); }
+  else { sb.classList.add('open'); if(ov) ov.classList.add('show'); }
+}
+function closeDashSidebar() {
+  var sb = document.getElementById('d-sidebar');
+  var ov = document.getElementById('d-sidebar-overlay');
+  if (sb) sb.classList.remove('open');
+  if (ov) ov.classList.remove('show');
+}
+
+// ── Update bottom nav active state ──
+function updateBnav(btn, role) {
+  var containerId = 'd-bnav-items-' + (role||'founder');
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.d-bnav-btn').forEach(function(b){ b.classList.remove('act'); });
+  if (btn) btn.classList.add('act');
+}
+
+// ── Show correct bottom nav based on role ──
+function initBottomNav(role) {
+  var fEl = document.getElementById('d-bnav-items-founder');
+  var cEl = document.getElementById('d-bnav-items-creator');
+  if (fEl) fEl.style.display = (role === 'founder' || role === 'admin') ? 'flex' : 'none';
+  if (cEl) cEl.style.display = (role === 'creator') ? 'flex' : 'none';
+}
+
 function openSidebar() {
   document.getElementById('d-sidebar').classList.add('mob-open');
   document.getElementById('d-sb-overlay').classList.add('show');
 }
 function closeSidebar() {
+  closeDashSidebar();
   document.getElementById('d-sidebar').classList.remove('mob-open');
   document.getElementById('d-sb-overlay').classList.remove('show');
 }
@@ -3803,9 +4088,9 @@ function openModal(title, body, cb, okTxt = 'Confirm') {
   document.getElementById('modal-b').innerHTML = body;
   document.getElementById('modal-ok').textContent = okTxt;
   modalCb = cb;
-  document.getElementById('ph-modal').classList.add('open');
+  const m = document.getElementById('ph-modal'); m.style.display='flex'; requestAnimationFrame(function(){ m.classList.add('open'); });
 }
-function closeModal() { document.getElementById('ph-modal').classList.remove('open'); }
+function closeModal() { const m=document.getElementById('ph-modal'); m.classList.remove('open'); setTimeout(function(){ if(!m.classList.contains('open')) m.style.display='none'; },300); }
 document.getElementById('modal-ok').addEventListener('click', () => { if (modalCb) modalCb(); });
 document.getElementById('ph-modal').addEventListener('click', e => { if (e.target === document.getElementById('ph-modal')) closeModal(); });
 
@@ -3917,7 +4202,13 @@ async function renderAnalyticsView() {
     + '<div class="d-profile-card" style="margin-top:0;">'
     + '<div class="d-profile-card-title">Profile Completeness</div>'
     + profileCompleteness(u)
-    + '</div>';
+    + '</div>'
+    + (u.role === 'creator' ? '<div class="d-profile-card" style="margin-top:16px;">'
+      + '<div class="d-profile-card-title">AI Pricing Advisor <span style="background:rgba(139,92,246,0.1);color:var(--purple);font-size:9px;padding:2px 8px;border-radius:10px;margin-left:6px;">PRO</span></div>'
+      + '<p style="font-size:13px;color:#6b7280;margin-bottom:12px;">Get AI-powered pricing suggestions based on your niche, platform and audience size.</p>'
+      + '<button id="ai-pricing-btn" onclick="getAIPricingSuggestion()" style="padding:10px 20px;background:linear-gradient(135deg,#8b5cf6,#3b6ef0);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🤖 Get AI Pricing Suggestion</button>'
+      + '<div id="ai-pricing-result" style="margin-top:12px;"></div>'
+      + '</div>' : '');
 }
 
 function analyticsCard(title, val, sub) {
@@ -4046,11 +4337,31 @@ function openRazorpay(planKey, onSuccessCallback) {
 // AI + Razorpay functions
 async function callClaude(sys, usr) {
   try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:usr}]}) });
-    if (!r.ok) throw new Error(r.status);
-    const d = await r.json();
-    return d.content && d.content[0] ? d.content[0].text : '';
-  } catch(e) { console.warn('Claude:', e.message); return null; }
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: sys,
+        messages: [{ role: 'user', content: usr }]
+      })
+    });
+    if (!resp.ok) {
+      console.warn('Claude API error:', resp.status, await resp.text());
+      return null;
+    }
+    const data = await resp.json();
+    // Handle both text and tool_use response types
+    if (data.content && data.content.length > 0) {
+      const textBlock = data.content.find(function(b){ return b.type === 'text'; });
+      return textBlock ? textBlock.text : '';
+    }
+    return null;
+  } catch(e) {
+    console.warn('callClaude error:', e.message);
+    return null;
+  }
 }
 
 async function renderAIMatches() {
@@ -4314,14 +4625,14 @@ async function admApprove(docId, founderWa, founderName, creatorName, creatorWa,
 }
 
 async function admReject(docId, btn) {
-  if (!confirm('Reject this collaboration request?')) return;
-  btn.textContent = '⏳...'; btn.disabled = true;
-  try {
-    await db.collection('collaborations').doc(docId).update({ status:'rejected', rejectedAt:firebase.firestore.FieldValue.serverTimestamp() });
-    showToast('Rejected.', '');
-    admRefreshCurrent();
-    admLoadOverview();
-  } catch(e) { showToast('Error: ' + e.message, 'error'); btn.textContent = '❌ Reject'; btn.disabled = false; }
+  openModal('Reject Request', '<div style="text-align:center;padding:8px 0;"><div style="font-size:40px;margin-bottom:12px;">❌</div><p style="font-size:14px;color:#374151;line-height:1.7;">Reject this collaboration request? The founder will not be connected.</p></div>',
+    async function() {
+      closeModal(); btn.textContent = '⏳...'; btn.disabled = true;
+      try {
+        await db.collection('collaborations').doc(docId).update({ status:'rejected', rejectedAt:firebase.firestore.FieldValue.serverTimestamp() });
+        showToast('Rejected.', ''); admRefreshCurrent(); admLoadOverview();
+      } catch(e) { showToast('Error: ' + e.message, 'error'); btn.textContent = '❌ Reject'; btn.disabled = false; }
+    }, 'Yes, Reject');
 }
 
 // ── USERS ────────────────────────────────────────────────────
@@ -4374,10 +4685,12 @@ async function admChangePlan(uid, current) {
 }
 
 async function admDeleteUser(uid, name, btn) {
-  if (!confirm('Delete user "' + name + '"? This cannot be undone.')) return;
-  btn.textContent = '...'; btn.disabled = true;
-  try { await db.collection('users').doc(uid).delete(); showToast('User deleted', ''); admLoadUsers(); admLoadOverview(); }
-  catch(e) { showToast('Error: ' + e.message, 'error'); btn.textContent = '🗑️'; btn.disabled = false; }
+  openModal('Delete User', '<div style="text-align:center;padding:8px 0;"><div style="font-size:40px;margin-bottom:12px;">🗑️</div><p style="font-size:14px;color:#374151;line-height:1.7;">Delete <strong>' + name + '</strong>? This cannot be undone.</p></div>',
+    async function() {
+      closeModal(); btn.textContent = '...'; btn.disabled = true;
+      try { await db.collection('users').doc(uid).delete(); showToast('User deleted', ''); admLoadUsers(); admLoadOverview(); }
+      catch(e) { showToast('Error: ' + e.message, 'error'); btn.textContent = '🗑️'; btn.disabled = false; }
+    }, 'Yes, Delete');
 }
 
 // ── PAYMENTS ────────────────────────────────────────────────
@@ -4459,6 +4772,33 @@ async function admLoadFoundersTable() {
         + '</tr>';
     }).join('');
   } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;color:#f87171;">Error: ' + e.message + '</td></tr>'; }
+}
+
+async function getAIPricingSuggestion() {
+  var u = S.user; if (!u) return;
+  var plan = PLANS[u.plan]||PLANS.free;
+  var el = document.getElementById('ai-pricing-result');
+  var btn = document.getElementById('ai-pricing-btn');
+  if (!el) return;
+  if (!plan.analytics && !u.isAdmin) {
+    el.innerHTML = '<div style="padding:10px;color:var(--t-dim);font-size:13px;">Upgrade to Pro for AI pricing suggestions.</div>';
+    return;
+  }
+  if (btn) { btn.textContent = '⏳ Analyzing...'; btn.disabled = true; }
+  var result = await callClaude(
+    'You are an expert in Indian creator economy pricing. Suggest fair collaboration rates. Respond ONLY in JSON: {"suggestion":"₹X,XXX per post","reasoning":"2 sentences","range":{"min":"₹X,XXX","max":"₹XX,XXX"}}. No markdown.',
+    'Creator profile: Niche: '+(u.niche||'general')+' | Platform: '+(u.platform||'social')+' | Audience: '+(u.audience||'unknown')+' | Current pricing: '+(u.pricing||'not set')
+  );
+  if (btn) { btn.textContent = '🤖 Get AI Pricing Suggestion'; btn.disabled = false; }
+  if (!result) { el.innerHTML = '<div style="padding:10px;color:var(--t-dim);">AI unavailable. Try again.</div>'; return; }
+  try {
+    var data = JSON.parse(result.replace(/```json|```/g,'').trim());
+    el.innerHTML = '<div style="background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,110,240,0.06));border:1px solid rgba(139,92,246,0.2);border-radius:10px;padding:16px;margin-top:10px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:20px;">🤖</span><span style="font-size:15px;font-weight:700;color:#0f1117;">Suggested: '+data.suggestion+'</span></div>'
+      +'<p style="font-size:13px;color:#6b7280;margin-bottom:8px;">'+data.reasoning+'</p>'
+      +'<div style="display:flex;gap:14px;font-size:12px;font-weight:600;"><span style="color:#10b981;">Min: '+data.range.min+'</span><span style="color:#f59e0b;">Max: '+data.range.max+'</span></div>'
+      +'</div>';
+  } catch(e) { el.innerHTML = '<div style="padding:10px;font-size:13px;color:#6b7280;">'+result+'</div>'; }
 }
 
 // ══════════════════════════════
