@@ -1414,76 +1414,183 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
     <div class="auth-mobile-logo" onclick="goTo('landing')">Post<em>Hire</em></div>
     <button class="auth-mobile-back" onclick="goTo('landing')">← Back</button>
   </div>
+
   <div class="auth-wrap">
     <div class="auth-left">
       <div class="auth-left-bg"></div>
       <div class="auth-left-content">
         <div class="auth-brand" onclick="goTo('landing')">Post<em>Hire</em></div>
-        <h2 class="auth-left-h">Start connecting<br>in minutes.</h2>
-        <p class="auth-left-sub">Join hundreds of founders and creators already collaborating on PostHire.</p>
-        <div class="auth-feature-list">
-          <div class="auth-feature"><div class="auth-feature-dot"></div>Free to join, no credit card</div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div>1-click WhatsApp collaboration</div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div>Niche-specific creator discovery</div>
-          <div class="auth-feature"><div class="auth-feature-dot"></div>Structured profiles, real data</div>
+        <h2 class="auth-left-h">Join<br>PostHire.</h2>
+        <p class="auth-left-p">Connect startups with the right content creators — in minutes.</p>
+        <div class="auth-left-feats">
+          <div class="auth-left-feat"><span class="alf-icon">🚀</span><span>Find perfect creator matches</span></div>
+          <div class="auth-left-feat"><span class="alf-icon">🤖</span><span>AI-powered collaboration tools</span></div>
+          <div class="auth-left-feat"><span class="alf-icon">💰</span><span>Pay only when you grow</span></div>
         </div>
+        <div class="auth-left-footer">Already have an account? <a onclick="goTo('login')" style="color:#7fa8ff;cursor:pointer;font-weight:700;">Sign In</a></div>
       </div>
     </div>
     <div class="auth-right">
       <div class="auth-box">
-        <h1 class="auth-box-title">Create Account</h1>
-        <p class="auth-box-sub">Already have one? <a onclick="goTo('login')">Sign in</a></p>
-        <div class="auth-tabs-wrap">
-          <button class="a-tab active" onclick="goTo('signup')">Sign Up</button>
-          <button class="a-tab" onclick="goTo('login')">Sign In</button>
-        </div>
-        <div class="role-pick">
-          <div class="role-opt sel" id="ro-founder" onclick="pickRole('founder')">
-            <span class="r-icon">🚀</span><span class="r-label">I\'m a Founder</span>
+
+        <!-- STEP INDICATOR -->
+        <div id="su-steps" style="display:flex;align-items:center;gap:0;margin-bottom:28px;">
+          <div id="su-step1-dot" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#3b6ef0;">
+            <div style="width:26px;height:26px;border-radius:50%;background:#3b6ef0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">1</div>
+            Choose Plan
           </div>
-          <div class="role-opt" id="ro-creator" onclick="pickRole('creator')">
-            <span class="r-icon">🎥</span><span class="r-label">I\'m a Creator</span>
-          </div>
-        </div>
-        <div class="f-group"><label class="f-label">Full Name</label><input class="f-input" id="su-name" placeholder="Your full name" type="text"></div>
-        <div class="f-group"><label class="f-label">Email</label><input class="f-input" id="su-email" placeholder="you@example.com" type="email"></div>
-        <div class="f-group"><label class="f-label">Password</label><input class="f-input" id="su-pass" placeholder="Create a strong password" type="password"></div>
-        <div class="f-group"><label class="f-label">WhatsApp Number <span style="color:var(--blue);font-size:11px;">(required for collaboration)</span></label><input class="f-input" id="su-whatsapp" placeholder="10-digit WhatsApp number" type="tel" maxlength="10"></div>
-        <!-- Founder extra -->
-        <div id="su-founder-extra">
-          <div class="f-group"><label class="f-label">Startup Name</label><input class="f-input" id="su-startup" placeholder="Your startup name" type="text"></div>
-          <div class="f-row">
-            <div class="f-group"><label class="f-label">Industry</label>
-              <select class="f-select" id="su-industry"><option value="">Select</option><option>SaaS</option><option>D2C</option><option>Fintech</option><option>Edtech</option><option>Healthtech</option><option>Other</option></select>
-            </div>
-            <div class="f-group"><label class="f-label">Budget</label>
-              <select class="f-select" id="su-budget"><option value="">Select</option><option>₹5K–₹20K</option><option>₹20K–₹50K</option><option>₹50K–₹1L</option><option>₹1L+</option></select>
-            </div>
+          <div style="flex:1;height:2px;background:#e8ebf4;margin:0 10px;"></div>
+          <div id="su-step2-dot" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#9ca3af;">
+            <div style="width:26px;height:26px;border-radius:50%;background:#e8ebf4;color:#9ca3af;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">2</div>
+            Your Details
           </div>
         </div>
-        <!-- Creator extra -->
-        <div id="su-creator-extra" style="display:none;">
-          <div class="f-group"><label class="f-label">Primary Niche</label>
-            <select class="f-select" id="su-niche"><option value="">Select niche</option><option>AI & Tech</option><option>Finance</option><option>Startups</option><option>Lifestyle</option><option>Fitness</option><option>Food</option><option>Travel</option></select>
+
+        <!-- STEP 1: Role + Plan Selection -->
+        <div id="su-step1">
+          <h1 class="auth-box-title">Get Started Free</h1>
+          <p class="auth-box-sub">Who are you? Pick your role and plan.</p>
+
+          <!-- Role Picker -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#374151;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">I am a</div>
+            <div class="role-pick" id="su-role-pick">
+              <div class="role-opt sel" id="su-role-founder" onclick="suPickRole('founder',this)">
+                <span class="r-icon">🚀</span>
+                <div><div class="r-label">Startup Founder</div><div style="font-size:11px;color:#9ca3af;margin-top:2px;">Find & hire creators</div></div>
+              </div>
+              <div class="role-opt" id="su-role-creator" onclick="suPickRole('creator',this)">
+                <span class="r-icon">🎥</span>
+                <div><div class="r-label">Content Creator</div><div style="font-size:11px;color:#9ca3af;margin-top:2px;">Get discovered by brands</div></div>
+              </div>
+            </div>
           </div>
-          <div class="f-row">
-            <div class="f-group"><label class="f-label">Platform</label>
-              <select class="f-select" id="su-platform"><option value="">Select</option><option>Instagram</option><option>YouTube</option><option>LinkedIn</option><option>Twitter/X</option></select>
+
+          <!-- Plan Picker (inline) -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#374151;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Choose Plan</div>
+            <div style="display:flex;flex-direction:column;gap:10px;" id="su-plan-cards">
+              <!-- Free -->
+              <div class="su-plan-card sel" id="su-plan-free" onclick="suPickPlan('free',this)" style="border:2px solid #3b6ef0;background:#eff6ff;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <div>
+                    <div style="font-size:13px;font-weight:800;color:#0f1117;">Free Plan</div>
+                    <div style="font-size:11px;color:#6b7280;margin-top:2px;">3 collabs/mo · 10 browse/day</div>
+                  </div>
+                  <div style="font-size:18px;font-weight:800;color:#10b981;">₹0</div>
+                </div>
+              </div>
+              <!-- Starter -->
+              <div class="su-plan-card" id="su-plan-starter" onclick="suPickPlan('starter',this)" style="border:2px solid #e8ebf4;background:#fff;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <div>
+                    <div style="font-size:13px;font-weight:800;color:#0f1117;">Starter Plan <span style="background:#eff6ff;color:#3b6ef0;font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px;">POPULAR</span></div>
+                    <div style="font-size:11px;color:#6b7280;margin-top:2px;">20 collabs/mo · AI bio · Messaging</div>
+                  </div>
+                  <div style="font-size:18px;font-weight:800;color:#3b6ef0;">₹299<span style="font-size:10px;color:#9ca3af;">/mo</span></div>
+                </div>
+              </div>
+              <!-- Pro -->
+              <div class="su-plan-card" id="su-plan-pro" onclick="suPickPlan('pro',this)" style="border:2px solid #e8ebf4;background:#fff;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <div>
+                    <div style="font-size:13px;font-weight:800;color:#0f1117;">Pro Plan <span style="background:linear-gradient(135deg,#8b5cf6,#3b6ef0);color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;margin-left:4px;">BEST VALUE</span></div>
+                    <div style="font-size:11px;color:#6b7280;margin-top:2px;">Unlimited · AI matches · Analytics</div>
+                  </div>
+                  <div style="font-size:18px;font-weight:800;color:#8b5cf6;">₹599<span style="font-size:10px;color:#9ca3af;">/mo</span></div>
+                </div>
+              </div>
             </div>
-            <div class="f-group"><label class="f-label">Audience</label>
-              <select class="f-select" id="su-audience"><option value="">Select</option><option>1K–10K</option><option>10K–50K</option><option>50K–200K</option><option>200K+</option></select>
-            </div>
+          </div>
+
+          <button class="auth-submit-btn" onclick="suGoStep2()">Continue →</button>
+          <div style="text-align:center;margin-top:14px;font-size:12px;color:#9ca3af;">
+            Already registered? <a onclick="goTo('login')" style="color:#3b6ef0;font-weight:700;cursor:pointer;">Sign In</a>
           </div>
         </div>
-        <button class="auth-submit-btn" onclick="doSignup()">Create Account →</button>
+
+        <!-- STEP 2: Account Details -->
+        <div id="su-step2" style="display:none;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+            <button onclick="suGoBack()" style="width:30px;height:30px;border-radius:8px;background:#f4f5fb;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">←</button>
+            <div>
+              <h1 class="auth-box-title" style="margin-bottom:0;">Your Details</h1>
+              <p style="font-size:12px;color:#9ca3af;margin-top:2px;" id="su-step2-label">Setting up your account</p>
+            </div>
+          </div>
+
+          <!-- Basic fields (always shown) -->
+          <div class="f-group"><label class="f-label">Full Name *</label>
+            <input class="f-input" id="su-name" type="text" placeholder="Your full name" autocomplete="name"></div>
+          <div class="f-group"><label class="f-label">Email Address *</label>
+            <input class="f-input" id="su-email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+          <div class="f-group"><label class="f-label">Password *</label>
+            <input class="f-input" id="su-pass" type="password" placeholder="Min 6 characters" autocomplete="new-password"></div>
+          <div class="f-group"><label class="f-label">WhatsApp Number *</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="padding:11px 12px;background:#f4f5fb;border:1.5px solid #e8ebf4;border-radius:10px;font-size:13px;font-weight:600;color:#374151;flex-shrink:0;">+91</span>
+              <input class="f-input" id="su-whatsapp" type="tel" placeholder="10-digit number" maxlength="10" style="flex:1;" autocomplete="tel"></div></div>
+
+          <!-- Founder extra fields -->
+          <div id="su-founder-extra">
+            <div class="f-group"><label class="f-label">Startup Name</label>
+              <input class="f-input" id="su-startup" placeholder="e.g. MyStartup.io"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="f-group"><label class="f-label">Industry</label>
+                <select class="f-input" id="su-industry" style="cursor:pointer;">
+                  <option value="">Select</option>
+                  <option>AI & Tech</option><option>E-commerce</option><option>FinTech</option>
+                  <option>Health & Wellness</option><option>EdTech</option><option>D2C Brand</option>
+                  <option>SaaS</option><option>Food & Beverage</option><option>Fashion</option><option>Other</option>
+                </select></div>
+              <div class="f-group"><label class="f-label">Collab Budget</label>
+                <select class="f-input" id="su-budget" style="cursor:pointer;">
+                  <option value="">Select</option>
+                  <option>Under ₹5K</option><option>₹5K–₹15K</option><option>₹15K–₹50K</option>
+                  <option>₹50K–₹1L</option><option>₹1L+</option>
+                </select></div>
+            </div>
+          </div>
+
+          <!-- Creator extra fields -->
+          <div id="su-creator-extra" style="display:none;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="f-group"><label class="f-label">Your Niche</label>
+                <select class="f-input" id="su-niche" style="cursor:pointer;">
+                  <option value="">Select</option>
+                  <option>AI & Tech</option><option>Finance</option><option>Startups</option>
+                  <option>Lifestyle</option><option>Fitness</option><option>Food</option>
+                  <option>Beauty</option><option>Travel</option><option>Gaming</option><option>Education</option>
+                </select></div>
+              <div class="f-group"><label class="f-label">Main Platform</label>
+                <select class="f-input" id="su-platform" style="cursor:pointer;">
+                  <option value="">Select</option>
+                  <option>Instagram</option><option>YouTube</option><option>LinkedIn</option>
+                  <option>Twitter/X</option><option>TikTok</option><option>Facebook</option>
+                </select></div>
+            </div>
+            <div class="f-group"><label class="f-label">Audience Size</label>
+              <select class="f-input" id="su-audience" style="cursor:pointer;">
+                <option value="">Select</option>
+                <option>Under 1K</option><option>1K–10K</option><option>10K–50K</option>
+                <option>50K–200K</option><option>200K+</option>
+              </select></div>
+          </div>
+
+          <button class="auth-submit-btn" onclick="doSignup()" id="su-submit-btn">Create Account →</button>
+
+          <div id="su-error-msg" style="display:none;margin-top:12px;padding:12px 14px;background:#fee2e2;border:1px solid #fecaca;border-radius:10px;font-size:13px;color:#dc2626;font-weight:500;text-align:center;"></div>
+
+          <div style="text-align:center;margin-top:16px;font-size:12px;color:#9ca3af;">
+            By signing up you agree to our <a href="#" style="color:#3b6ef0;">Terms</a> & <a href="#" style="color:#3b6ef0;">Privacy Policy</a>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 </div>
 
-<!-- ════════════════════════════════════
-     PAGE: LOGIN
-════════════════════════════════════ -->
 <div id="pg-login" class="page">
   <!-- Mobile top bar -->
   <div class="auth-mobile-top">
@@ -2170,6 +2277,25 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
   #pg-admin-login .auth-mobile-logo { color: #e8eaf6; }
   #pg-admin-login .auth-mobile-back { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
 }
+
+/* ── Signup 2-step flow ── */
+.su-plan-card {
+  padding: 14px 16px; border-radius: 12px; cursor: pointer;
+  transition: all 0.2s; border: 2px solid #e8ebf4;
+}
+.su-plan-card:hover { border-color: #3b6ef0; background: #f7f9ff !important; }
+.su-plan-card.sel   { border-color: #3b6ef0 !important; background: #eff6ff !important; }
+
+/* ── Inline error message box ── */
+#su-error-msg { line-height: 1.5; }
+
+/* ── Step indicator active ── */
+.su-step-active { color: #3b6ef0 !important; }
+.su-step-active > div:first-child { background: #3b6ef0 !important; color: #fff !important; }
+
+/* Pricing grid */
+.d-price-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding-top:8px; }
+@media (max-width:900px) { .d-price-grid { grid-template-columns:1fr; max-width:400px; margin:0 auto; } }
 </style>
 
 <div class="adm-wrap">
@@ -2968,92 +3094,144 @@ function setAuthBtn(btnId, loading, text) {
 
 // ── SIGN UP ──────────────────────────────────────────────────────
 // Step 1: Create account → Step 2: Pick plan → Step 3: Dashboard
+// ── Signup flow state ──
+var _suRole = 'founder';
+var _suPlan = 'free';
+
+function suPickRole(role, el) {
+  _suRole = role; S.selectedRole = role;
+  document.querySelectorAll('#su-role-pick .role-opt').forEach(function(r){ r.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+
+function suPickPlan(plan, el) {
+  _suPlan = plan;
+  document.querySelectorAll('#su-plan-cards .su-plan-card').forEach(function(c){ c.classList.remove('sel'); c.style.background='#fff'; c.style.borderColor='#e8ebf4'; });
+  el.classList.add('sel');
+  el.style.borderColor = '#3b6ef0';
+  el.style.background = '#eff6ff';
+}
+
+function suGoStep2() {
+  // Show correct extra fields based on role
+  var feEl = document.getElementById('su-founder-extra');
+  var ceEl = document.getElementById('su-creator-extra');
+  if (feEl) feEl.style.display = _suRole === 'founder' ? 'block' : 'none';
+  if (ceEl) ceEl.style.display = _suRole === 'creator' ? 'block' : 'none';
+
+  // Update step label
+  var labelEl = document.getElementById('su-step2-label');
+  if (labelEl) labelEl.textContent = (_suRole === 'founder' ? '🚀 Startup Founder' : '🎥 Content Creator')
+    + ' · ' + (_suPlan === 'free' ? 'Free Plan' : _suPlan === 'starter' ? 'Starter ₹299/mo' : 'Pro ₹599/mo');
+
+  // Update step indicators
+  var s1 = document.getElementById('su-step1-dot');
+  var s2 = document.getElementById('su-step2-dot');
+  if (s1) { s1.style.color='#10b981'; s1.querySelector('div').style.background='#10b981'; }
+  if (s2) { s2.style.color='#3b6ef0'; s2.querySelector('div').style.background='#3b6ef0'; s2.querySelector('div').style.color='#fff'; }
+
+  document.getElementById('su-step1').style.display = 'none';
+  document.getElementById('su-step2').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function suGoBack() {
+  document.getElementById('su-step1').style.display = 'block';
+  document.getElementById('su-step2').style.display = 'none';
+  var s2 = document.getElementById('su-step2-dot');
+  if (s2) { s2.style.color='#9ca3af'; s2.querySelector('div').style.background='#e8ebf4'; s2.querySelector('div').style.color='#9ca3af'; }
+}
+
+function suShowError(msg) {
+  var el = document.getElementById('su-error-msg');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+  showToast(msg, 'error');
+}
+function suHideError() {
+  var el = document.getElementById('su-error-msg');
+  if (el) el.style.display = 'none';
+}
+
 async function doSignup() {
-  const name      = document.getElementById('su-name').value.trim();
-  const email     = document.getElementById('su-email').value.trim();
-  const pass      = document.getElementById('su-pass').value;
-  const whatsapp  = document.getElementById('su-whatsapp').value.trim();
+  suHideError();
+  const name     = (document.getElementById('su-name')?.value     || '').trim();
+  const email    = (document.getElementById('su-email')?.value    || '').trim();
+  const pass     = (document.getElementById('su-pass')?.value     || '');
+  const whatsapp = (document.getElementById('su-whatsapp')?.value || '').trim();
 
-  if (!name || !email || !pass) { showToast('Please fill all required fields', 'error'); return; }
-  if (pass.length < 6)          { showToast('Password must be at least 6 characters', 'error'); return; }
-  if (!whatsapp || whatsapp.length < 10) { showToast('Please enter a valid 10-digit WhatsApp number', 'error'); return; }
+  if (!name)               { suShowError('Please enter your full name.'); return; }
+  if (!email)              { suShowError('Please enter your email address.'); return; }
+  if (!email.includes('@')){ suShowError('Please enter a valid email address.'); return; }
+  if (!pass)               { suShowError('Please enter a password.'); return; }
+  if (pass.length < 6)     { suShowError('Password must be at least 6 characters.'); return; }
+  if (!whatsapp || whatsapp.length < 10) { suShowError('Please enter a valid 10-digit WhatsApp number.'); return; }
 
-  const btn = document.querySelector('#pg-signup .auth-submit-btn');
+  const btn = document.getElementById('su-submit-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Creating account...'; btn.style.opacity = '0.7'; }
 
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
     const isAdmin = (email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
-
-    // Build profile — plan will be set on plan-pick page
     const profile = {
       name, email, whatsapp,
-      role:     S.selectedRole,
-      plan:     'free',             // default, user picks next
+      role:     _suRole,
+      plan:     'free',
       avatar:   name[0].toUpperCase(),
-      startup:  document.getElementById('su-startup')?.value  || '',
-      industry: document.getElementById('su-industry')?.value || '',
-      budget:   document.getElementById('su-budget')?.value   || '',
-      niche:    document.getElementById('su-niche')?.value    || '',
-      platform: document.getElementById('su-platform')?.value || '',
-      audience: document.getElementById('su-audience')?.value || '',
-      bio: '', website: '',
-      collabsUsed: 0,
-      isAdmin,
-      uid: cred.user.uid,
+      startup:  (document.getElementById('su-startup')?.value  || '').trim(),
+      industry: (document.getElementById('su-industry')?.value || ''),
+      budget:   (document.getElementById('su-budget')?.value   || ''),
+      niche:    (document.getElementById('su-niche')?.value    || ''),
+      platform: (document.getElementById('su-platform')?.value || ''),
+      audience: (document.getElementById('su-audience')?.value || ''),
+      bio: '', website: '', portfolioUrl: '', portfolioResults: '', brands: '',
+      collabsUsed: 0, isAdmin, uid: cred.user.uid,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     };
-
     await fbSaveUser(cred.user.uid, profile);
-    S.user = profile;
-    S.collabsUsed = 0;
+    S.user = profile; S.collabsUsed = 0;
 
-    showToast('Account created! Now choose your plan ✦', 'success');
+    if (btn) { btn.disabled = false; btn.textContent = 'Create Account →'; btn.style.opacity = '1'; }
 
-    // ✅ Go to plan selection — NOT dashboard directly
-    setTimeout(() => {
-      showPlanPicker();
-    }, 600);
+    // If paid plan selected → open Razorpay THEN go to dashboard
+    if (_suPlan !== 'free') {
+      showToast('Account created! Opening payment...', 'success');
+      setTimeout(function() {
+        openRazorpay(_suPlan, function(){ goTo('dashboard'); });
+      }, 500);
+    } else {
+      showToast('Welcome to PostHire! ✦', 'success');
+      setTimeout(function(){ goTo('dashboard'); }, 600);
+    }
 
-  } catch (err) {
+  } catch(err) {
     if (btn) { btn.disabled = false; btn.textContent = 'Create Account →'; btn.style.opacity = '1'; }
     const msgs = {
-      'auth/email-already-in-use': 'That email is already registered. Try logging in.',
-      'auth/invalid-email':        'Please enter a valid email address.',
-      'auth/weak-password':        'Password must be at least 6 characters.',
-      'auth/network-request-failed': 'Network error. Check your internet connection.',
-      'auth/too-many-requests':    'Too many attempts. Please try again later.',
+      'auth/email-already-in-use': '⚠️ This email is already registered. Please sign in instead.',
+      'auth/invalid-email':        '⚠️ Please enter a valid email address.',
+      'auth/weak-password':        '⚠️ Password must be at least 6 characters.',
+      'auth/network-request-failed': '⚠️ Network error. Check your internet connection.',
+      'auth/too-many-requests':    '⚠️ Too many attempts. Please wait a few minutes.',
     };
-    showToast(msgs[err.code] || ('Error: ' + err.message), 'error');
+    const errMsg = msgs[err.code] || ('⚠️ Error: ' + err.message);
+    suShowError(errMsg);
   }
 }
 
-// ── Show plan picker with user's role context ──────────────────
-function showPlanPicker() {
-  const badge = document.getElementById('pp-role-badge');
-  if (badge && S.user) {
-    badge.textContent = S.user.role === 'founder' ? '🚀 Startup Founder' : '🎥 Content Creator';
-  }
-  goTo('planpick');
-}
+// ── Show plan picker (kept for backward compat) ──
+function showPlanPicker() { goTo('planpick'); }
 
-// ── Plan selected → save to Firestore → go to dashboard ────────
 async function selectPlanAndContinue(plan) {
   if (!S.user) { goTo('signup'); return; }
   if (plan === 'free') {
-    // Free plan — no payment needed
     S.user.plan = 'free';
     try { if (S.user.uid) await fbSaveUser(S.user.uid, { plan: 'free' }); } catch(e) {}
-    showToast('Welcome to PostHire on Free Plan ✦', 'success');
+    showToast('Welcome to PostHire ✦', 'success');
     setTimeout(function(){ goTo('dashboard'); }, 500);
     return;
   }
-  // Paid plan — open Razorpay
-  openRazorpay(plan, function() {
-    // On success — go to dashboard
-    goTo('dashboard');
-  });
+  openRazorpay(plan, function() { goTo('dashboard'); });
 }
+
 
 // ── LOG IN ───────────────────────────────────────────────────────
 async function doLogin() {
@@ -4049,84 +4227,61 @@ async function saveProfile() {
 //  PRICING
 // ══════════════════════════════
 function renderPricing() {
-  const u = S.user;
-  if (!u) return;
+  const u = S.user; if (!u) return;
   const el = document.getElementById('d-price-grid');
   if (!el) return;
+  const curPlan = u.plan || 'free';
+
   const plans = [
-    { key:'free',    name:'FREE',    price:'0',   period:'/month', badge:'badge-free',
-      features:['Create founder or creator profile','Browse 10 creator profiles/day','3 collab requests/month','Basic search & WhatsApp connect'],
-      disabled:['Messaging','AI bio & match','Advanced filters','Featured badge','Analytics'], featured:false },
-    { key:'starter', name:'STARTER', price:'299', period:'/month', badge:'badge-starter',
-      features:['Unlimited profile browsing','20 collab requests/month','Advanced search & filters','Messaging','✨ AI bio generator','✨ AI collab message writer','Priority listing'],
-      disabled:['🤖 AI match suggestions','📊 Analytics','⭐ Featured badge'], featured:true },
-    { key:'pro',     name:'PRO',     price:'599', period:'/month', badge:'badge-pro',
-      features:['Everything in Starter','Unlimited collaboration requests','Daily AI-powered matches','Featured profile badge','Top search placement','Portfolio highlight section','Audience analytics','Priority support'],
-      disabled:[], featured:false },
-  ];
-  el.innerHTML = plans.map(function(p) {
-    const isCur = u.plan === p.key;
-    const featuredClass = p.featured ? ' l-price-card-featured' : '';
-    const featList = p.features.map(function(f) { return '<li><span class="tick">✓</span>' + f + '</li>'; }).join('');
-    const disList  = p.disabled.map(function(f)  { return '<li class="off"><span class="tick">—</span>' + f + '</li>'; }).join('');
-    let btn = '';
-    if (isCur) {
-      btn = '<button class="l-price-cta l-price-cta-outline" style="opacity:0.45;cursor:default;">Current Plan ✓</button>';
-    } else {
-      const btnClass = p.featured ? 'l-price-cta-fill' : 'l-price-cta-outline';
-      const cta = p.key === 'starter' ? 'Upgrade to Starter' : 'Go Pro';
-      btn = '<button class="l-price-cta ' + btnClass + '" onclick="selectPlan(\'' + p.key + '\')">' + cta + ' →</button>';
+    {
+      key:'free', name:'Free', price:'0', badge:'badge-free', featured:false,
+      features:['Create founder or creator profile','Browse 10 creator profiles/day','3 collab requests/month','Basic search & WhatsApp connect','✨ AI bio generator'],
+      disabled:['In-platform messaging','🤖 AI match suggestions','Advanced filters','⭐ Featured badge','📊 Analytics','📁 Portfolio section']
+    },
+    {
+      key:'starter', name:'Starter', price:'299', badge:'badge-starter', featured:true,
+      features:['Unlimited profile browsing','20 collab requests/month','Advanced search & filters','💬 In-platform messaging','✨ AI bio generator','✨ AI collab message writer','Priority listing in search'],
+      disabled:['🤖 AI match suggestions','📊 Audience analytics','⭐ Featured pro badge']
+    },
+    {
+      key:'pro', name:'Pro', price:'599', badge:'badge-pro', featured:false,
+      features:['Everything in Starter','Unlimited collab requests','🤖 Daily AI match suggestions','🤖 AI pricing advisor','⭐ Featured pro badge','📊 Audience analytics','📁 Portfolio highlight section','Priority support'],
+      disabled:[]
     }
-    return '<div class="l-price-card' + featuredClass + '">'
-      + '<span class="l-plan-badge ' + p.badge + '">' + p.key.toUpperCase() + '</span>'
-      + '<div class="l-price-name">' + p.name + ' PLAN</div>'
-      + '<div class="l-price-amount"><sup>₹</sup>' + p.price + '</div>'
-      + '<div class="l-price-period">' + p.period + '</div>'
-      + '<div class="l-price-divider"></div>'
-      + '<ul class="l-price-feat-list">' + featList + disList + '</ul>'
-      + btn
+  ];
+
+  el.innerHTML = plans.map(function(p) {
+    const isCurrent = curPlan === p.key;
+    const isPaid    = p.key !== 'free';
+    const featuredBadge = p.featured ? '<span style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#3b6ef0,#6366f1);color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;padding:4px 14px;border-radius:20px;white-space:nowrap;">MOST POPULAR</span>' : '';
+    const border = p.featured ? '2px solid #3b6ef0' : (isCurrent ? '2px solid #10b981' : '1.5px solid #eaecf5');
+    const shadow = p.featured ? '0 8px 32px rgba(59,110,240,0.15)' : 'none';
+
+    let cta = '';
+    if (isCurrent) {
+      cta = '<div style="width:100%;padding:12px;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;text-align:center;font-size:13px;font-weight:700;color:#10b981;">✓ Current Plan</div>';
+    } else if (p.key === 'free') {
+      cta = '<button style="width:100%;padding:12px;background:transparent;border:1.5px solid #e8ebf4;border-radius:12px;font-size:13px;font-weight:700;color:#9ca3af;cursor:pointer;" onclick="selectPlan(\"free\")">Downgrade to Free</button>';
+    } else {
+      var bgCol = p.featured ? 'linear-gradient(135deg,#3b6ef0,#6366f1)' : 'linear-gradient(135deg,#0f1117,#1a1f42)';
+      cta = '<button style="width:100%;padding:12px;background:'+bgCol+';color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;" data-plan="'+p.key+'" onclick="selectPlan(this.dataset.plan)">Upgrade to '+p.name+' — ₹'+p.price+'/mo →</button>';
+    }
+
+    return '<div style="background:#fff;border:' + border + ';border-radius:18px;padding:28px 24px;position:relative;box-shadow:' + shadow + ';transition:all 0.25s;">'
+      + featuredBadge
+      + '<div style="margin-bottom:4px;">'
+      + '<span class="' + p.badge + '" style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;">' + p.name.toUpperCase() + '</span>'
+      + '</div>'
+      + '<div style="font-size:36px;font-weight:900;color:#0f1117;letter-spacing:-1px;margin:14px 0 2px;"><sup style="font-size:16px;font-weight:700;">₹</sup>' + p.price + '<span style="font-size:13px;font-weight:500;color:#9ca3af;">/month</span></div>'
+      + (p.key === 'free' ? '<div style="font-size:12px;color:#10b981;font-weight:600;margin-bottom:18px;">No credit card needed</div>' : '<div style="font-size:12px;color:#9ca3af;margin-bottom:18px;">Cancel anytime</div>')
+      + '<div style="height:1px;background:#f0f2f8;margin-bottom:16px;"></div>'
+      + p.features.map(function(f){ return '<div style="display:flex;align-items:flex-start;gap:8px;font-size:12.5px;color:#374151;margin-bottom:8px;line-height:1.5;"><span style="color:#10b981;font-size:14px;flex-shrink:0;margin-top:1px;">✓</span>' + f + '</div>'; }).join('')
+      + (p.disabled.length ? p.disabled.map(function(f){ return '<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:#c4c9d9;margin-bottom:7px;line-height:1.5;"><span style="font-size:13px;flex-shrink:0;">✗</span>' + f + '</div>'; }).join('') : '')
+      + '<div style="margin-top:20px;">' + cta + '</div>'
       + '</div>';
   }).join('');
 }
 
-function selectPlan(planKey) {
-  const pData = PLANS[planKey];
-  if (!pData) return;
-
-  if (planKey === 'free') {
-    // Downgrade — no payment
-    openModal(
-      'Downgrade to Free Plan',
-      'You will lose access to premium features. Are you sure?',
-      async function() {
-        S.user.plan = 'free';
-        if (S.user.uid) await fbSaveUser(S.user.uid, { plan: 'free' });
-        renderDash(); closeModal();
-        showToast('Switched to Free Plan', '');
-      },
-      'Confirm Downgrade'
-    );
-    return;
-  }
-
-  // Paid plan — show payment modal then Razorpay
-  openModal(
-    'Upgrade to ' + pData.name,
-    '<div style="text-align:center;padding:8px 0;">'
-    + '<div style="font-size:36px;margin-bottom:8px;">💳</div>'
-    + '<p style="font-size:15px;font-weight:700;margin-bottom:4px;">' + pData.name + '</p>'
-    + '<p style="font-size:28px;font-weight:800;color:var(--blue);margin-bottom:8px;">' + pData.price + '<span style="font-size:13px;color:#9ca3af;">/month</span></p>'
-    + '<p style="font-size:13px;color:#6b7280;">Secure payment via Razorpay</p>'
-    + '</div>',
-    function() {
-      closeModal();
-      openRazorpay(planKey, function() {
-        renderDash();
-      });
-    },
-    'Pay ' + pData.price + ' →'
-  );
-}
 
 // ══════════════════════════════
 //  VIEW SWITCHING
