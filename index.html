@@ -2691,6 +2691,7 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
             <p>Track all collaboration requests you have received.</p>
           </div>
           <div class="d-collab-list">
+            <div id="collab-slots-banner"></div>
             <div class="d-collab-hd"><h4>All Requests</h4><span id="collab-refresh-btn" onclick="loadMyCollabs()" style="cursor:pointer;font-size:12px;color:var(--blue);">↻ Refresh</span></div>
             <div id="my-collabs-list"><div style="text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">Loading collaboration requests...</div></div>
           </div>
@@ -3828,6 +3829,8 @@ async function requestCollab(creatorId, creatorName, creatorWa) {
         showToast('Connected via WhatsApp ✦','success');
       } else {
         showToast('🎉 Request sent! Admin will connect you soon.','success');
+      // Refresh collabs list if visible
+      if (document.getElementById('vw-collabs') && document.getElementById('vw-collabs').classList.contains('act')) { loadMyCollabs(); }
       }
     } catch(e) {
       console.error(e); showToast('Error. Please try again.','error');
@@ -3840,54 +3843,106 @@ async function requestCollab(creatorId, creatorName, creatorWa) {
   }, 30);
 }
 async function loadMyCollabs() {
+  const u = S.user; if (!u) return;
+  const plan = PLANS[u.plan] || PLANS.free;
   const el = document.getElementById('my-collabs-list');
   if (!el) return;
-  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t-dim);">Loading...</div>';
+  el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t-dim);font-size:13px;">Loading...</div>';
+
+  // ── Slots banner ──
+  const bannerEl = document.getElementById('collab-slots-banner');
+  if (bannerEl) {
+    const isUnlimited = plan.collabs === -1;
+    const used = S.collabsUsed || 0;
+    const total = plan.collabs;
+    const left = isUnlimited ? '∞' : Math.max(0, total - used);
+    const pct  = isUnlimited ? 30 : Math.round((used/total)*100);
+    const leftColor = (!isUnlimited && left <= 1) ? '#ef4444' : (left <= Math.ceil(total*0.3)) ? '#f59e0b' : '#10b981';
+
+    bannerEl.innerHTML = '<div style="background:#fff;border:1px solid #e8ebf4;border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+      + '<div style="flex:1;min-width:180px;">'
+      + '<div style="display:flex;justify-content:space-between;margin-bottom:6px;">'
+      + '<span style="font-size:12px;font-weight:700;color:#374151;">Collaboration Slots</span>'
+      + '<span style="font-size:12px;font-weight:800;color:'+leftColor+';">'
+      + (isUnlimited ? '∞ Unlimited' : left + ' left of ' + total)
+      + '</span></div>'
+      + '<div style="height:6px;background:#f0f2f8;border-radius:3px;overflow:hidden;">'
+      + '<div style="height:100%;width:'+pct+'%;background:'+leftColor+';border-radius:3px;transition:width 0.5s;"></div>'
+      + '</div>'
+      + (!isUnlimited && left === 0 ? '<div style="font-size:11px;color:#ef4444;margin-top:6px;font-weight:600;">Limit reached — upgrade to send more requests.</div>' : '')
+      + (!isUnlimited && left === 1 ? '<div style="font-size:11px;color:#f59e0b;margin-top:6px;font-weight:600;">Only 1 request left this month!</div>' : '')
+      + '</div>'
+      + (!isUnlimited && left === 0
+          ? '<button onclick="showView(\"pricing\")" style="padding:8px 16px;background:linear-gradient(135deg,#3b6ef0,#6366f1);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Upgrade →</button>'
+          : '')
+      + '</div>';
+  }
+
+  if (!db) { el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t-dim);">Loading...</div>'; return; }
   try {
-    const u = S.user;
-    const field = (u.role === 'creator') ? 'creatorId' : 'founderId';
-    const snap = await db.collection('collaborations').where(field,'==',u.uid).get();
+    const isFounder = u.role === 'founder' || u.isAdmin;
+    const field = isFounder ? 'founderId' : 'creatorId';
+    const snap = await db.collection('collaborations').where(field, '==', u.uid).get();
+
     if (snap.empty) {
-      el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--t-dim);font-size:14px;">No collaboration requests yet.</div>';
+      el.innerHTML = '<div style="text-align:center;padding:50px 20px;">'
+        + '<div style="font-size:44px;margin-bottom:12px;">🤝</div>'
+        + '<div style="font-size:15px;font-weight:700;color:#0f1117;margin-bottom:6px;">'
+        + (isFounder ? 'No collaboration requests yet' : 'No requests received yet') + '</div>'
+        + '<div style="font-size:13px;color:#9ca3af;">'
+        + (isFounder ? 'Browse creators and send your first request.' : 'Founders will find you once your profile is complete.') + '</div>'
+        + '</div>';
       return;
     }
-    // Sort client-side by createdAt desc (avoids Firestore composite index)
-    const docs = [];
-    snap.forEach(function(doc){ docs.push(doc); });
-    docs.sort(function(a,b){
-      const at = a.data().createdAt ? a.data().createdAt.seconds : 0;
-      const bt = b.data().createdAt ? b.data().createdAt.seconds : 0;
-      return bt - at;
-    });
-    let html = '';
-    docs.forEach(doc => {
+
+    // Sort newest first
+    const docs = snap.docs.sort(function(a,b){ return (b.data().createdAt?.seconds||0) - (a.data().createdAt?.seconds||0); });
+
+    const statusColors = { pending:'#f59e0b', approved:'#10b981', rejected:'#ef4444' };
+    const statusBg     = { pending:'#fff7ed', approved:'#f0fdf4', rejected:'#fef2f2' };
+    const statusLabel  = { pending:'⏳ Pending Review', approved:'✅ Approved', rejected:'❌ Rejected' };
+
+    el.innerHTML = docs.map(function(doc) {
       const d = doc.data();
-      const timeStr = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : 'Recently';
-      const statusColor = d.status === 'approved' ? '#10b981' : d.status === 'rejected' ? '#ef4444' : '#f59e0b';
-      const statusLabel = d.status === 'approved' ? 'Approved' : d.status === 'rejected' ? 'Rejected' : 'Pending';
-      const otherName = u.role === 'creator' ? d.founderName : d.creatorName;
-      const otherWa   = u.role === 'creator' ? d.founderWa  : d.creatorWa;
-      html += `
-        <div class="d-collab-item" style="flex-wrap:wrap;gap:10px;">
-          <div class="d-collab-av">${otherName ? otherName[0] : '?'}</div>
-          <div class="d-collab-info" style="flex:1;">
-            <div class="d-collab-name">${otherName || 'Unknown'}</div>
-            <div class="d-collab-desc">${u.role === 'creator' ? 'Founder wants to collaborate' : 'Creator collaboration request'}</div>
-          </div>
-          <span class="d-collab-badge" style="background:${statusColor}20;color:${statusColor};border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;">${statusLabel}</span>
-          <div class="d-collab-time">${timeStr}</div>
-          ${d.status === 'approved' && otherWa ? `<button onclick="window.open('https://wa.me/${otherWa}?text=${encodeURIComponent('Hi, connecting via PostHire!')}','_blank')" style="width:100%;padding:8px;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;margin-top:4px;">💬 Open WhatsApp</button>` : ''}
-        </div>`;
-    });
-    el.innerHTML = html;
+      const status = d.status || 'pending';
+      const date = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}) : 'Recently';
+      const otherName = isFounder ? d.creatorName : d.founderName;
+      const otherWa   = isFounder ? d.creatorWa   : d.founderWa;
+
+      return '<div style="background:#fff;border:1px solid #e8ebf4;border-radius:14px;padding:16px 18px;margin-bottom:12px;transition:box-shadow 0.2s;">'
+        // Header row
+        + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;">'
+        + '<div style="display:flex;align-items:center;gap:10px;">'
+        + '<div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#3b6ef0,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:800;flex-shrink:0;">'
+        + (otherName ? otherName[0].toUpperCase() : '?') + '</div>'
+        + '<div>'
+        + '<div style="font-size:14px;font-weight:700;color:#0f1117;">' + (otherName||'—') + '</div>'
+        + '<div style="font-size:11px;color:#9ca3af;margin-top:1px;">' + (isFounder ? 'Creator' : 'Startup Founder') + ' · ' + date + '</div>'
+        + '</div></div>'
+        + '<span style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;background:'+statusBg[status]+';color:'+statusColors[status]+';white-space:nowrap;">' + statusLabel[status] + '</span>'
+        + '</div>'
+        // AI message if present
+        + (d.aiMessage ? '<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 12px;font-size:12px;color:#1e40af;margin-bottom:10px;line-height:1.6;"><strong>✨ AI Message:</strong> ' + d.aiMessage + '</div>' : '')
+        // WhatsApp button if approved
+        + (status === 'approved' && otherWa
+          ? '<a href="https://wa.me/'+otherWa+'?text='+encodeURIComponent('Hi '+otherName+', connecting via PostHire!')+'" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:rgba(37,211,102,0.1);color:#25d366;border:1px solid rgba(37,211,102,0.3);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">💬 Connect on WhatsApp</a>'
+          : '')
+        + '</div>';
+    }).join('');
+
+    // Update stats
+    const pending  = docs.filter(function(d){ return d.data().status==='pending'; }).length;
+    const approved = docs.filter(function(d){ return d.data().status==='approved'; }).length;
+    const statEl = document.getElementById('stat-collab-requests');
+    if (statEl) statEl.textContent = snap.size;
+
   } catch(e) {
-    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--t-dim);">Error loading collabs. Check Firestore index for "collaborations" collection (creatorId+createdAt and founderId+createdAt).</div>';
+    console.error('loadMyCollabs:', e);
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:#ef4444;font-size:13px;">Error loading collaborations. Check Firestore rules.</div>';
   }
 }
 
-// ══════════════════════════════
-//  ADMIN DATA LOADING
-// ══════════════════════════════
+
 async function loadAdminData() {
   loadAdminCollabs();
   loadAdminUsers();
@@ -4512,6 +4567,47 @@ function profileCompleteness(u) {
 // ══════════════════════════════
 //  RAZORPAY PAYMENT
 // ══════════════════════════════
+// ══════════════════════════════
+//  SELECT PLAN (dashboard upgrade)
+// ══════════════════════════════
+function selectPlan(planKey) {
+  var pData = PLANS[planKey];
+  if (!pData) { showToast('Invalid plan', 'error'); return; }
+
+  if (planKey === 'free') {
+    openModal(
+      'Downgrade to Free Plan',
+      '<div style="text-align:center;padding:8px 0;">'
+      + '<div style="font-size:40px;margin-bottom:12px;">⚠️</div>'
+      + '<p style="font-size:14px;color:#374151;line-height:1.7;">You will lose access to premium features including messaging, advanced filters, and AI tools. Are you sure?</p>'
+      + '</div>',
+      async function() {
+        S.user.plan = 'free';
+        if (S.user.uid) await fbSaveUser(S.user.uid, { plan: 'free' });
+        renderDash(); closeModal();
+        showToast('Switched to Free Plan', '');
+      },
+      'Yes, Downgrade'
+    );
+    return;
+  }
+
+  // Paid plan — show summary then open Razorpay
+  openModal(
+    'Upgrade to ' + pData.name,
+    '<div style="text-align:center;padding:8px 0;">'
+    + '<div style="font-size:44px;margin-bottom:10px;">💳</div>'
+    + '<div style="font-size:28px;font-weight:800;color:#3b6ef0;margin-bottom:4px;">' + pData.price + '<span style="font-size:13px;color:#9ca3af;font-weight:500;">/month</span></div>'
+    + '<p style="font-size:13px;color:#6b7280;margin-top:8px;">Secure payment powered by Razorpay. Cancel anytime.</p>'
+    + '</div>',
+    function() {
+      closeModal();
+      openRazorpay(planKey, function() { renderDash(); });
+    },
+    'Pay ' + pData.price + ' →'
+  );
+}
+
 function openRazorpay(planKey, onSuccessCallback) {
   const u = S.user;
   if (!u) { showToast('Please sign in first', 'error'); return; }
