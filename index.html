@@ -778,508 +778,66 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 }
 .d-filter-sel:focus { border-color:var(--blue); }
 .d-creator-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:16px; }
+/* ═══ CREATOR CARD — redesigned ═══ */
 .d-creator-card {
-  background:#fff;border:1px solid #e8ebf4;border-radius:12px;overflow:hidden;
-  transition:all 0.25s;
+  background:#fff; border:1px solid #eaecf5; border-radius:20px;
+  overflow:hidden; transition:all 0.28s cubic-bezier(.4,0,.2,1);
+  position:relative; display:flex; flex-direction:column;
 }
-.d-creator-card:hover { box-shadow:0 8px 32px rgba(15,17,23,0.09);transform:translateY(-3px);border-color:#d1d9f0; }
-.d-cc-top { padding:18px 18px 0;display:flex;gap:12px;align-items:flex-start; }
+.d-creator-card:hover { transform:translateY(-5px); box-shadow:0 20px 48px rgba(15,17,23,0.12); border-color:#c7d0f0; }
+.d-cc-banner { height:72px; position:relative; flex-shrink:0; }
+.d-cc-banner-gradient { position:absolute; inset:0; }
+.d-cc-avatar-wrap { position:absolute; bottom:-22px; left:18px; }
 .d-cc-av {
-  width:46px;height:46px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:16px;font-weight:700;flex-shrink:0;
-}
-.d-cc-info { flex:1;min-width:0;padding-top:2px; }
-.d-cc-name { font-size:14px;font-weight:700;color:#0f1117;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-0.2px; }
-.d-cc-niche {
-  display:inline-flex;align-items:center;
-  font-size:10px;font-weight:700;color:var(--blue);
-  background:rgba(59,110,240,0.08);padding:2px 8px;border-radius:4px;
-  margin-top:4px;letter-spacing:0.2px;
-}
-.d-cc-platform { font-size:11px;color:#9ca3af;margin-top:4px;display:flex;align-items:center;gap:4px; }
-.d-cc-stats {
-  display:flex;padding:12px 18px;gap:0;
-  border-top:1px solid #f0f2f8;border-bottom:1px solid #f0f2f8;
-  background:#fafbff;margin-top:14px;
-}
-.d-cc-stat { flex:1;text-align:center; }
-.d-cc-stat-val { font-size:14px;font-weight:800;color:#0f1117;display:block;letter-spacing:-0.3px; }
-.d-cc-stat-lbl { font-size:9px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:#9ca3af;display:block;margin-top:2px; }
-.d-cc-stat + .d-cc-stat { border-left:1px solid #e8ebf4; }
-.d-cc-body { padding:14px 18px 0; }
-.d-cc-bio { font-size:12px;color:#6b7280;line-height:1.65;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:400; }
-.d-cc-tags { display:flex;gap:5px;flex-wrap:wrap; }
-.d-cc-tag { font-size:10px;font-weight:600;padding:3px 9px;border-radius:5px;background:#f4f5fb;color:#4a5270; }
-.d-cc-footer { padding:12px 18px 16px;display:flex;gap:8px;margin-top:10px; }
-.d-btn-collab {
-  flex:1;padding:9px;
-  background:#0f1117;color:#fff;
-  border:none;border-radius:8px;font-size:12px;font-weight:600;
-  cursor:pointer;transition:all 0.2s;letter-spacing:-0.1px;
-  font-family:'Plus Jakarta Sans',sans-serif;
-}
-.d-btn-collab:hover { background:var(--blue);box-shadow:0 4px 14px rgba(59,110,240,0.3); }
-.d-btn-view {
-  padding:9px 13px;background:#f4f5fb;color:#4a5270;
-  border:none;border-radius:8px;font-size:12px;font-weight:600;
-  cursor:pointer;transition:all 0.2s;font-family:'Plus Jakarta Sans',sans-serif;
-}
-.d-btn-view:hover { background:#e8ebf4;color:#0f1117; }
-
-/* ── PROFILE CARD ── */
-.d-profile-card {
-  background:#fff;border:1px solid #e8ebf4;border-radius:12px;
-  padding:24px;margin-bottom:16px;
-}
-.d-profile-card-title {
-  font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;
-  color:#9ca3af;padding-bottom:14px;border-bottom:1px solid #f0f2f8;margin-bottom:20px;
-}
-.d-pf-avatar-row { display:flex;align-items:center;gap:16px;margin-bottom:24px; }
-.d-pf-avatar-big {
-  width:64px;height:64px;border-radius:16px;
-  background:linear-gradient(135deg,var(--blue),var(--violet));
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:24px;font-weight:700;flex-shrink:0;
-}
-.d-pf-avatar-info h4 { font-size:14px;font-weight:700;color:#0f1117;margin-bottom:3px;letter-spacing:-0.2px; }
-.d-pf-avatar-info p { font-size:12px;color:#9ca3af; }
-.d-pf-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
-.d-pf-full { grid-column:span 2; }
-.d-pf-save { display:flex;justify-content:flex-end;margin-top:4px; }
-.d-save-btn {
-  padding:10px 24px;background:#0f1117;color:#fff;
-  border:none;border-radius:8px;font-size:13px;font-weight:600;
-  cursor:pointer;transition:all 0.22s;
-  font-family:'Plus Jakarta Sans',sans-serif;
-}
-.d-save-btn:hover { background:var(--blue);box-shadow:0 4px 16px rgba(59,110,240,0.25); }
-
-/* ── DASHBOARD PRICING ── */
-.d-price-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:18px; }
-
-/* ── LOCKED VIEW ── */
-.d-locked {
-  background:#fff;border:1px solid #e8ebf4;border-radius:16px;
-  padding:60px 40px;text-align:center;max-width:480px;margin:0 auto;
-}
-.d-locked-icon { font-size:48px;margin-bottom:18px; }
-.d-locked h3 { font-size:19px;font-weight:800;color:#0f1117;margin-bottom:10px;letter-spacing:-0.3px; }
-.d-locked p { font-size:14px;color:#6b7280;line-height:1.75;margin-bottom:24px; }
-
-/* ════════════════════════════════════════
-   TOAST
-════════════════════════════════════════ */
-#ph-toast { position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none; }
-.toast-item { background:#0f1117;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.3);transform:translateY(20px);opacity:0;transition:all 0.4s cubic-bezier(0.16,1,0.3,1);pointer-events:none;max-width:300px;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,0.06); }
-.toast-item.show { transform:translateY(0);opacity:1; }
-.toast-item.t-success { background:#065f46;border-color:rgba(16,185,129,0.2); }
-.toast-item.t-error { background:#7f1d1d;border-color:rgba(239,68,68,0.2); }
-.toast-dot { width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);flex-shrink:0; }
-
-/* ════════════════════════════════════════
-   MODAL
-════════════════════════════════════════ */
-.ph-modal-bg { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:24px; }
-.ph-modal-bg.open { display:flex; }
-.ph-modal { background:#fff;border-radius:16px;padding:36px;max-width:440px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.25);animation:modalIn 0.3s cubic-bezier(0.16,1,0.3,1); }
-@keyframes modalIn { from{transform:scale(0.94);opacity:0;}to{transform:scale(1);opacity:1;} }
-.ph-modal-title { font-size:17px;font-weight:800;color:#0f1117;margin-bottom:10px;letter-spacing:-0.3px; }
-.ph-modal-body { font-size:14px;color:#6b7280;line-height:1.7;margin-bottom:24px; }
-.ph-modal-actions { display:flex;gap:8px;justify-content:flex-end; }
-.ph-modal-ghost { padding:10px 20px;background:#f4f5fb;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#4a5270;transition:all 0.2s;font-family:'Plus Jakarta Sans',sans-serif; }
-.ph-modal-ghost:hover { background:#e8ebf4;color:#0f1117; }
-.ph-modal-primary { padding:10px 22px;background:#0f1117;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#fff;transition:all 0.22s;font-family:'Plus Jakarta Sans',sans-serif; }
-.ph-modal-primary:hover { background:var(--blue);box-shadow:0 4px 16px rgba(59,110,240,0.3); }
-
-/* ════════════════════════════════════════
-   LOADER
-════════════════════════════════════════ */
-#ph-loader { position:fixed;inset:0;z-index:99999;display:flex;pointer-events:none; }
-.ph-lb { flex:1;background:#fff;opacity:0;will-change:transform; }
-.ph-lb:nth-child(3) { background:#f0f3ff; }
-
-/* ════════════════════════════════════════
-   COLLAB HISTORY
-════════════════════════════════════════ */
-.d-collab-list { background:#fff;border:1px solid #e8ebf4;border-radius:12px;overflow:hidden; }
-.d-collab-hd { padding:16px 20px;border-bottom:1px solid #f0f2f8;display:flex;align-items:center;justify-content:space-between; }
-.d-collab-hd h4 { font-size:13px;font-weight:700;color:#0f1117;letter-spacing:-0.2px; }
-.d-collab-item { display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid #f7f8fc;transition:background 0.15s; }
-.d-collab-item:last-child { border-bottom:none; }
-.d-collab-item:hover { background:#fafbff; }
-.d-collab-av { width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--violet));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0; }
-.d-collab-info { flex:1;min-width:0; }
-.d-collab-name { font-size:13px;font-weight:600;color:#0f1117;letter-spacing:-0.1px; }
-.d-collab-desc { font-size:12px;color:#9ca3af;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-.d-collab-badge { font-size:10px;font-weight:700;padding:3px 10px;border-radius:5px;flex-shrink:0; }
-.badge-new { background:rgba(59,110,240,0.1);color:var(--blue); }
-.badge-read { background:rgba(16,185,129,0.1);color:var(--green); }
-.d-collab-time { font-size:11px;color:#9ca3af;white-space:nowrap; }
-
-/* ════════════════════════════════════════
-   EMPTY STATE
-════════════════════════════════════════ */
-.d-empty { text-align:center;padding:56px 24px; }
-.d-empty-icon { font-size:42px;margin-bottom:12px;opacity:0.35; }
-.d-empty-text { font-size:14px;color:#9ca3af;font-weight:400; }
-
-/* ════════════════════════════════════════
-   BOTTOM NAV — BASE STYLES
-════════════════════════════════════════ */
-.d-bottom-nav {
-  display:none;
-  position:fixed; bottom:0; left:0; right:0; z-index:98;
-  background:rgba(255,255,255,0.97);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border-top:1px solid #e8ebf4;
-  box-shadow:0 -4px 24px rgba(0,0,0,0.07);
-  /* Safe area for notched phones */
-  padding-bottom:env(safe-area-inset-bottom, 0px);
-}
-.d-bottom-nav-inner {
-  display:flex; height:64px; align-items:stretch;
-}
-.d-bnav-item {
-  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  gap:4px; padding:6px 4px;
-  background:none; border:none; cursor:pointer;
-  font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:10px; font-weight:500;
-  color:#9ca3af; letter-spacing:0.1px;
-  transition:color 0.2s;
-  position:relative; -webkit-tap-highlight-color:transparent;
-  min-height:44px; /* iOS tap target */
-}
-.d-bnav-item.act { color:var(--blue); }
-.d-bnav-item.act .d-bnav-icon { background:rgba(59,110,240,0.08); }
-.d-bnav-icon {
-  width:32px; height:28px; border-radius:8px;
+  width:52px; height:52px; border-radius:14px; border:3px solid #fff;
   display:flex; align-items:center; justify-content:center;
-  transition:background 0.2s;
+  font-size:20px; font-weight:800; color:#fff;
+  box-shadow:0 4px 14px rgba(0,0,0,0.15); flex-shrink:0;
 }
-.d-bnav-item.act svg { stroke:var(--blue); }
-
-/* Active indicator dot */
-.d-bnav-item.act::after {
-  content:''; position:absolute;
-  bottom:4px; left:50%; transform:translateX(-50%);
-  width:4px; height:4px; border-radius:50%;
-  background:var(--blue);
+.d-cc-featured {
+  position:absolute; top:10px; right:12px;
+  background:linear-gradient(135deg,#f59e0b,#f97316);
+  color:#fff; font-size:9px; font-weight:800; letter-spacing:1px;
+  text-transform:uppercase; padding:3px 9px; border-radius:20px;
 }
-
-/* ════════════════════════════════════════
-   RESPONSIVE — FULL DEVICE SUPPORT
-════════════════════════════════════════ */
-
-/* ═══════════════════════════════════════
-   1. DESKTOP LARGE  ≥1280px  — default
-   2. TABLET         ≤1100px
-   3. TABLET SM      ≤900px   — sidebar off
-   4. MOBILE LG      ≤640px
-   5. MOBILE MD      ≤480px
-   6. MOBILE SM      ≤380px
-═══════════════════════════════════════ */
-
-/* ── 2. TABLET ≤1100px ── */
-@media (max-width:1100px) {
-  /* Dashboard */
-  .d-stats-row        { grid-template-columns:repeat(2,1fr); gap:12px; }
-  .d-quick-row        { grid-template-columns:repeat(3,1fr); }
-  .d-creator-grid     { grid-template-columns:repeat(2,1fr); }
-  .d-price-grid       { grid-template-columns:1fr; }
-  .l-price-grid       { grid-template-columns:1fr; }
-  .d-bottom-row       { grid-template-columns:1fr; }
+.d-cc-body { padding:30px 18px 0; flex:1; }
+.d-cc-name-row { display:flex; align-items:center; gap:6px; margin-bottom:3px; }
+.d-cc-name { font-size:15px; font-weight:800; color:#0f1117; letter-spacing:-0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.d-cc-verified { width:16px; height:16px; background:#3b6ef0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; color:#fff; flex-shrink:0; }
+.d-cc-meta { font-size:12px; color:#8b95b4; font-weight:500; margin-bottom:10px; display:flex; align-items:center; gap:4px; }
+.d-cc-meta-dot { color:#d1d5e8; }
+.d-cc-bio { font-size:12.5px; color:#6b7280; line-height:1.65; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.d-cc-tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:14px; }
+.d-cc-tag { font-size:10px; font-weight:700; padding:3px 10px; border-radius:6px; background:#f0f3ff; color:#4a5eb0; border:1px solid #e0e5f8; }
+.d-cc-stats { display:flex; border-top:1px solid #f0f2f8; padding:12px 0 0; margin:0 0 14px; }
+.d-cc-stat { flex:1; text-align:center; padding:0 4px; }
+.d-cc-stat + .d-cc-stat { border-left:1px solid #f0f2f8; }
+.d-cc-stat-val { font-size:14px; font-weight:800; color:#0f1117; display:block; letter-spacing:-0.5px; }
+.d-cc-stat-lbl { font-size:9px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:#a0abc4; display:block; margin-top:2px; }
+.d-cc-footer { padding:0 18px 18px; display:flex; gap:8px; }
+.d-cc-btn-collab {
+  flex:1; padding:11px 14px;
+  background:linear-gradient(135deg,#3b6ef0,#6366f1); color:#fff;
+  border:none; border-radius:12px; font-size:13px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:all 0.22s; box-shadow:0 4px 14px rgba(59,110,240,0.3);
 }
-
-/* ── 3. TABLET SM ≤900px — sidebar collapses ── */
-@media (max-width:900px) {
-  /* Landing */
-  .l-links            { display:none; }
-  .l-btn-ghost,
-  .l-btn-fill         { display:none; }
-  .l-hamburger        { display:flex; }
-  .l-mobile-menu      { display:flex; }
-  .l-problem-grid     { grid-template-columns:1fr; }
-  .l-feat-grid        { grid-template-columns:1fr 1fr; }
-  .l-for-grid         { grid-template-columns:1fr; }
-  .l-demo-inner       { flex-direction:column; align-items:center; gap:40px; }
-  .l-hero-corner      { display:none; }
-  .l-nav              { padding:0 20px; }
-
-  /* Auth */
-  .auth-left          { display:none; }
-  .auth-right         { padding:36px 24px; }
-
-  /* Dashboard — sidebar slides off */
-  .d-sidebar          { transform:translateX(-100%); width:272px; overflow-y:auto; }
-  .d-sidebar.mob-open { transform:translateX(0); box-shadow:12px 0 48px rgba(0,0,0,0.55); }
-  .d-main             { margin-left:0; }
-  .d-topbar           { padding:0 18px; height:56px; }
-  .d-mob-menu-btn     { display:flex; }
-  .d-content          { padding:20px 18px; }
-
-  /* Bottom nav — show on tablet and below */
-  .d-bottom-nav       { display:block; }
-  .d-content          { padding-bottom:80px !important; }
+.d-cc-btn-collab:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(59,110,240,0.4); }
+.d-cc-btn-collab:active { transform:translateY(0); }
+.d-cc-btn-upgrade {
+  flex:1; padding:11px 14px; background:transparent; color:#8b95b4;
+  border:1.5px solid #e0e5f8; border-radius:12px; font-size:12px; font-weight:600; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:5px; transition:all 0.2s;
 }
-
-/* ── 4. MOBILE LG ≤640px ── */
-@media (max-width:640px) {
-  /* Topbar */
-  .d-topbar           { padding:0 14px; height:52px; }
-  .d-page-title       { font-size:13px; font-weight:700; }
-  .d-topbar-plan      { display:none; }
-  .d-topbar-notif     { width:36px; height:36px; border-radius:10px; font-size:16px; }
-  .d-topbar-av        { width:36px; height:36px; border-radius:10px; }
-  .d-mob-menu-btn     { width:36px; height:36px; }
-
-  /* Content area */
-  .d-content          { padding:16px 14px 88px !important; overflow-x:hidden; }
-  .d-section-hd       { margin-bottom:16px; }
-  .d-section-hd h2    { font-size:19px; letter-spacing:-0.3px; }
-  .d-section-hd p     { font-size:12px; }
-
-  /* Stats: 2-col */
-  .d-stats-row        { grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
-  .d-stat-card        { padding:14px 12px; border-radius:12px; }
-  .d-stat-card-val    { font-size:22px; }
-  .d-stat-card-lbl    { font-size:11px; }
-  .d-stat-card-inner  { margin-bottom:10px; }
-  .d-stat-card-icon   { width:32px; height:32px; border-radius:8px; font-size:14px; }
-  .d-stat-card-trend  { font-size:10px; padding:2px 6px; }
-  .d-stat-card-change { font-size:10px; }
-
-  /* Quick actions: 2-col scrollable */
-  .d-quick-row        { grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
-  .d-quick-card       { padding:13px 12px; gap:10px; border-radius:12px; min-height:72px; }
-  .d-qc-icon          { width:36px; height:36px; border-radius:9px; font-size:15px; }
-  .d-qc-label         { font-size:12px; }
-  .d-qc-desc          { font-size:10px; }
-
-  /* Upgrade banner — stacked */
-  .d-upgrade-banner   { flex-direction:column; align-items:flex-start; padding:16px; gap:12px; margin-bottom:14px; border-radius:12px; }
-  .d-upgrade-banner::after { display:none; }
-  .d-ub-btn           { width:100%; text-align:center; padding:12px; font-size:13px; border-radius:10px; }
-
-  /* Bottom row */
-  .d-bottom-row       { grid-template-columns:1fr; gap:12px; }
-  .d-activity-hd,
-  .d-mini-panel-hd    { padding:12px 16px; }
-  .d-activity-item    { padding:12px 14px; gap:11px; }
-  .d-act-text         { font-size:12px; }
-  .d-act-icon         { width:30px; height:30px; border-radius:8px; }
-  .d-mini-row         { padding:12px 16px; }
-
-  /* Creator grid — single col */
-  .d-creator-grid     { grid-template-columns:1fr; gap:12px; }
-  .d-toolbar          { gap:8px; flex-wrap:wrap; }
-  .d-toolbar .d-filter-sel { flex:1 1 calc(50% - 4px); min-width:0; }
-  .d-search-wrap      { flex:1 1 100%; order:-1; }
-  .d-filter-sel       { font-size:12px; padding:10px 10px; }
-  .d-search-input     { font-size:13px; }
-
-  /* Creator card internals */
-  .d-cc-top           { padding:16px 16px 0; }
-  .d-cc-footer        { padding:12px 16px 16px; gap:8px; }
-  .d-cc-body          { padding:12px 16px 0; }
-  .d-cc-stats         { padding:10px 16px; margin-top:12px; }
-  .d-btn-collab,
-  .d-btn-view         { padding:11px; font-size:12px; }
-
-  /* Profile form */
-  .d-pf-grid          { grid-template-columns:1fr; gap:12px; }
-  .d-pf-full          { grid-column:span 1; }
-  .f-row              { grid-template-columns:1fr; }
-  .d-profile-card     { padding:18px; border-radius:12px; margin-bottom:12px; }
-  .d-pf-avatar-big    { width:56px; height:56px; font-size:22px; border-radius:14px; }
-  .d-pf-save          { justify-content:stretch; }
-  .d-save-btn         { width:100%; text-align:center; padding:12px; }
-
-  /* Settings page — all inputs full width */
-  .f-row.f-row-2      { grid-template-columns:1fr; }
-
-  /* Pricing */
-  .d-price-grid       { grid-template-columns:1fr; gap:16px; }
-  .l-price-grid       { grid-template-columns:1fr; }
-  .l-price-card       { padding:28px 20px; }
-  .l-price-amount     { font-size:38px; }
-
-  /* Collab list */
-  .d-collab-item      { padding:12px 14px; gap:10px; }
-  .d-collab-av        { width:32px; height:32px; border-radius:9px; font-size:11px; }
-  .d-collab-desc      { font-size:11px; }
-  .d-collab-time      { font-size:10px; display:none; }
-  .d-collab-name      { font-size:12px; }
-
-  /* Locked view */
-  .d-locked           { padding:40px 20px; }
-  .d-locked h3        { font-size:16px; }
-  .d-locked p         { font-size:13px; }
-
-  /* Landing */
-  .l-feat-grid        { grid-template-columns:1fr; }
-  .l-hero-stats       { flex-direction:column; border-radius:var(--r-lg); max-width:100%; }
-  .l-hero-stat        { border-right:none; border-bottom:1px solid var(--l-border); padding:14px 20px; }
-  .l-hero-stat:last-child { border-bottom:none; }
-  .l-for-card         { padding:32px 24px; }
-  .l-pcard            { padding:28px 20px; }
-
-  /* Auth form */
-  .auth-right         { padding:28px 20px; }
-  .auth-box           { max-width:100%; }
-  .f-row              { grid-template-columns:1fr; }
-  .auth-demo-row      { grid-template-columns:1fr 1fr; }
-
-  /* PM section */
-  .pm-header          { padding:10px 14px; }
-  .pm-app-name        { font-size:16px; margin:0 12px; }
-  .pm-search-wrap     { max-width:200px; }
-  .pm-project-boxes.jsGridView .pm-box-wrap { width:100%; }
-
-  /* Toast positioning */
-  #ph-toast           { bottom:80px; right:14px; left:14px; }
-  .toast-item         { max-width:100%; }
+.d-cc-btn-upgrade:hover { background:#f4f5fb; color:#4a5eb0; border-color:#c7d0f0; }
+.d-cc-btn-wa {
+  width:40px; height:40px; flex-shrink:0;
+  background:rgba(37,211,102,0.1); color:#25d366;
+  border:1.5px solid rgba(37,211,102,0.25); border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; font-size:16px; transition:all 0.2s; text-decoration:none;
 }
-
-/* ── 5. MOBILE MD ≤480px ── */
-@media (max-width:480px) {
-  /* Topbar */
-  .d-topbar           { padding:0 12px; height:52px; }
-  .d-page-title       { font-size:13px; }
-  .d-topbar-right     { gap:6px; }
-
-  /* Content */
-  .d-content          { padding:12px 12px 88px !important; }
-  .d-section-hd h2    { font-size:17px; }
-
-  /* Stats */
-  .d-stats-row        { grid-template-columns:1fr 1fr; gap:8px; }
-  .d-stat-card        { padding:12px 10px; }
-  .d-stat-card-val    { font-size:20px; }
-  .d-stat-card-icon   { width:30px; height:30px; font-size:13px; }
-  .d-stat-card-change { display:none; }
-
-  /* Quick actions */
-  .d-quick-row        { grid-template-columns:1fr 1fr; gap:8px; }
-  .d-quick-card       { padding:11px 10px; gap:9px; }
-
-  /* Upgrade banner */
-  .d-upgrade-banner   { padding:14px; }
-  .d-ub-text h4       { font-size:13px; }
-  .d-ub-text p        { font-size:11px; }
-
-  /* Creator card */
-  .d-cc-top           { padding:14px 14px 0; }
-  .d-cc-footer        { padding:10px 14px 14px; }
-  .d-cc-body          { padding:12px 14px 0; }
-  .d-cc-stats         { padding:10px 14px; margin-top:12px; }
-  .d-cc-av            { width:42px; height:42px; border-radius:10px; }
-  .d-cc-name          { font-size:13px; }
-
-  /* Activity */
-  .d-activity-item    { padding:10px 12px; gap:10px; }
-  .d-act-icon         { width:28px; height:28px; font-size:12px; }
-
-  /* Profile */
-  .d-pf-avatar-row    { gap:12px; }
-  .d-profile-card-title { font-size:11px; padding-bottom:12px; margin-bottom:14px; }
-
-  /* Modal full-screen feel */
-  .ph-modal-bg        { padding:0; align-items:flex-end; }
-  .ph-modal           { padding:24px 20px; border-radius:20px 20px 0 0; max-width:100%; width:100%; margin:0; box-shadow:0 -8px 40px rgba(0,0,0,0.25); }
-  .ph-modal-title     { font-size:16px; }
-  .ph-modal-body      { font-size:13px; }
-  .ph-modal-actions   { flex-direction:column-reverse; gap:8px; }
-  .ph-modal-ghost,
-  .ph-modal-primary   { width:100%; text-align:center; padding:13px; font-size:14px; border-radius:10px; }
-
-  /* Landing */
-  .l-section          { padding:60px 16px; }
-  .l-hero-btns        { flex-direction:column; align-items:center; }
-  .l-btn-hero-primary,
-  .l-btn-hero-ghost   { width:100%; max-width:280px; text-align:center; }
-  .l-h2               { font-size:clamp(22px,7vw,38px); }
-
-  /* Bottom nav */
-  .d-bottom-nav       { height:60px; }
-  .d-bottom-nav-inner { height:60px; }
-  .d-bnav-item        { font-size:9px; gap:3px; }
-
-  /* PM section */
-  .pm-search-wrap     { display:none; }
-  .pm-sidebar         { display:none; }
-  .pm-content         { padding:8px 8px 14px 0; }
-  .pm-projects-section { padding:14px 12px 0; }
-}
-
-/* ── 6. MOBILE SM ≤380px — compact everything ── */
-@media (max-width:380px) {
-  .d-topbar           { padding:0 8px; }
-  .d-content          { padding:10px 8px 84px !important; }
-  .d-section-hd h2    { font-size:16px; }
-  .d-section-hd       { margin-bottom:10px; }
-
-  /* Stats */
-  .d-stats-row        { gap:7px; }
-  .d-stat-card        { padding:10px 9px; border-radius:10px; }
-  .d-stat-card-val    { font-size:18px; letter-spacing:-0.5px; }
-  .d-stat-card-lbl    { font-size:10px; }
-  .d-stat-card-trend  { display:none; }
-  .d-stat-card-inner  { margin-bottom:7px; }
-
-  /* Quick */
-  .d-quick-row        { gap:7px; }
-  .d-quick-card       { padding:10px; gap:8px; border-radius:10px; }
-  .d-qc-icon          { width:30px; height:30px; border-radius:8px; }
-  .d-qc-label         { font-size:11px; }
-  .d-qc-desc          { display:none; }
-
-  /* Upgrade */
-  .d-upgrade-banner   { padding:12px; border-radius:12px; }
-  .d-ub-text h4       { font-size:12px; }
-  .d-ub-text p        { font-size:10px; }
-
-  /* Bottom nav */
-  .d-bottom-nav-inner { height:54px; }
-  .d-bnav-item        { font-size:9px; padding:4px 2px; }
-  .d-bnav-icon        { width:28px; height:24px; }
-
-  .l-section          { padding:50px 14px; }
-}
-
-/* ── DESKTOP: hide bottom nav ── */
-@media (min-width:901px) {
-  .d-bottom-nav { display:none !important; }
-  .d-content    { padding-bottom:24px !important; }
-}
-
-/* ── SAFE AREA & NOTCH SUPPORT (iPhone X+) ── */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  @media (max-width:900px) {
-    .d-bottom-nav {
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .d-content {
-      padding-bottom: calc(72px + env(safe-area-inset-bottom)) !important;
-    }
-  }
-}
-
-/* ── OVERSCROLL & SCROLL BEHAVIOUR ── */
-@media (max-width:900px) {
-  .d-content {
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
-  }
-  /* Prevent horizontal scroll bleed */
-  .d-layout, .d-main, .d-content {
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
-  /* Smooth scrollable creator grid on narrow screens */
+.d-cc-btn-wa:hover { background:rgba(37,211,102,0.18); transform:translateY(-2px); }
   .d-creator-grid {
     will-change: transform;
   }
@@ -2042,6 +1600,408 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 </div>
 
 <!-- ════════════════════════════════════
+     PAGE: ADMIN DASHBOARD (separate full page)
+════════════════════════════════════ -->
+<div id="pg-admin-dash" class="page">
+<style>
+/* ── Admin Dashboard Styles ── */
+.adm-wrap { display:flex; min-height:100vh; background:#0f1117; font-family:'Plus Jakarta Sans',sans-serif; }
+
+/* Sidebar */
+.adm-sidebar {
+  width:240px; flex-shrink:0; background:#13151f;
+  border-right:1px solid rgba(255,255,255,0.06);
+  display:flex; flex-direction:column;
+  position:fixed; top:0; left:0; height:100vh; z-index:10;
+}
+.adm-logo {
+  padding:24px 20px 20px; border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex; align-items:center; gap:10px; cursor:pointer;
+}
+.adm-logo-icon {
+  width:34px; height:34px; border-radius:10px;
+  background:linear-gradient(135deg,#4f6ef7,#8b5cf6);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; color:#fff; font-weight:800; flex-shrink:0;
+}
+.adm-logo-text { font-size:16px; font-weight:800; color:#fff; letter-spacing:-0.3px; }
+.adm-logo-text em { font-style:normal; background:linear-gradient(135deg,#6ea4ff,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.adm-badge-admin { font-size:9px; font-weight:700; letter-spacing:1px; background:rgba(139,92,246,0.2); color:#a78bfa; padding:3px 8px; border-radius:5px; border:1px solid rgba(139,92,246,0.3); margin-left:auto; }
+
+.adm-nav { flex:1; padding:12px 0; overflow-y:auto; scrollbar-width:none; }
+.adm-nav::-webkit-scrollbar { display:none; }
+.adm-nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px; margin:2px 10px;
+  border-radius:10px; cursor:pointer;
+  font-size:13px; font-weight:500; color:rgba(255,255,255,0.45);
+  transition:all 0.18s; position:relative;
+}
+.adm-nav-item:hover { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.85); }
+.adm-nav-item.act {
+  background:linear-gradient(135deg,rgba(79,110,247,0.2),rgba(139,92,246,0.14));
+  color:#7fa8ff; font-weight:600;
+  border:1px solid rgba(79,110,247,0.2);
+}
+.adm-nav-icon { width:30px; height:30px; border-radius:8px; background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.adm-nav-item.act .adm-nav-icon { background:rgba(79,110,247,0.25); }
+.adm-nav-badge { margin-left:auto; background:#ef4444; color:#fff; font-size:10px; font-weight:700; padding:1px 6px; border-radius:10px; min-width:18px; text-align:center; }
+.adm-nav-section { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.18); padding:14px 22px 6px; }
+
+.adm-footer { padding:14px 18px; border-top:1px solid rgba(255,255,255,0.05); }
+.adm-logout {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 10px; border-radius:9px; cursor:pointer;
+  font-size:12px; font-weight:500; color:rgba(255,255,255,0.3);
+  background:none; border:none; width:100%; transition:all 0.2s;
+}
+.adm-logout:hover { color:#ff6b81; background:rgba(255,107,129,0.08); }
+
+/* Main content */
+.adm-main { margin-left:240px; flex:1; display:flex; flex-direction:column; min-height:100vh; }
+
+/* Topbar */
+.adm-topbar {
+  position:sticky; top:0; z-index:9;
+  background:rgba(15,17,23,0.95); backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:0 32px; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.adm-topbar-title { font-size:15px; font-weight:700; color:#e8eaf6; }
+.adm-topbar-right { display:flex; align-items:center; gap:12px; }
+.adm-topbar-email { font-size:12px; color:rgba(255,255,255,0.35); }
+.adm-topbar-av {
+  width:32px; height:32px; border-radius:8px;
+  background:linear-gradient(135deg,#4f6ef7,#8b5cf6);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:13px; font-weight:700; cursor:pointer;
+}
+.adm-refresh-btn {
+  padding:6px 14px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.5); border-radius:8px; font-size:12px; cursor:pointer;
+  transition:all 0.2s;
+}
+.adm-refresh-btn:hover { background:rgba(255,255,255,0.1); color:#fff; }
+
+/* Content area */
+.adm-content { flex:1; padding:28px 32px; }
+.adm-view { display:none; }
+.adm-view.act { display:block; }
+
+/* Stat cards */
+.adm-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:28px; }
+.adm-stat {
+  background:#13151f; border:1px solid rgba(255,255,255,0.07);
+  border-radius:14px; padding:20px;
+  transition:border-color 0.2s;
+}
+.adm-stat:hover { border-color:rgba(255,255,255,0.14); }
+.adm-stat-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.adm-stat-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+.adm-stat-trend { font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; }
+.trend-g { background:rgba(16,185,129,0.12); color:#10b981; }
+.trend-b { background:rgba(59,110,240,0.12); color:#6ea4ff; }
+.trend-y { background:rgba(245,158,11,0.12); color:#f59e0b; }
+.trend-p { background:rgba(139,92,246,0.12); color:#a78bfa; }
+.adm-stat-val { font-size:28px; font-weight:800; color:#e8eaf6; letter-spacing:-1px; margin-bottom:4px; }
+.adm-stat-lbl { font-size:12px; color:rgba(255,255,255,0.35); font-weight:500; }
+.adm-stat-bar { height:3px; border-radius:2px; margin-top:14px; }
+
+/* Cards */
+.adm-card {
+  background:#13151f; border:1px solid rgba(255,255,255,0.07);
+  border-radius:14px; padding:20px 24px; margin-bottom:20px;
+}
+.adm-card-hd {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:18px; padding-bottom:14px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.adm-card-title { font-size:13px; font-weight:700; color:#e8eaf6; letter-spacing:0.2px; }
+.adm-card-action {
+  font-size:12px; color:#6ea4ff; cursor:pointer; font-weight:500;
+  padding:4px 10px; border-radius:6px; background:rgba(59,110,240,0.1);
+  border:1px solid rgba(59,110,240,0.2); transition:all 0.2s;
+}
+.adm-card-action:hover { background:rgba(59,110,240,0.2); }
+
+/* Table */
+.adm-table { width:100%; border-collapse:collapse; font-size:13px; }
+.adm-table thead tr { border-bottom:1px solid rgba(255,255,255,0.06); }
+.adm-table th { padding:10px 12px; text-align:left; color:rgba(255,255,255,0.35); font-weight:600; font-size:11px; letter-spacing:0.5px; text-transform:uppercase; }
+.adm-table tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.15s; }
+.adm-table tbody tr:hover { background:rgba(255,255,255,0.025); }
+.adm-table td { padding:12px; color:rgba(255,255,255,0.75); }
+.adm-table td:first-child { font-weight:600; color:#e8eaf6; }
+
+/* Collab approval cards */
+.adm-collab-card {
+  background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.07);
+  border-radius:12px; padding:16px 20px; margin-bottom:14px;
+}
+.adm-collab-card:hover { border-color:rgba(255,255,255,0.12); }
+.adm-collab-names { font-size:14px; font-weight:700; color:#e8eaf6; margin-bottom:6px; }
+.adm-collab-meta { display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px; }
+.adm-collab-meta span { font-size:12px; color:rgba(255,255,255,0.45); }
+.adm-collab-meta strong { color:rgba(255,255,255,0.75); }
+.adm-collab-ai-msg { background:rgba(59,110,240,0.08); border:1px solid rgba(59,110,240,0.2); border-radius:8px; padding:10px 14px; font-size:12px; color:#93c5fd; margin-bottom:12px; line-height:1.6; }
+.adm-collab-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.adm-btn-approve { padding:8px 18px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.adm-btn-approve:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(16,185,129,0.3); }
+.adm-btn-reject { padding:8px 16px; background:transparent; color:#f87171; border:1px solid rgba(248,113,113,0.3); border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.adm-btn-reject:hover { background:rgba(248,113,113,0.08); }
+.adm-btn-wa { padding:8px 14px; background:rgba(37,211,102,0.1); color:#25d366; border:1px solid rgba(37,211,102,0.3); border-radius:8px; font-size:12px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:5px; transition:all 0.2s; }
+.adm-btn-wa:hover { background:rgba(37,211,102,0.18); }
+
+/* Badges */
+.adm-badge { display:inline-flex; align-items:center; padding:2px 8px; border-radius:5px; font-size:11px; font-weight:700; }
+.adm-badge-founder { background:rgba(59,110,240,0.12); color:#6ea4ff; }
+.adm-badge-creator { background:rgba(139,92,246,0.12); color:#a78bfa; }
+.adm-badge-admin  { background:rgba(245,158,11,0.12); color:#f59e0b; }
+.adm-badge-free    { background:rgba(16,185,129,0.1); color:#34d399; }
+.adm-badge-starter { background:rgba(59,110,240,0.1); color:#6ea4ff; }
+.adm-badge-pro    { background:rgba(139,92,246,0.1); color:#a78bfa; }
+.adm-badge-pending  { background:rgba(245,158,11,0.1); color:#f59e0b; }
+.adm-badge-approved { background:rgba(16,185,129,0.1); color:#34d399; }
+.adm-badge-rejected { background:rgba(239,68,68,0.1); color:#f87171; }
+
+/* User actions */
+.adm-user-actions { display:flex; gap:6px; }
+.adm-act-btn { padding:4px 10px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid; transition:all 0.18s; }
+.adm-act-btn:hover { transform:translateY(-1px); }
+
+/* Search */
+.adm-search { display:flex; align-items:center; gap:10px; }
+.adm-search-input {
+  padding:7px 14px 7px 34px; background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1); border-radius:8px;
+  color:#e8eaf6; font-size:12px; outline:none; width:220px;
+  transition:all 0.2s;
+}
+.adm-search-input:focus { border-color:rgba(59,110,240,0.5); background:rgba(255,255,255,0.08); }
+.adm-search-input::placeholder { color:rgba(255,255,255,0.25); }
+.adm-search-wrap { position:relative; }
+.adm-search-wrap svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); }
+
+/* Revenue cards */
+.adm-revenue-cards { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+.adm-rev-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:12px; padding:18px 20px; }
+.adm-rev-label { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px; }
+.adm-rev-val { font-size:30px; font-weight:800; letter-spacing:-1px; }
+
+/* Mobile */
+.adm-mob-btn { display:none; }
+@media (max-width:768px) {
+  .adm-sidebar { transform:translateX(-100%); transition:transform 0.3s; }
+  .adm-sidebar.open { transform:translateX(0); }
+  .adm-main { margin-left:0; }
+  .adm-stats { grid-template-columns:1fr 1fr; }
+  .adm-mob-btn { display:flex; align-items:center; justify-content:center; width:36px; height:36px; background:rgba(255,255,255,0.08); border:none; border-radius:8px; cursor:pointer; color:#e8eaf6; }
+  .adm-content { padding:20px 16px; }
+  .adm-topbar { padding:0 16px; }
+  .adm-revenue-cards { grid-template-columns:1fr; }
+}
+@media (max-width:480px) {
+  .adm-stats { grid-template-columns:1fr; }
+}
+.adm-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9; }
+.adm-overlay.show { display:block; }
+</style>
+
+<div class="adm-wrap">
+  <!-- Sidebar -->
+  <aside class="adm-sidebar" id="adm-sidebar">
+    <div class="adm-logo" onclick="goTo('landing')">
+      <div class="adm-logo-icon">P</div>
+      <div class="adm-logo-text">Post<em>Hire</em></div>
+      <span class="adm-badge-admin" style="display:inline-flex;align-items:center;font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:5px;background:rgba(139,92,246,0.2);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);">ADMIN</span>
+    </div>
+
+    <nav class="adm-nav">
+      <div class="adm-nav-item act" id="anav-overview" onclick="admShowView('overview',this)">
+        <div class="adm-nav-icon">📊</div>Overview
+      </div>
+      <div class="adm-nav-item" id="anav-collabs" onclick="admShowView('collabs',this)">
+        <div class="adm-nav-icon">🤝</div>Collaborations
+        <span class="adm-nav-badge" id="adm-pending-badge" style="display:none;">0</span>
+      </div>
+      <div class="adm-nav-item" id="anav-users" onclick="admShowView('users',this)">
+        <div class="adm-nav-icon">👥</div>Users
+      </div>
+      <div class="adm-nav-item" id="anav-payments" onclick="admShowView('payments',this)">
+        <div class="adm-nav-icon">💰</div>Payments
+      </div>
+      <div class="adm-nav-section">Platform</div>
+      <div class="adm-nav-item" id="anav-creators" onclick="admShowView('creators',this)">
+        <div class="adm-nav-icon">🎥</div>Creators
+      </div>
+      <div class="adm-nav-item" id="anav-founders" onclick="admShowView('founders',this)">
+        <div class="adm-nav-icon">🚀</div>Founders
+      </div>
+    </nav>
+
+    <div class="adm-footer">
+      <button class="adm-logout" onclick="doAdminLogout()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile overlay -->
+  <div class="adm-overlay" id="adm-overlay" onclick="admCloseSidebar()"></div>
+
+  <!-- Main -->
+  <div class="adm-main">
+    <!-- Topbar -->
+    <div class="adm-topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="adm-mob-btn" onclick="admOpenSidebar()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="17" y2="18"/></svg>
+        </button>
+        <span class="adm-topbar-title" id="adm-page-title">Overview</span>
+      </div>
+      <div class="adm-topbar-right">
+        <button class="adm-refresh-btn" onclick="admRefreshCurrent()">↻ Refresh</button>
+        <span class="adm-topbar-email" id="adm-email-display"></span>
+        <div class="adm-topbar-av" id="adm-topbar-av">A</div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="adm-content">
+
+      <!-- OVERVIEW -->
+      <div class="adm-view act" id="adv-overview">
+        <div class="adm-stats" id="adm-stat-cards">
+          <div class="adm-stat"><div class="adm-stat-top"><div class="adm-stat-icon" style="background:rgba(59,110,240,0.12);">👥</div><span class="adm-stat-trend trend-b">Total</span></div><div class="adm-stat-val" id="ast-users">—</div><div class="adm-stat-lbl">Total Users</div><div class="adm-stat-bar" style="background:linear-gradient(90deg,#3b6ef0,#06b6d4);"></div></div>
+          <div class="adm-stat"><div class="adm-stat-top"><div class="adm-stat-icon" style="background:rgba(245,158,11,0.12);">⏳</div><span class="adm-stat-trend trend-y" id="ast-pending-trend">Pending</span></div><div class="adm-stat-val" id="ast-pending">—</div><div class="adm-stat-lbl">Pending Approvals</div><div class="adm-stat-bar" style="background:linear-gradient(90deg,#f59e0b,#f97316);"></div></div>
+          <div class="adm-stat"><div class="adm-stat-top"><div class="adm-stat-icon" style="background:rgba(16,185,129,0.12);">🤝</div><span class="adm-stat-trend trend-g">All time</span></div><div class="adm-stat-val" id="ast-collabs">—</div><div class="adm-stat-lbl">Total Collaborations</div><div class="adm-stat-bar" style="background:linear-gradient(90deg,#10b981,#06b6d4);"></div></div>
+          <div class="adm-stat"><div class="adm-stat-top"><div class="adm-stat-icon" style="background:rgba(139,92,246,0.12);">💰</div><span class="adm-stat-trend trend-p">Revenue</span></div><div class="adm-stat-val" id="ast-revenue">—</div><div class="adm-stat-lbl">Total Revenue</div><div class="adm-stat-bar" style="background:linear-gradient(90deg,#8b5cf6,#ec4899);"></div></div>
+        </div>
+
+        <!-- Plan breakdown + Recent activity -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="adm-card">
+            <div class="adm-card-hd"><span class="adm-card-title">User Breakdown</span></div>
+            <div id="adm-user-breakdown"></div>
+          </div>
+          <div class="adm-card">
+            <div class="adm-card-hd"><span class="adm-card-title">Recent Signups</span></div>
+            <div id="adm-recent-signups"></div>
+          </div>
+        </div>
+
+        <!-- Pending approvals quick list -->
+        <div class="adm-card" style="margin-top:20px;">
+          <div class="adm-card-hd">
+            <span class="adm-card-title">⚡ Pending Approvals</span>
+            <span class="adm-card-action" onclick="admShowView('collabs',document.getElementById('anav-collabs'))">View All →</span>
+          </div>
+          <div id="adm-overview-pending"></div>
+        </div>
+      </div>
+
+      <!-- COLLABORATIONS -->
+      <div class="adm-view" id="adv-collabs">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h2 style="font-size:18px;font-weight:800;color:#e8eaf6;margin-bottom:4px;">Collaboration Requests</h2>
+            <p style="font-size:13px;color:rgba(255,255,255,0.4);">Review and approve or reject collaboration requests.</p>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <select id="adm-collab-filter" onchange="admFilterCollabs()" style="padding:7px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#e8eaf6;font-size:12px;outline:none;">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div id="adm-collabs-container"></div>
+      </div>
+
+      <!-- USERS -->
+      <div class="adm-view" id="adv-users">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h2 style="font-size:18px;font-weight:800;color:#e8eaf6;margin-bottom:4px;">All Users</h2>
+            <p style="font-size:13px;color:rgba(255,255,255,0.4);">Manage users, change plans, view details.</p>
+          </div>
+          <div class="adm-search-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="adm-search-input" id="adm-user-search-new" placeholder="Search by name, email, role..." oninput="admSearchUsers()">
+          </div>
+        </div>
+        <div class="adm-card" style="padding:0;overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>User</th><th>Role</th><th>WhatsApp</th><th>Plan</th><th>Collabs</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="adm-users-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYMENTS -->
+      <div class="adm-view" id="adv-payments">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:18px;font-weight:800;color:#e8eaf6;margin-bottom:4px;">Payment Records</h2>
+          <p style="font-size:13px;color:rgba(255,255,255,0.4);">All Razorpay transactions on PostHire.</p>
+        </div>
+        <div class="adm-revenue-cards">
+          <div class="adm-rev-card"><div class="adm-rev-label" style="color:#34d399;">Total Revenue</div><div class="adm-rev-val" style="color:#34d399;" id="adm-total-rev">₹0</div></div>
+          <div class="adm-rev-card"><div class="adm-rev-label" style="color:#6ea4ff;">Total Orders</div><div class="adm-rev-val" style="color:#6ea4ff;" id="adm-total-orders">0</div></div>
+        </div>
+        <div class="adm-card" style="padding:0;overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Payment ID</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="adm-payments-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREATORS -->
+      <div class="adm-view" id="adv-creators">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:18px;font-weight:800;color:#e8eaf6;margin-bottom:4px;">Content Creators</h2>
+          <p style="font-size:13px;color:rgba(255,255,255,0.4);">All creators registered on PostHire.</p>
+        </div>
+        <div class="adm-card" style="padding:0;overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>Creator</th><th>Niche</th><th>Platform</th><th>Audience</th><th>Plan</th><th>WhatsApp</th><th>Actions</th></tr></thead>
+              <tbody id="adm-creators-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOUNDERS -->
+      <div class="adm-view" id="adv-founders">
+        <div style="margin-bottom:20px;">
+          <h2 style="font-size:18px;font-weight:800;color:#e8eaf6;margin-bottom:4px;">Startup Founders</h2>
+          <p style="font-size:13px;color:rgba(255,255,255,0.4);">All founders registered on PostHire.</p>
+        </div>
+        <div class="adm-card" style="padding:0;overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <table class="adm-table">
+              <thead><tr><th>Founder</th><th>Startup</th><th>Industry</th><th>Budget</th><th>Plan</th><th>Collabs</th><th>Actions</th></tr></thead>
+              <tbody id="adm-founders-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════
      PAGE: ADMIN LOGIN (hidden, separate)
 ════════════════════════════════════ -->
 <div id="pg-admin-login" class="page">
@@ -2450,7 +2410,7 @@ const PLANS = {
 //  ✅ Replace with your Razorpay Key ID from:
 //     https://dashboard.razorpay.com → Settings → API Keys
 // ════════════════════════════════════════════════════════
-const RAZORPAY_KEY = 'rzp_test_YOUR_KEY_HERE';
+const RAZORPAY_KEY = 'rzp_live_SRv7atP9vrEYvT';
 const RZP_PLANS = { starter:{amount:29900,name:'PostHire Starter',desc:'Starter Plan'}, pro:{amount:59900,name:'PostHire Pro',desc:'Pro Plan'} };
 
 const RAZORPAY_PLANS = {
@@ -2490,7 +2450,12 @@ function goTo(page) {
   const pg = document.getElementById('pg-' + page);
   if (pg) pg.classList.add('active');
   window.scrollTo(0,0);
-  if (page === 'dashboard') { renderDash(); }
+  if (page === 'dashboard') {
+    // Admins get their own dashboard
+    if (S.user && S.user.isAdmin) { goTo('admin-dash'); return; }
+    renderDash();
+  }
+  if (page === 'admin-dash') { admInitDash(); }
   if (page === 'landing') {
     // Re-observe scroll-reveal elements whenever landing is shown
     setTimeout(() => {
@@ -2543,7 +2508,7 @@ async function doAdminLogin() {
     }
 
     showToast('Welcome, Admin ✦', 'success');
-    setTimeout(() => { goTo('dashboard'); }, 500);
+    setTimeout(function(){ goTo('admin-dash'); }, 500);
   } catch (err) {
     const msgs = {
       'auth/invalid-credential':    'Incorrect email or password.',
@@ -3176,44 +3141,68 @@ function renderCreators(list) {
   _allCreators = list || [];
   _renderCreatorCards(_allCreators);
 }
+// Gradient palette for card banners
+var CC_GRADIENTS = [
+  'linear-gradient(135deg,#3b6ef0,#6366f1)','linear-gradient(135deg,#8b5cf6,#ec4899)',
+  'linear-gradient(135deg,#f59e0b,#f97316)','linear-gradient(135deg,#10b981,#06b6d4)',
+  'linear-gradient(135deg,#ef4444,#f97316)','linear-gradient(135deg,#6366f1,#8b5cf6)',
+  'linear-gradient(135deg,#0ea5e9,#6366f1)','linear-gradient(135deg,#14b8a6,#10b981)',
+];
+function _ccGrad(name) {
+  var idx = 0;
+  if (name) for (var i=0;i<name.length;i++) idx = (idx+name.charCodeAt(i))%CC_GRADIENTS.length;
+  return CC_GRADIENTS[idx];
+}
+var CC_PLAT = {instagram:'📷',youtube:'▶️',linkedin:'💼',twitter:'🐦','twitter/x':'🐦',tiktok:'🎵',facebook:'📘',snapchat:'👻'};
+
 function _renderCreatorCards(list) {
-  const grid = document.getElementById('d-creator-grid');
+  var grid = document.getElementById('d-creator-grid');
   if (!grid) return;
-  const u = S.user;
-  const plan = PLANS[u.plan] || PLANS.free;
-  if (list.length === 0) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t-dim);"><div style="font-size:40px;margin-bottom:16px;">👀</div><div style="font-size:16px;font-weight:600;color:var(--t-secondary);margin-bottom:8px;">No creators yet</div><div style="font-size:13px;">Creators who sign up will appear here.</div></div>';
+  var u = S.user, plan = PLANS[u.plan]||PLANS.free;
+  if (!list.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;">'
+      +'<div style="font-size:48px;margin-bottom:14px;">👀</div>'
+      +'<div style="font-size:16px;font-weight:700;color:#0f1117;margin-bottom:6px;">No creators found</div>'
+      +'<div style="font-size:13px;color:#9ca3af;">Try adjusting your search or check back later.</div>'
+      +'</div>';
     return;
   }
+  var canCollab = u.isAdmin || plan.collabs===-1 || S.collabsUsed < plan.collabs;
   grid.innerHTML = list.map(function(c) {
-    const av   = c.avatar || (c.name ? c.name[0].toUpperCase() : '?');
-    const tags = [c.niche, c.platform, c.audience].filter(Boolean);
-    const canCollab = u.isAdmin || plan.collabs === -1 || S.collabsUsed < plan.collabs;
-    const safeName = (c.name || '').replace(/'/g, '').replace(/"/g, '');
-    const safeWa   = (c.whatsapp || '');
-    const safeUid  = (c.uid || '');
-    const collabBtn = canCollab
-      ? '<button class="d-cc-btn" onclick="requestCollab(\'' + safeUid + '\',' + '\''+safeName+'\',' + '\'' + safeWa + '\')">Collaborate →</button>'
-      : '<button class="d-cc-btn" style="opacity:0.5;cursor:default;" onclick="showView(\"pricing\")">Upgrade to Collab</button>';
-    const tagHtml = tags.map(function(t){ return '<span class="d-cc-tag">'+t+'</span>'; }).join('');
+    var av       = c.avatar||(c.name?c.name[0].toUpperCase():'?');
+    var grad     = _ccGrad(c.name);
+    var isPro    = c.plan==='pro';
+    var platIcon = CC_PLAT[(c.platform||'').toLowerCase()]||'📱';
+    var safeUid  = (c.uid||'');
+    var safeName = (c.name||'').replace(/"/g,'');
+    var safeWa   = (c.whatsapp||'');
+    var tags     = [c.niche,c.platform,c.audience].filter(Boolean);
+    var footerBtns = canCollab
+      ? '<button class="d-cc-btn-collab" data-uid="'+safeUid+'" data-name="'+safeName+'" data-wa="'+safeWa+'" onclick="var b=this;requestCollab(b.dataset.uid,b.dataset.name,b.dataset.wa)">'
+        +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
+        +'Collaborate</button>'
+      : '<button class="d-cc-btn-upgrade" onclick="showView(\"pricing\")">🔒 Upgrade to Collab</button>';
+    if (safeWa) footerBtns += '<a class="d-cc-btn-wa" href="https://wa.me/'+safeWa+'?text='+encodeURIComponent('Hi, I found you on PostHire!')+'" target="_blank">💬</a>';
     return '<div class="d-creator-card">'
-      + '<div class="d-cc-top">'
-      +   '<div class="d-cc-av" style="background:linear-gradient(135deg,#3b6ef0,#8b5cf6);">' + av + '</div>'
-      +   '<div class="d-cc-info">'
-      +     '<div class="d-cc-name">' + (c.name || 'Creator') + '</div>'
-      +     '<div class="d-cc-niche">' + (c.niche || 'Creator') + ' · ' + (c.platform || 'Social') + '</div>'
-      +   '</div>'
-      + '</div>'
-      + '<p class="d-cc-bio">' + (c.bio || 'No bio yet.') + '</p>'
-      + '<div class="d-cc-tags">' + tagHtml + '</div>'
-      + '<div class="d-cc-footer">'
-      +   '<div style="font-size:12px;color:var(--t-dim);">Audience: ' + (c.audience || '—') + '</div>'
-      +   collabBtn
-      + '</div>'
-      + '</div>';
+      +'<div class="d-cc-banner"><div class="d-cc-banner-gradient" style="background:'+grad+';"></div>'
+      +(isPro?'<div class="d-cc-featured">⭐ Featured</div>':'')
+      +'<div class="d-cc-avatar-wrap"><div class="d-cc-av" style="background:'+grad+';">'+av+'</div></div>'
+      +'</div>'
+      +'<div class="d-cc-body">'
+      +'<div class="d-cc-name-row"><div class="d-cc-name">'+(c.name||'Creator')+'</div>'+(isPro?'<div class="d-cc-verified">✓</div>':'')+'</div>'
+      +'<div class="d-cc-meta">'+platIcon+' '+(c.platform||'Social')+'<span class="d-cc-meta-dot">·</span>'+(c.niche||'Creator')+'</div>'
+      +'<p class="d-cc-bio">'+(c.bio||'No bio yet.')+'</p>'
+      +'<div class="d-cc-tags">'+tags.map(function(t){return '<span class="d-cc-tag">'+t+'</span>';}).join('')+'</div>'
+      +'<div class="d-cc-stats">'
+      +'<div class="d-cc-stat"><span class="d-cc-stat-val">'+(c.audience||'—')+'</span><span class="d-cc-stat-lbl">Audience</span></div>'
+      +'<div class="d-cc-stat"><span class="d-cc-stat-val">'+(c.pricing||'Open')+'</span><span class="d-cc-stat-lbl">Rate</span></div>'
+      +'<div class="d-cc-stat"><span class="d-cc-stat-val">'+(isPro?'⭐ Pro':'Free')+'</span><span class="d-cc-stat-lbl">Plan</span></div>'
+      +'</div>'
+      +'</div>'
+      +'<div class="d-cc-footer">'+footerBtns+'</div>'
+      +'</div>';
   }).join('');
 }
-
 function filterCreators() {
   const u = S.user;
   const plan = u ? (PLANS[u.plan] || PLANS.free) : PLANS.free;
@@ -3239,59 +3228,64 @@ function filterCreators() {
 //  COLLABORATION REQUEST FLOW
 // ══════════════════════════════
 async function requestCollab(creatorId, creatorName, creatorWa) {
-  if (!S.user.whatsapp) {
-    showToast('Please add your WhatsApp number in your profile first.', 'error');
-    showView('profile');
+  var u = S.user; if (!u) return;
+  if (!u.whatsapp) {
+    openModal('WhatsApp Number Required',
+      '<div style="text-align:center;padding:8px 0;"><div style="font-size:44px;margin-bottom:12px;">📱</div><p style="font-size:14px;color:#374151;line-height:1.7;">Add your WhatsApp number in your profile before sending collaboration requests.</p></div>',
+      function(){ closeModal(); showView('profile'); }, 'Go to Profile →');
     return;
   }
-  openModal(
-    `Collaborate with ${creatorName}`,
-    `<p style="margin-bottom:10px;">This will send a collaboration request to <strong>${creatorName}</strong>. The admin will review and approve before WhatsApp details are shared.</p><p style="font-size:12px;color:var(--t-dim);">Your request counts as 1 collaboration slot.</p>`,
-    async () => {
-      try {
-        const u = S.user;
-        const plan = PLANS[u.plan] || PLANS.free;
-        if (!u.isAdmin && plan.collabs !== -1 && S.collabsUsed >= plan.collabs) {
-          showToast('Collaboration limit reached. Please upgrade.', 'error');
-          closeModal();
-          showView('pricing');
-          return;
-        }
-        // Save collab request to Firestore (status: pending — admin must approve)
-        await db.collection('collaborations').add({
-          founderId:    u.uid,
-          founderName:  u.name,
-          founderWa:    u.whatsapp,
-          founderEmail: u.email,
-          creatorId,
-          creatorName,
-          creatorWa,
-          status:      u.isAdmin ? 'approved' : 'pending',
-          createdAt:   firebase.firestore.FieldValue.serverTimestamp(),
-        });
-        S.collabsUsed++;
-        await fbSaveUser(u.uid, { collabsUsed: S.collabsUsed });
-        renderStats();
-        closeModal();
-        if (u.isAdmin) {
-          // Admin bypasses approval — open WhatsApp directly
-          const msg = encodeURIComponent('Hi, I found you on PostHire. I would like to collaborate with you.');
-          window.open('https://wa.me/' + creatorWa + '?text=' + msg, '_blank');
-          showToast('Admin collab — WhatsApp opened directly ✦', 'success');
-        } else {
-          showToast('Request sent! Admin will review and connect you soon ✦', 'success');
-        }
-      } catch(e) {
-        showToast('Error sending request. Please try again.', 'error');
+  var plan = PLANS[u.plan]||PLANS.free;
+  if (!u.isAdmin && plan.collabs!==-1 && S.collabsUsed>=plan.collabs) {
+    openModal('Collaboration Limit Reached',
+      '<div style="text-align:center;padding:8px 0;"><div style="font-size:44px;margin-bottom:12px;">🚫</div><p style="font-size:14px;color:#374151;line-height:1.7;">You have used all <strong>'+plan.collabs+'</strong> collaboration slots this month. Upgrade to send more requests.</p></div>',
+      function(){ closeModal(); showView('pricing'); }, 'Upgrade Plan →');
+    return;
+  }
+  var creator = (_allCreators||[]).find(function(c){ return c.uid===creatorId; })||{};
+  var grad = typeof _ccGrad === 'function' ? _ccGrad(creatorName) : 'linear-gradient(135deg,#3b6ef0,#6366f1)';
+  var slotsText = plan.collabs===-1 ? '∞' : plan.collabs;
+  var modalBody = '<div style="display:flex;flex-direction:column;gap:14px;">'
+    +'<div style="display:flex;align-items:center;gap:14px;background:#f7f8fc;border:1px solid #e8ebf4;border-radius:14px;padding:14px 16px;">'
+    +'<div style="width:48px;height:48px;border-radius:13px;background:'+grad+';display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:800;flex-shrink:0;">'+creatorName[0]+'</div>'
+    +'<div><div style="font-size:15px;font-weight:800;color:#0f1117;">'+creatorName+'</div>'
+    +'<div style="font-size:12px;color:#6b7280;margin-top:2px;">'+(creator.niche||'Creator')+' · '+(creator.platform||'Social')+'</div></div></div>'
+    +'<div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px 14px;font-size:13px;color:#1e40af;line-height:1.65;">'
+    +'📋 Your request will be reviewed by admin. Once approved, both parties will be connected via WhatsApp.'
+    +'</div>'
+    +'<div style="font-size:12px;color:#9ca3af;text-align:center;">Uses 1 slot &nbsp;·&nbsp; <strong>'+S.collabsUsed+' / '+slotsText+'</strong> used this month</div>'
+    +'</div>';
+  openModal('Send Collaboration Request', modalBody, async function() {
+    var sendBtn = document.getElementById('modal-confirm-btn');
+    if (sendBtn) { sendBtn.textContent='⏳ Sending...'; sendBtn.disabled=true; }
+    try {
+      var aiMsg = '';
+      if (plan.messaging||u.isAdmin) aiMsg = await generateCollabMessage(creatorName,creator.niche||'content',creator.platform||'social')||'';
+      await db.collection('collaborations').add({
+        founderId:u.uid, founderName:u.name||'', founderWa:u.whatsapp||'', founderEmail:u.email||'',
+        founderStartup:u.startup||'', creatorId:creatorId, creatorName:creatorName, creatorWa:creatorWa||'',
+        aiMessage:aiMsg, status:u.isAdmin?'approved':'pending',
+        createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      S.collabsUsed++;
+      await fbSaveUser(u.uid,{collabsUsed:S.collabsUsed});
+      renderStats(); closeModal();
+      if (u.isAdmin) {
+        window.open('https://wa.me/'+creatorWa+'?text='+encodeURIComponent('Hi '+creatorName+', I found you on PostHire!'),'_blank');
+        showToast('Connected via WhatsApp ✦','success');
+      } else {
+        showToast('🎉 Request sent! Admin will connect you soon.','success');
       }
-    },
-    S.user.isAdmin ? 'Connect via WhatsApp →' : 'Send Request →'
-  );
+    } catch(e) {
+      console.error(e); showToast('Error. Please try again.','error');
+      if (sendBtn) { sendBtn.textContent='Send Request →'; sendBtn.disabled=false; }
+    }
+  }, u.isAdmin?'Connect via WhatsApp →':'Send Request →');
+  setTimeout(function(){
+    var btn = document.querySelector('.modal-actions button:last-child');
+    if (btn) btn.id='modal-confirm-btn';
+  }, 30);
 }
-
-// ══════════════════════════════
-//  MY COLLABS (creator view)
-// ══════════════════════════════
 async function loadMyCollabs() {
   const el = document.getElementById('my-collabs-list');
   if (!el) return;
@@ -4115,6 +4109,357 @@ async function savePortfolio() {
 }
 
 (function(){if(document.getElementById('ai-css'))return;const s=document.createElement('style');s.id='ai-css';s.textContent='@keyframes aiSpin{to{transform:rotate(360deg)}}';document.head.appendChild(s);})();
+
+
+// ══════════════════════════════════════════════════════════════
+//  ADMIN DASHBOARD — separate full-page
+// ══════════════════════════════════════════════════════════════
+
+let _admUsersCache = [];
+let _admCurrentView = 'overview';
+const ADM_TITLES = { overview:'Overview', collabs:'Collaborations', users:'Users', payments:'Payments', creators:'Creators', founders:'Founders' };
+
+function goToAdminDash() {
+  goTo('admin-dash');
+  admInitDash();
+}
+
+function admInitDash() {
+  const u = S.user;
+  if (!u || !u.isAdmin) { goTo('login'); return; }
+  // Set topbar info
+  const emailEl = document.getElementById('adm-email-display');
+  if (emailEl) emailEl.textContent = u.email || '';
+  const avEl = document.getElementById('adm-topbar-av');
+  if (avEl) avEl.textContent = (u.name || 'A')[0].toUpperCase();
+  // Load all data
+  admLoadOverview();
+  admLoadCollabs('pending');
+  admLoadUsers();
+  admLoadPayments();
+}
+
+function admShowView(view, navEl) {
+  document.querySelectorAll('.adm-view').forEach(function(v){ v.classList.remove('act'); });
+  document.querySelectorAll('.adm-nav-item').forEach(function(i){ i.classList.remove('act'); });
+  const el = document.getElementById('adv-' + view);
+  if (el) el.classList.add('act');
+  if (navEl) navEl.classList.add('act');
+  const titleEl = document.getElementById('adm-page-title');
+  if (titleEl) titleEl.textContent = ADM_TITLES[view] || view;
+  _admCurrentView = view;
+  admCloseSidebar();
+  // Load on demand
+  if (view === 'creators')  admLoadCreatorsTable();
+  if (view === 'founders')  admLoadFoundersTable();
+}
+
+function admRefreshCurrent() {
+  const v = _admCurrentView;
+  if (v === 'overview')  admLoadOverview();
+  if (v === 'collabs')   admLoadCollabs(document.getElementById('adm-collab-filter')?.value || 'pending');
+  if (v === 'users')     admLoadUsers();
+  if (v === 'payments')  admLoadPayments();
+  if (v === 'creators')  admLoadCreatorsTable();
+  if (v === 'founders')  admLoadFoundersTable();
+  showToast('Refreshed ✦', 'success');
+}
+
+function admOpenSidebar()  { document.getElementById('adm-sidebar').classList.add('open'); document.getElementById('adm-overlay').classList.add('show'); }
+function admCloseSidebar() { document.getElementById('adm-sidebar').classList.remove('open'); document.getElementById('adm-overlay').classList.remove('show'); }
+
+// ── OVERVIEW ──────────────────────────────────────────────────
+async function admLoadOverview() {
+  if (!db) return;
+  try {
+    const [uSnap, cSnap, pSnap] = await Promise.all([
+      db.collection('users').get(),
+      db.collection('collaborations').get(),
+      db.collection('payments').get()
+    ]);
+
+    const users = uSnap.docs.map(function(d){ return d.data(); });
+    const collabs = cSnap.docs.map(function(d){ return d.data(); });
+    const payments = pSnap.docs.map(function(d){ return d.data(); });
+
+    const pending  = collabs.filter(function(c){ return c.status === 'pending'; }).length;
+    const revenue  = payments.reduce(function(s,p){ return s + (p.amount||0); }, 0);
+
+    // Update stat cards
+    document.getElementById('ast-users').textContent    = uSnap.size;
+    document.getElementById('ast-pending').textContent  = pending;
+    document.getElementById('ast-collabs').textContent  = cSnap.size;
+    document.getElementById('ast-revenue').textContent  = '₹' + revenue.toLocaleString('en-IN');
+
+    // Update pending badge in nav
+    const badge = document.getElementById('adm-pending-badge');
+    if (badge) { badge.textContent = pending; badge.style.display = pending > 0 ? 'inline-flex' : 'none'; }
+
+    // User breakdown
+    const founders = users.filter(function(u){ return u.role === 'founder'; }).length;
+    const creators = users.filter(function(u){ return u.role === 'creator'; }).length;
+    const freePlan = users.filter(function(u){ return (u.plan||'free') === 'free'; }).length;
+    const starterPlan = users.filter(function(u){ return u.plan === 'starter'; }).length;
+    const proPlan = users.filter(function(u){ return u.plan === 'pro'; }).length;
+
+    const breakdownEl = document.getElementById('adm-user-breakdown');
+    if (breakdownEl) breakdownEl.innerHTML = [
+      ['🚀 Founders', founders, '#3b6ef0'],
+      ['🎥 Creators', creators, '#8b5cf6'],
+      ['🆓 Free Plan', freePlan, '#10b981'],
+      ['⭐ Starter', starterPlan, '#3b6ef0'],
+      ['🚀 Pro', proPlan, '#8b5cf6'],
+    ].map(function(item) {
+      const pct = uSnap.size > 0 ? Math.round((item[1]/uSnap.size)*100) : 0;
+      return '<div style="margin-bottom:14px;">'
+        + '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;color:rgba(255,255,255,0.6);">' + item[0] + '</span><span style="font-size:13px;font-weight:700;color:#e8eaf6;">' + item[1] + '</span></div>'
+        + '<div style="height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + pct + '%;background:' + item[2] + ';border-radius:3px;transition:width 0.6s;"></div></div>'
+        + '</div>';
+    }).join('');
+
+    // Recent signups
+    const recent = users.sort(function(a,b){ return (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0); }).slice(0,5);
+    const signupsEl = document.getElementById('adm-recent-signups');
+    if (signupsEl) signupsEl.innerHTML = recent.length ? recent.map(function(u) {
+      const date = u.createdAt ? new Date(u.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
+      return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        + '<div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#4f6ef7,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;">' + (u.name||'?')[0] + '</div>'
+        + '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:#e8eaf6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (u.name||'—') + '</div>'
+        + '<div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (u.role||'?') + ' · ' + date + '</div></div>'
+        + '<span class="adm-badge adm-badge-' + (u.plan||'free') + '">' + (u.plan||'free') + '</span>'
+        + '</div>';
+    }).join('') : '<div style="padding:20px;text-align:center;color:rgba(255,255,255,0.3);font-size:13px;">No users yet</div>';
+
+    // Overview pending
+    const pendingCollabs = collabs.filter(function(c){ return c.status === 'pending'; }).slice(0,3);
+    const pendingEl = document.getElementById('adm-overview-pending');
+    if (pendingEl) {
+      if (!pendingCollabs.length) {
+        pendingEl.innerHTML = '<div style="padding:20px;text-align:center;color:rgba(255,255,255,0.3);font-size:13px;">✅ No pending approvals</div>';
+      } else {
+        pendingEl.innerHTML = pendingCollabs.map(function(c) {
+          // Need doc id for actions - re-fetch
+          const docRef = cSnap.docs.find(function(d){ return d.data().founderId === c.founderId && d.data().creatorId === c.creatorId && d.data().status === 'pending'; });
+          const docId = docRef ? docRef.id : '';
+          return '<div class="adm-collab-card">'
+            + '<div class="adm-collab-names">🚀 ' + (c.founderName||'?') + ' &nbsp;→&nbsp; 🎥 ' + (c.creatorName||'?') + '</div>'
+            + '<div class="adm-collab-meta"><span>📱 Founder: <strong>' + (c.founderWa||'N/A') + '</strong></span><span>📱 Creator: <strong>' + (c.creatorWa||'N/A') + '</strong></span></div>'
+            + (c.aiMessage ? '<div class="adm-collab-ai-msg">✨ <strong>AI Message:</strong> ' + c.aiMessage + '</div>' : '')
+            + '<div class="adm-collab-actions">'
+        + (docId ? '<button class="adm-btn-approve" data-id="'+docId+'" data-fwa="'+(c.founderWa||'')+'" data-fn="'+(c.founderName||'').replace(/"/g,'')+'" data-cn="'+(c.creatorName||'').replace(/"/g,'')+'" data-cwa="'+(c.creatorWa||'')+'" onclick="var b=this;admApprove(b.dataset.id,b.dataset.fwa,b.dataset.fn,b.dataset.cn,b.dataset.cwa,b)">✅ Approve & Connect</button>' : '')
+            + (docId ? '<button class="adm-btn-reject" data-id="'+docId+'" onclick="admReject(this.dataset.id,this)">❌ Reject</button>' : '')
+            + (c.founderWa ? '<a href="https://wa.me/' + c.founderWa + '" target="_blank" class="adm-btn-wa">💬 WhatsApp</a>' : '')
+            + '</div></div>';
+        }).join('');
+      }
+    }
+
+  } catch(e) { console.error('admLoadOverview:', e); }
+}
+
+// ── COLLABORATIONS ────────────────────────────────────────────
+async function admLoadCollabs(status) {
+  const el = document.getElementById('adm-collabs-container');
+  if (!el) return;
+  el.innerHTML = '<div style="padding:30px;text-align:center;color:rgba(255,255,255,0.3);">Loading...</div>';
+  try {
+    let snap;
+    if (status === 'all') snap = await db.collection('collaborations').get();
+    else snap = await db.collection('collaborations').where('status','==',status).get();
+    const docs = snap.docs.sort(function(a,b){ return (b.data().createdAt?.seconds||0)-(a.data().createdAt?.seconds||0); });
+    if (docs.length === 0) {
+      el.innerHTML = '<div class="adm-card" style="text-align:center;padding:40px;color:rgba(255,255,255,0.3);">No ' + status + ' collaborations.</div>';
+      return;
+    }
+    el.innerHTML = docs.map(function(doc) {
+      const d = doc.data(), id = doc.id;
+      const date = d.createdAt ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+      return '<div class="adm-collab-card">'
+        + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px;">'
+        + '<div class="adm-collab-names">🚀 ' + (d.founderName||'?') + ' &nbsp;→&nbsp; 🎥 ' + (d.creatorName||'?') + '</div>'
+        + '<span class="adm-badge adm-badge-' + (d.status||'pending') + '">' + (d.status||'pending').toUpperCase() + '</span>'
+        + '</div>'
+        + '<div class="adm-collab-meta">'
+        + '<span>📱 Founder: <strong>' + (d.founderWa||'N/A') + '</strong></span>'
+        + '<span>📱 Creator: <strong>' + (d.creatorWa||'N/A') + '</strong></span>'
+        + '<span>📧 ' + (d.founderEmail||'') + '</span>'
+        + (d.founderStartup ? '<span>🏢 ' + d.founderStartup + '</span>' : '')
+        + '<span>📅 ' + date + '</span>'
+        + '</div>'
+        + (d.aiMessage ? '<div class="adm-collab-ai-msg">✨ <strong>AI Message:</strong> ' + d.aiMessage + '</div>' : '')
+        + (d.status === 'pending' ? '<div class="adm-collab-actions">'
+          + '<button class="adm-btn-approve" data-id="'+id+'" data-fwa="'+(d.founderWa||'')+'" data-fn="'+(d.founderName||'').replace(/"/g,'')+'" data-cn="'+(d.creatorName||'').replace(/"/g,'')+'" data-cwa="'+(d.creatorWa||'')+'" onclick="var b=this;admApprove(b.dataset.id,b.dataset.fwa,b.dataset.fn,b.dataset.cn,b.dataset.cwa,b)">✅ Approve & Connect</button>'
+          + '<button class="adm-btn-reject" data-id="'+id+'" onclick="admReject(this.dataset.id,this)">❌ Reject</button>'
+          + (d.founderWa ? '<a href="https://wa.me/' + d.founderWa + '?text=' + encodeURIComponent('Hi ' + (d.founderName||'') + ', regarding your PostHire collaboration request.') + '" target="_blank" class="adm-btn-wa">💬 WA Founder</a>' : '')
+          + '</div>' : '')
+        + '</div>';
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="adm-card" style="color:#f87171;padding:20px;">Error: ' + e.message + '</div>'; }
+}
+
+function admFilterCollabs() {
+  const val = document.getElementById('adm-collab-filter')?.value || 'pending';
+  admLoadCollabs(val);
+}
+
+async function admApprove(docId, founderWa, founderName, creatorName, creatorWa, btn) {
+  btn.textContent = '⏳ Approving...'; btn.disabled = true;
+  try {
+    await db.collection('collaborations').doc(docId).update({ status:'approved', approvedAt:firebase.firestore.FieldValue.serverTimestamp() });
+    if (founderWa) window.open('https://wa.me/' + founderWa + '?text=' + encodeURIComponent('Hi ' + founderName + '! Your collaboration with ' + creatorName + ' is approved on PostHire. Their WhatsApp: +91' + creatorWa), '_blank');
+    showToast('Approved & WhatsApp opened ✦', 'success');
+    admRefreshCurrent();
+    admLoadOverview();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); btn.textContent = '✅ Approve & Connect'; btn.disabled = false; }
+}
+
+async function admReject(docId, btn) {
+  if (!confirm('Reject this collaboration request?')) return;
+  btn.textContent = '⏳...'; btn.disabled = true;
+  try {
+    await db.collection('collaborations').doc(docId).update({ status:'rejected', rejectedAt:firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Rejected.', '');
+    admRefreshCurrent();
+    admLoadOverview();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); btn.textContent = '❌ Reject'; btn.disabled = false; }
+}
+
+// ── USERS ────────────────────────────────────────────────────
+async function admLoadUsers() {
+  try {
+    const snap = await db.collection('users').get();
+    _admUsersCache = snap.docs.map(function(d){ return d.data(); });
+    admRenderUsersTable(_admUsersCache);
+  } catch(e) { console.error('admLoadUsers:', e); }
+}
+
+function admSearchUsers() {
+  const q = (document.getElementById('adm-user-search-new')?.value || '').toLowerCase();
+  const filtered = _admUsersCache.filter(function(u){
+    return (u.name||'').toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q) || (u.role||'').toLowerCase().includes(q);
+  });
+  admRenderUsersTable(filtered);
+}
+
+function admRenderUsersTable(users) {
+  const tbody = document.getElementById('adm-users-tbody');
+  if (!tbody) return;
+  if (!users.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:rgba(255,255,255,0.3);">No users found</td></tr>'; return; }
+  const sorted = users.slice().sort(function(a,b){ return (b.createdAt?.seconds||0)-(a.createdAt?.seconds||0); });
+  tbody.innerHTML = sorted.map(function(u) {
+    const date = u.createdAt ? new Date(u.createdAt.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+    const safeUid = (u.uid||'').replace(/'/g,'');
+    const safePlan = (u.plan||'free');
+    return '<tr>'
+      + '<td><div style="font-weight:700;color:#e8eaf6;">' + (u.name||'—') + '</div><div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (u.email||'') + '</div></td>'
+      + '<td><span class="adm-badge adm-badge-' + (u.isAdmin?'admin':(u.role||'founder')) + '">' + (u.isAdmin?'🛡️ Admin':(u.role||'—')) + '</span></td>'
+      + '<td>' + (u.whatsapp||'—') + '</td>'
+      + '<td><span class="adm-badge adm-badge-' + safePlan + '">' + safePlan + '</span></td>'
+      + '<td style="font-weight:700;">' + (u.collabsUsed||0) + '</td>'
+      + '<td style="color:rgba(255,255,255,0.45);">' + date + '</td>'
+      + '<td><div class="adm-user-actions">'
+      + (u.whatsapp ? '<a href="https://wa.me/' + u.whatsapp + '" target="_blank" class="adm-act-btn" style="background:rgba(37,211,102,0.1);color:#25d366;border-color:rgba(37,211,102,0.3);">💬</a>' : '')
+      + '<button class="adm-act-btn" data-uid="' + safeUid + '" data-plan="' + safePlan + '" onclick="admChangePlan(this.dataset.uid,this.dataset.plan)" style="background:rgba(59,110,240,0.1);color:#6ea4ff;border-color:rgba(59,110,240,0.3);">Plan</button>'
+      + '<button class="adm-act-btn" data-uid="' + safeUid + '" data-name="' + (u.name||'').replace(/"/g,'') + '" onclick="admDeleteUser(this.dataset.uid,this.dataset.name,this)" style="background:rgba(239,68,68,0.1);color:#f87171;border-color:rgba(239,68,68,0.3);">🗑️</button>'
+      + '</div></td>'
+      + '</tr>';
+  }).join('');
+}
+
+async function admChangePlan(uid, current) {
+  const p = prompt('Change plan (free / starter / pro):', current);
+  if (!p || !['free','starter','pro'].includes(p.trim())) { showToast('Invalid plan', 'error'); return; }
+  try { await db.collection('users').doc(uid).update({ plan:p.trim() }); showToast('Plan updated ✦', 'success'); admLoadUsers(); }
+  catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+async function admDeleteUser(uid, name, btn) {
+  if (!confirm('Delete user "' + name + '"? This cannot be undone.')) return;
+  btn.textContent = '...'; btn.disabled = true;
+  try { await db.collection('users').doc(uid).delete(); showToast('User deleted', ''); admLoadUsers(); admLoadOverview(); }
+  catch(e) { showToast('Error: ' + e.message, 'error'); btn.textContent = '🗑️'; btn.disabled = false; }
+}
+
+// ── PAYMENTS ────────────────────────────────────────────────
+async function admLoadPayments() {
+  const tbody = document.getElementById('adm-payments-tbody');
+  const revEl  = document.getElementById('adm-total-rev');
+  const ordEl  = document.getElementById('adm-total-orders');
+  if (!tbody) return;
+  try {
+    const snap = await db.collection('payments').limit(200).get();
+    const docs = snap.docs.sort(function(a,b){ return (b.data().paymentDate?.seconds||0)-(a.data().paymentDate?.seconds||0); });
+    let total = 0;
+    docs.forEach(function(d){ total += (d.data().amount||0); });
+    if (revEl) revEl.textContent = '₹' + total.toLocaleString('en-IN');
+    if (ordEl) ordEl.textContent = docs.length;
+    if (!docs.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:rgba(255,255,255,0.3);">No payments yet</td></tr>'; return; }
+    tbody.innerHTML = docs.map(function(doc) {
+      const d = doc.data();
+      const dt = d.paymentDate ? new Date(d.paymentDate.seconds*1000).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}) : '—';
+      return '<tr>'
+        + '<td><div style="font-weight:700;color:#e8eaf6;">' + (d.userName||'—') + '</div><div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (d.userEmail||'') + '</div></td>'
+        + '<td><span class="adm-badge adm-badge-' + (d.planKey||'starter') + '">' + (d.planName||'—') + '</span></td>'
+        + '<td style="font-weight:700;color:#34d399;">₹' + (d.amount||0) + '</td>'
+        + '<td style="font-size:11px;color:rgba(255,255,255,0.4);font-family:monospace;">' + (d.razorpayPaymentId||'—') + '</td>'
+        + '<td style="color:rgba(255,255,255,0.4);">' + dt + '</td>'
+        + '<td><span class="adm-badge adm-badge-' + (d.status==='paid'?'approved':'pending') + '">' + (d.status||'paid').toUpperCase() + '</span></td>'
+        + '</tr>';
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;color:#f87171;">Error: ' + e.message + '</td></tr>'; }
+}
+
+// ── CREATORS TABLE ────────────────────────────────────────────
+async function admLoadCreatorsTable() {
+  const tbody = document.getElementById('adm-creators-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);">Loading...</td></tr>';
+  try {
+    const snap = await db.collection('users').where('role','==','creator').get();
+    if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:rgba(255,255,255,0.3);">No creators yet</td></tr>'; return; }
+    tbody.innerHTML = snap.docs.map(function(doc) {
+      const u = doc.data();
+      const safeUid = (u.uid||'').replace(/'/g,'');
+      return '<tr>'
+        + '<td><div style="font-weight:700;color:#e8eaf6;">' + (u.name||'—') + '</div><div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (u.email||'') + '</div></td>'
+        + '<td>' + (u.niche||'—') + '</td>'
+        + '<td>' + (u.platform||'—') + '</td>'
+        + '<td>' + (u.audience||'—') + '</td>'
+        + '<td><span class="adm-badge adm-badge-' + (u.plan||'free') + '">' + (u.plan||'free') + '</span></td>'
+        + '<td>' + (u.whatsapp||'—') + '</td>'
+        + '<td><div class="adm-user-actions">'
+        + (u.whatsapp ? '<a href="https://wa.me/' + u.whatsapp + '" target="_blank" class="adm-act-btn" style="background:rgba(37,211,102,0.1);color:#25d366;border-color:rgba(37,211,102,0.3);">💬</a>' : '')
+        + '<button class="adm-act-btn" data-uid="' + safeUid + '" data-plan="' + (u.plan||'free') + '" onclick="admChangePlan(this.dataset.uid,this.dataset.plan)" style="background:rgba(59,110,240,0.1);color:#6ea4ff;border-color:rgba(59,110,240,0.3);">Plan</button>'
+        + '</div></td>'
+        + '</tr>';
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;color:#f87171;">Error: ' + e.message + '</td></tr>'; }
+}
+
+// ── FOUNDERS TABLE ────────────────────────────────────────────
+async function admLoadFoundersTable() {
+  const tbody = document.getElementById('adm-founders-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:rgba(255,255,255,0.3);">Loading...</td></tr>';
+  try {
+    const snap = await db.collection('users').where('role','==','founder').get();
+    if (snap.empty) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:rgba(255,255,255,0.3);">No founders yet</td></tr>'; return; }
+    tbody.innerHTML = snap.docs.map(function(doc) {
+      const u = doc.data();
+      return '<tr>'
+        + '<td><div style="font-weight:700;color:#e8eaf6;">' + (u.name||'—') + '</div><div style="font-size:11px;color:rgba(255,255,255,0.35);">' + (u.email||'') + '</div></td>'
+        + '<td>' + (u.startup||'—') + '</td>'
+        + '<td>' + (u.industry||'—') + '</td>'
+        + '<td>' + (u.budget||'—') + '</td>'
+        + '<td><span class="adm-badge adm-badge-' + (u.plan||'free') + '">' + (u.plan||'free') + '</span></td>'
+        + '<td style="font-weight:700;">' + (u.collabsUsed||0) + '</td>'
+        + '<td><div class="adm-user-actions">'
+        + (u.whatsapp ? '<a href="https://wa.me/' + u.whatsapp + '" target="_blank" class="adm-act-btn" style="background:rgba(37,211,102,0.1);color:#25d366;border-color:rgba(37,211,102,0.3);">💬</a>' : '')
+        + '</div></td>'
+        + '</tr>';
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;color:#f87171;">Error: ' + e.message + '</td></tr>'; }
+}
 
 // ══════════════════════════════
 //  LOADER
