@@ -2158,7 +2158,6 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
   .d-cc-btn-wa:hover { transform: none; }
   .d-quick-card:active { transform: scale(0.97); }
   .d-stat-card:active { transform: scale(0.98); }
-}
 
 /* ── Safe area for notch devices ── */
 .d-topbar { padding-top: max(0px, env(safe-area-inset-top)); }
@@ -2296,6 +2295,45 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:#fff; color:var(--
 /* Pricing grid */
 .d-price-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; padding-top:8px; }
 @media (max-width:900px) { .d-price-grid { grid-template-columns:1fr; max-width:400px; margin:0 auto; } }
+
+/* ── Profile page styles ── */
+.d-pf-avatar-row { display:flex;align-items:center;gap:16px;padding:20px 0 16px;border-bottom:1px solid var(--l-border);margin-bottom:20px; }
+.d-pf-avatar-big { width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,#3b6ef0,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:800;flex-shrink:0; }
+.d-pf-avatar-info h4 { font-size:14px;font-weight:700;color:#0f1117;margin-bottom:3px; }
+.d-pf-avatar-info p  { font-size:12px;color:#9ca3af; }
+.d-pf-grid { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+.d-pf-full { grid-column:1/-1; }
+.d-pf-save { margin-top:20px;padding-top:16px;border-top:1px solid var(--l-border); }
+.d-save-btn { padding:12px 28px;background:linear-gradient(135deg,#3b6ef0,#6366f1);color:#fff;border:none;border-radius:var(--r-full);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 14px rgba(59,110,240,0.25); }
+.d-save-btn:hover { transform:translateY(-2px);box-shadow:0 8px 22px rgba(59,110,240,0.35); }
+@media (max-width:600px) { .d-pf-grid { grid-template-columns:1fr; } .d-pf-full { grid-column:1; } }
+
+/* ── Locked feature ── */
+.d-locked { background:#fff;border:1px solid #e8ebf4;border-radius:16px;padding:50px 40px;text-align:center;max-width:420px;margin:40px auto; }
+.d-locked-icon { font-size:44px;margin-bottom:14px; }
+.d-locked h3 { font-size:18px;font-weight:800;color:#0f1117;margin-bottom:8px; }
+.d-locked p  { font-size:14px;color:#6b7280;line-height:1.7;margin-bottom:22px; }
+.d-locked-btn { padding:12px 28px;background:linear-gradient(135deg,#3b6ef0,#6366f1);color:#fff;border:none;border-radius:var(--r-full);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s; }
+.d-locked-btn:hover { transform:translateY(-2px);box-shadow:0 6px 20px rgba(59,110,240,0.3); }
+
+/* ── AI match banner ── */
+.d-ai-match-banner { background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,110,240,0.06));border:1px solid rgba(139,92,246,0.2);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px; }
+.d-ai-match-banner-icon { font-size:28px;flex-shrink:0; }
+.d-ai-match-banner h4 { font-size:14px;font-weight:700;color:#0f1117;margin-bottom:3px; }
+.d-ai-match-banner p  { font-size:12px;color:#6b7280; }
+
+/* ── Analytics ── */
+.d-analytics-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px; }
+.d-analytics-card { background:#fff;border:1px solid #e8ebf4;border-radius:12px;padding:20px; }
+.d-analytics-card h5 { font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;margin-bottom:8px; }
+.d-analytics-val { font-size:28px;font-weight:800;color:#0f1117;letter-spacing:-1px; }
+.d-analytics-sub { font-size:12px;color:#6b7280;margin-top:4px; }
+@media (max-width:600px) { .d-analytics-grid { grid-template-columns:1fr; } }
+
+/* ── Browse limit bar ── */
+.d-browse-limit-bar { background:#fff;border:1px solid #e8ebf4;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px;font-size:13px; }
+.d-blb-track { flex:1;height:6px;background:#f0f2f8;border-radius:3px;overflow:hidden; }
+.d-blb-fill  { height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:3px;transition:width 0.4s; }
 </style>
 
 <div class="adm-wrap">
@@ -2904,22 +2942,6 @@ const PLANS = {
 const RAZORPAY_KEY = 'rzp_live_SRv7atP9vrEYvT';
 const RZP_PLANS = { starter:{amount:29900,name:'PostHire Starter',desc:'Starter Plan'}, pro:{amount:59900,name:'PostHire Pro',desc:'Pro Plan'} };
 
-const RAZORPAY_PLANS = {
-  starter: {
-    amount:      29900,          // amount in paise (₹299 = 29900 paise)
-    currency:    'INR',
-    name:        'PostHire Starter',
-    description: 'Starter Plan — 20 collabs/month, unlimited browse, messaging',
-    planKey:     'starter',
-  },
-  pro: {
-    amount:      59900,          // ₹599 in paise
-    currency:    'INR',
-    name:        'PostHire Pro',
-    description: 'Pro Plan — unlimited collabs, AI match, analytics, featured badge',
-    planKey:     'pro',
-  },
-};
 
 // ── Plan gate helper — show locked state if feature not in plan ──
 function planGate(feature, content, planKey) {
@@ -4612,7 +4634,7 @@ function openRazorpay(planKey, onSuccessCallback) {
   const u = S.user;
   if (!u) { showToast('Please sign in first', 'error'); return; }
 
-  const rpPlan = RAZORPAY_PLANS[planKey];
+  const rpPlan = RZP_PLANS[planKey];
   if (!rpPlan) { showToast('Invalid plan selected', 'error'); return; }
 
   // Check if Razorpay key is configured
@@ -4625,9 +4647,9 @@ function openRazorpay(planKey, onSuccessCallback) {
   const options = {
     key:          RAZORPAY_KEY,
     amount:       rpPlan.amount,
-    currency:     rpPlan.currency,
+    currency:     'INR',
     name:         'PostHire',
-    description:  rpPlan.description,
+    description:  rpPlan.desc || 'PostHire Plan',
     image:        '', // Optional: your logo URL
     prefill: {
       name:    u.name  || '',
@@ -4739,6 +4761,7 @@ async function callClaude(sys, usr) {
   }
 }
 
+async function loadAIMatches() { return renderAIMatches(); }
 async function renderAIMatches() {
   const u = S.user, plan = PLANS[u.plan]||PLANS.free, el = document.getElementById('ai-matches-container');
   if (!el) return;
